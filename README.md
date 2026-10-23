@@ -23,6 +23,7 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
 | [docs/hardware.md](docs/hardware.md) | Teileliste, Verdrahtung, Stromversorgung |
 | [docs/can-signals.md](docs/can-signals.md) | Welche Frames das Cluster erwartet, mit Quellen und Zuverlässigkeit |
 | [docs/protocol.md](docs/protocol.md) | USB-Zeilenprotokoll PC ↔ ESP32 |
+| [docs/backlog.md](docs/backlog.md) | Offene Aufgaben (P1: CAN, P2: Rest des Clusters, P3: Jira-Anwendung) |
 
 ## Inbetriebnahme
 
