@@ -10,7 +10,7 @@ und sendet die zyklischen Motorsteuergeräte-Frames selbst alle 10 ms. Der PC ä
 (`SET rpm 3000 speed 80`), Jitter und USB-Latenz spielen für das Cluster keine Rolle.
 
 **Status:** Firmware und Host-Bibliothek sind geschrieben, die Host-Tests laufen (8/8).
-Die Firmware ist **noch nicht kompiliert und nicht am echten Cluster getestet**.
+Die Firmware **kompiliert** (PlatformIO, `esp32dev`), ist aber **nicht am echten Cluster getestet**.
 Die CAN-Signaldefinitionen stammen aus Community-Quellen und sind teils widersprüchlich,
 siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Kommandos (`cfg`, `raw`, `sniff`).
 

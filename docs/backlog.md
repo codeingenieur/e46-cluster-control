@@ -5,7 +5,8 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 
 ## P1: CAN-Funktionen
 
-- [ ] Firmware mit PlatformIO kompilieren, auf ESP32 flashen
+- [x] Firmware mit PlatformIO kompilieren
+- [ ] Firmware auf ESP32 flashen
 - [ ] Bring-up am Cluster: `tx_ok` steigt, `can=running`, Cluster reagiert (ggf. Codierung klären)
 - [ ] Drehzahl kalibrieren (`rpm_scale` 6.4 vs. 6.42), Wert in `docs/can-signals.md` festhalten
 - [ ] Kühlmitteltemperatur kalibrieren (`temp_offset`: −48 / −48.373 / −40)
