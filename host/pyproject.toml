@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "e46cluster"
+version = "0.1.0"
+description = "PC-Steuerung fuer ein BMW-E46-Kombiinstrument ueber ESP32 + CAN"
+requires-python = ">=3.9"
+dependencies = ["pyserial>=3.5"]
+
+[project.scripts]
+e46cluster = "e46cluster.cli:main"
+
+[tool.setuptools]
+packages = ["e46cluster"]
