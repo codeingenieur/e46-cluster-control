@@ -8,6 +8,26 @@ Referenzimplementierung in Python: `host/e46cluster/client.py` im Repo
 ([codeingenieur/e46-cluster-control](https://github.com/codeingenieur/e46-cluster-control)).
 Vollständige Befehlstabelle: [protocol.md](protocol.md). Hier steht, was man für die Integration wissen muss.
 
+## 0. Voraussetzungen und Abgrenzung
+
+**Was dieses Dokument abdeckt:** alles, was man braucht, um vom PC aus mit dem ESP32 zu sprechen
+(Treiber/Port in Abschnitt 10, Protokoll in 2–6, Abnahmetests in Abschnitt 11).
+
+**Was es nicht abdeckt:** die Jira-Seite. Welche Projektdaten (Ziele, Defects, Testergebnisse) auf welches Signal
+abgebildet werden, ist Aufgabe der PC-Anwendung. Dafür gibt Abschnitt 8 nur eine Strukturempfehlung.
+
+**Was der Implementierer wissen muss:**
+
+- Programmiersprache und Serial-Bibliothek sind frei wählbar. Gebraucht wird nur ein serieller Port mit
+  Baudrate, DTR/RTS-Kontrolle und Timeouts (Python: `pyserial`, Node: `serialport`, C#: `System.IO.Ports`,
+  Java: `jSerialComm`).
+- Die ESP32-Firmware ist fertig und baut fehlerfrei. Sie ist **nicht** am echten Cluster getestet. Die
+  Protokollseite (dieses Dokument) ist stabil, nur Kalibrierwerte können sich ändern (Abschnitt 9).
+- Ohne angeschlossene Hardware lässt sich die PC-Seite mit einer Fake-Firmware testen (Abschnitt 8 und 11).
+- Das Repo ([codeingenieur/e46-cluster-control](https://github.com/codeingenieur/e46-cluster-control)) enthält
+  eine lauffähige Python-Referenz (`host/e46cluster/`) samt Tests. Sie kann direkt genutzt oder als Vorlage
+  portiert werden.
+
 ## 1. Das Wichtigste in fünf Punkten
 
 1. Der ESP32 erscheint als **serieller Port** (Windows `COMx`, Linux `/dev/ttyUSB0`, macOS `/dev/cu.usbserial-*`).
@@ -257,3 +277,65 @@ Eine fertige Variante mit Hintergrund-Leser, Events und Tests gibt es in `host/e
   `rpm_scale` und `temp_offset` per `CFG` setzen lassen oder die Wertebereiche konfigurierbar halten.
 - Tankanzeige, Außentemperatur, Blinker und Ähnliches sind (noch) nicht steuerbar, siehe [backlog.md](backlog.md).
 - Pro ESP32 gibt es genau eine Verbindung. Ein zweites Programm kann den Port nicht gleichzeitig öffnen.
+
+## 10. Treiber, Port und Kabel (USB-Fehlersuche)
+
+Ob etwas installiert werden muss, hängt vom USB-Chip auf dem ESP32-Board ab. Die Firmware selbst braucht nichts
+Besonderes, sie spricht ganz normal über die serielle Schnittstelle des Boards.
+
+| USB-Chip auf dem Board | Treiber | Port-Name |
+|---|---|---|
+| **CP2102 / CP210x** (Silicon Labs, VID `10C4`) | Windows 10/11 lädt ihn meist selbst über Windows Update. Sonst "CP210x Universal Windows Driver" von Silicon Labs | Windows `COMx`, Linux `/dev/ttyUSB0`, macOS `/dev/cu.usbserial-*` |
+| **CH340 / CH9102** (WCH, VID `1A86`) | Windows meist automatisch, sonst WCH-Treiber (CH341SER). Auf älteren macOS-Versionen oft manuell nötig | wie oben |
+| **FTDI** (VID `0403`) | Windows lädt ihn meist selbst | wie oben |
+| **Nativer USB-Port des Chips** (ESP32-S2/S3/C3, VID `303A`) | Kein Treiber ab Windows 10 (CDC-ACM) | Windows `COMx`, Linux `/dev/ttyACM0`, macOS `/dev/cu.usbmodem*` |
+
+Welcher Chip verbaut ist, steht meist auf dem Board (kleiner Chip neben der USB-Buchse), sonst zeigt es der
+Gerätemanager. Treiberversionen und Verhalten der Betriebssysteme ändern sich, im Zweifel beim Hersteller nachsehen.
+
+Hinweis zur Firmware: Sie ist für ein **klassisches ESP32-DevKit mit UART-Brücke** (CP210x/CH340) gebaut. Ein
+Board, das nur den nativen USB-Port nutzt (S2/S3/C3), wird bisher nicht unterstützt und bräuchte eine kleine
+Firmware-Anpassung.
+
+### Prüfen, ob das Board erkannt wird
+
+- **Windows:** Gerätemanager → "Anschlüsse (COM & LPT)". Dort sollte z. B. "Silicon Labs CP210x USB to UART Bridge (COM5)"
+  stehen. Alternativ in Python: `python -m serial.tools.list_ports -v` (mit `pyserial`).
+- **Linux:** `ls /dev/ttyUSB* /dev/ttyACM*`, dazu `dmesg | tail` direkt nach dem Einstecken.
+- **macOS:** `ls /dev/cu.*`.
+
+### Typische Probleme
+
+| Symptom | Ursache und Lösung |
+|---|---|
+| Es erscheint **kein** neuer Port | Das Kabel ist oft ein reines **Ladekabel ohne Datenleitungen**. Anderes Kabel probieren, direkt am PC statt am Hub |
+| Gerät erscheint als "Unbekanntes Gerät" oder mit gelbem Warnzeichen | Treiber fehlt, passenden Treiber laut Tabelle installieren |
+| `Zugriff verweigert` (Windows) oder `Device or resource busy` (Linux/macOS) | Ein anderes Programm hat den Port offen (PlatformIO-Monitor, Arduino-IDE, Terminalprogramm). Schließen, es kann nur eine Anwendung gleichzeitig zugreifen |
+| `Permission denied` unter Linux | Benutzer in die Gruppe `dialout` (Debian/Ubuntu) bzw. `uucp` (Arch): `sudo usermod -aG dialout $USER`, danach neu anmelden |
+| CH340 verschwindet unter Ubuntu sofort wieder | Der Dienst `brltty` greift den Port ab. `sudo apt remove brltty` |
+| Die COM-Nummer ändert sich | Windows vergibt sie pro USB-Buchse und Gerät. Anwendung soll den Port konfigurierbar machen oder per VID suchen (Abschnitt 2), nicht fest `COM5` einprogrammieren |
+| Beim Öffnen des Ports startet der ESP32 neu (kurze Boot-Meldung) | Auto-Reset über DTR/RTS. Vor dem Öffnen `dtr=False`, `rts=False` setzen und den Handshake mit `PING` wiederholen (Abschnitt 2) |
+| `PING` bleibt ohne Antwort, Port ist offen | Falsche Baudrate (Firmware und PC müssen beide 115200 nutzen) oder Firmware nicht geflasht |
+| Zeichenmüll statt Text | Baudrate stimmt nicht |
+| Flashen schlägt fehl ("Failed to connect") | Bei manchen Boards beim Start des Flashens die **BOOT**-Taste gedrückt halten. Betrifft nur das Flashen, nicht den Betrieb |
+
+Der ESP32 wird über USB mit Strom versorgt. Das Kombiinstrument hat eine **eigene** 12-V-Versorgung und hängt
+nicht am USB-Port.
+
+## 11. Abnahmetests für die PC-Seite
+
+Eine PC-Implementierung ist fertig, wenn diese Fälle gegen die Hardware **oder** eine Fake-Firmware funktionieren:
+
+| # | Test | Erwartung |
+|---|---|---|
+| 1 | Port öffnen (DTR/RTS aus), `PING` senden | `PONG e46-cluster <version>` innerhalb 1 s, nach einem Reset innerhalb weniger Wiederholungen |
+| 2 | `SET rpm 3000`, danach `GET` | `OK`, dann `STATE` mit `rpm=3000` |
+| 3 | `SET rpm 2000 bogus 1` | `ERR unknown_key`, `GET` zeigt weiter den alten `rpm`-Wert (Zeile wirkt ganz oder gar nicht) |
+| 4 | `SET mil true` | `ERR bad_value` (nur `0`/`1` erlaubt) |
+| 5 | Antworten mit `\r\n`, mit `\n` allein und eine Zeile ohne Zeilenende am Ende der Eingabe | Parser liefert bei `\r\n` und `\n` dieselben Zeilen |
+| 6 | Unaufgeforderte Zeilen (`READY ...`, `EVT bus_off`) zwischen Kommando und Antwort | Werden nicht als Antwort gewertet, das Kommando bekommt trotzdem seine richtige Antwort |
+| 7 | Antwort bleibt aus (Timeout) | Fehler wird gemeldet, Anwendung stürzt nicht ab und verbindet neu |
+| 8 | USB-Kabel abziehen und wieder einstecken | Anwendung erkennt den Verlust und verbindet nach dem Einstecken selbstständig wieder |
+| 9 | `CFG wdt 2000`, dann 3 s nichts senden | `EVT wdt` kommt, `rpm`, `speed`, `fco` stehen danach auf `0` |
+| 10 | Anwendung beenden | `ZERO` und Leuchten auf `0` wurden vorher gesendet |
+| 11 | Dezimalzahlen mit deutscher Systemsprache | Es wird `80.5` gesendet, nie `80,5` |
