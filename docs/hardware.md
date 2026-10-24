@@ -21,6 +21,17 @@
 
 Die Pins sind per Build-Flag änderbar (`CAN_TX_PIN`, `CAN_RX_PIN`, `SPEED_PIN` in `platformio.ini`).
 
+Gegen das Datenblatt des ESP32-WROOM-32E (v1.6) geprüft:
+
+- GPIO4 (Modulpin 26), GPIO5 (29) und GPIO18 (30) sind normale I/O-Pins des Moduls.
+- **GPIO5 ist ein Strapping-Pin** (Standard: Pull-up, beeinflusst nur das Timing eines SDIO-Slaves, das wir nicht nutzen).
+  Als CAN-TX unkritisch: Der Transceiver-Eingang liegt im Ruhezustand ohnehin hoch. Die kritischen Strapping-Pins
+  (GPIO0, GPIO2, GPIO12/MTDI, GPIO15/MTDO) werden nicht verwendet und sollten frei bleiben.
+- **Die Pins sind nicht 5-V-tolerant.** Zulässig ist höchstens VDD + 0,3 V (also ca. 3,6 V), High-Pegel ab 0,75 × VDD
+  (ca. 2,5 V). Deshalb 3,3-V-Transceiver und der Transistor als Pegelwandler am Tacho-Ausgang. Nie ein 12-V-Signal
+  direkt an einen GPIO legen.
+- Das Datenblatt beschreibt das **Modul**. Welche Pins das DevKitC-Board nach außen führt, steht im Pinout des Boards.
+
 CAN-H und CAN-L des Transceivers gehen an die CAN-Pins des Kombis. Alle drei Massen (ESP, Transceiver, Kombi)
 verbinden.
 
