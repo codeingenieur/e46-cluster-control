@@ -11,7 +11,9 @@ Vollständige Befehlstabelle: [protocol.md](protocol.md). Hier steht, was man f�
 ## 1. Das Wichtigste in fünf Punkten
 
 1. Der ESP32 erscheint als **serieller Port** (Windows `COMx`, Linux `/dev/ttyUSB0`, macOS `/dev/cu.usbserial-*`).
-2. **115200 Baud, 8N1, kein Flow-Control.** Text, eine Zeile pro Kommando, Zeilenende `\n`.
+2. **115200 Baud, 8N1, kein Flow-Control.** Reiner ASCII-Text, eine Zeile pro Kommando. **Senden: Zeilenende `\n`
+   (LF, Byte `0x0A`).** `\r\n` ist ebenfalls erlaubt. **Empfangen: Die Firmware beendet jede Zeile mit `\r\n`
+   (CR LF, Bytes `0x0D 0x0A`)**, beim Lesen also an `\n` trennen und `\r` entfernen. Details in Abschnitt 3.
 3. **Der ESP32 hält den Zustand.** Er sendet die CAN-Frames selbst alle 10 ms. Die Anwendung sendet nur
    Änderungen, und ein einmal gesetzter Wert bleibt bestehen, bis er überschrieben wird.
 4. **Jedes Kommando wird mit genau einer Zeile beantwortet** (`OK`, `ERR <grund>` oder eine Datenzeile).
@@ -36,16 +38,76 @@ repeat bis zu 6x, je 300 ms Pause:
 - Baudrate muss auf beiden Seiten gleich sein. Bei falscher Rate kommt Zeichenmüll oder nichts.
   Die Firmware wird bei Bedarf mit `-DSERIAL_BAUD=921600` gebaut, dann auch am PC 921600 nutzen.
 
-## 3. Zeilenformat
+## 3. Wire-Format (byte-genau)
 
-- Kommando: `WORT arg arg ...\n`. Leerzeichen als Trenner, Dezimalpunkt (nicht Komma), Groß-/Kleinschreibung egal.
-- Maximal 127 Zeichen pro Zeile (sonst `ERR line_too_long`).
-- Antwortzeilen enden mit `\n` (oder `\r\n`), beim Lesen mit `strip()` behandeln.
-- **Antworten von asynchronen Meldungen unterscheiden** über das erste Wort:
-  - Antwort auf ein Kommando: beginnt mit `OK`, `ERR`, `PONG`, `STATE`, `CFG` oder `HELP`.
-  - Asynchron (nicht als Antwort werten): `READY`, `EVT ...`, `RX ...`.
-- Vor dem Senden alte, nicht abgeholte Antworten verwerfen. Kommandos nacheinander senden und auf die
-  Antwort warten (Timeout ca. 1 s). Eine Zeile nie halb senden.
+### 3.1 PC → ESP32 (Kommandos)
+
+| Eigenschaft | Festlegung |
+|---|---|
+| Zeichensatz | ASCII (7 Bit). Kein UTF-8, keine Umlaute |
+| Zeilenende | `\n` (LF, `0x0A`) **oder** `\r` (CR, `0x0D`). Die Firmware beendet eine Zeile bei **jedem** der beiden Zeichen. Es funktionieren also `\n`, `\r` und `\r\n` |
+| Leerzeilen | Eine Zeile ohne Inhalt wird ignoriert, ohne Antwort. Bei `\r\n` entsteht so intern eine leere Zeile, das ist harmlos |
+| Empfehlung | Immer genau **`\n`** senden, so macht es die Referenzimplementierung |
+| Trennzeichen | Leerzeichen oder Tab, beliebig viele hintereinander. Führende und angehängte Leerzeichen sind erlaubt |
+| Groß-/Kleinschreibung | Egal bei Kommandonamen und Schlüsseln (`set RPM 3000` = `SET rpm 3000`). Hex-Ziffern `a-f`/`A-F` egal |
+| Zahlen | Dezimal, **Punkt** als Dezimaltrenner (nie Komma, unabhängig von der Systemsprache; in C#/Java `InvariantCulture` bzw. `Locale.ROOT` nutzen). Vorzeichen `-`/`+` erlaubt. Keine Tausendertrenner. Exponentschreibweise (`1e3`) wird akzeptiert, sollte aber vermieden werden |
+| Wahrheitswerte | **Nur Zahlen**, `0` = aus, jeder andere Wert = ein (`1` verwenden). `true`/`false`/`on`/`off` sind **ungültig** (`ERR bad_value`) |
+| Maximale Zeilenlänge | 127 Zeichen ohne Zeilenende. Längere Zeilen werden verworfen, am Zeilenende kommt `ERR line_too_long` |
+| Maximale Wortzahl | 24 Wörter pro Zeile (Kommando mitgezählt) |
+| Echo, Prompt | Es gibt **kein** Echo, keinen Prompt und keine Prüfsumme |
+| Tempo | Nicht schneller senden, als die Antworten eintreffen: immer erst auf die Antwort warten. Der Empfangspuffer des ESP32 ist klein (256 Byte) |
+
+Beispiel, Hexdump von `PING` mit empfohlenem Zeilenende:
+
+```
+50 49 4E 47 0A            P I N G LF
+```
+
+### 3.2 ESP32 → PC (Antworten und Meldungen)
+
+| Eigenschaft | Festlegung |
+|---|---|
+| Zeichensatz | ASCII |
+| Zeilenende | **`\r\n` (CR LF, `0x0D 0x0A`)** bei jeder Zeile. Beim Lesen an `\n` trennen und ein führendes bzw. angehängtes `\r` entfernen (`strip()`/`Trim()`). Nicht auf `\r\n` als Paar verlassen, so bleibt der Parser auch bei `\n` allein korrekt |
+| Aufbau | `WORT` (immer GROSS), dann optional Leerzeichen und Inhalt. Eine Zeile, kein Mehrzeiler |
+| Zahlen in Antworten | Dezimalpunkt, `STATE`-Felder haben feste Nachkommastellen (z. B. `rpm=3000`, `speed=80.0`) |
+
+Beispiel, Hexdump der Antwort auf `PING`:
+
+```
+50 4F 4E 47 20 65 34 36 2D 63 6C 75 73 74 65 72 20 30 2E 31 2E 30 0D 0A
+P  O  N  G     e  4  6  -  c  l  u  s  t  e  r     0  .  1  .  0  CR LF
+```
+
+### 3.3 Antworten von asynchronen Meldungen trennen
+
+Entscheidend ist das **erste Wort** der Zeile:
+
+| Erstes Wort | Art | Bedeutung |
+|---|---|---|
+| `OK` | Antwort | Kommando ausgeführt (die Zeile ist genau `OK`) |
+| `ERR` | Antwort | `ERR <grund>`, Kommando nicht ausgeführt |
+| `PONG` | Antwort | auf `PING`: `PONG e46-cluster <version>` |
+| `STATE` | Antwort | auf `GET` |
+| `CFG` | Antwort | auf `CFG` ohne Argumente |
+| `HELP` | Antwort | auf `HELP` |
+| `READY` | asynchron | nach dem Start der Firmware: `READY e46-cluster <version>` |
+| `EVT` | asynchron | Ereignis, z. B. `EVT bus_off`, `EVT wdt` |
+| `RX` | asynchron | empfangener CAN-Frame (nur nach `SNIFF 1`): `RX <id-hex> <daten-hex>` |
+
+Jedes Kommando erzeugt **genau eine** Antwortzeile (Ausnahme: ein ungültiges oder leeres Kommando, siehe oben).
+Asynchrone Zeilen können jederzeit **zwischen** Kommando und Antwort auftauchen und dürfen nicht als Antwort gewertet
+werden. Alles, was mit keinem dieser Wörter beginnt, einfach ignorieren: Direkt nach einem Reset schreibt der
+ESP32-Bootloader eigene Textzeilen (und gegebenenfalls Zeichenmüll) auf dieselbe Leitung.
+
+### 3.4 Ablauf pro Kommando
+
+1. Eingangspuffer leeren (alte `READY`/`EVT`/`RX`-Zeilen verwerfen).
+2. Zeile mit `\n` senden.
+3. Zeilen lesen, asynchrone und unbekannte Zeilen überspringen, bis ein Antwortwort aus 3.3 kommt (Timeout ca. 1 s).
+4. Beginnt die Antwort mit `ERR`, als Fehler behandeln.
+
+Kommandos nie parallel aus mehreren Threads senden, sondern mit einem Lock serialisieren.
 
 ## 4. Kommandos, die die Anwendung braucht
 

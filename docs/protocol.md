@@ -1,6 +1,6 @@
 # USB-Protokoll PC ↔ ESP32
 
-ASCII, eine Zeile pro Kommando (`\n`), 115200 Baud, 8N1 (Firmware: `SERIAL_BAUD` in `platformio.ini`, Host: `--baud`; beide Seiten müssen übereinstimmen). Groß-/Kleinschreibung egal, Zahlen mit Punkt.
+ASCII, eine Zeile pro Kommando (senden: `\n`, `\r` und `\r\n` werden akzeptiert; die Firmware antwortet mit `\r\n`, Details in [usb-interface.md](usb-interface.md)), 115200 Baud, 8N1 (Firmware: `SERIAL_BAUD` in `platformio.ini`, Host: `--baud`; beide Seiten müssen übereinstimmen). Groß-/Kleinschreibung egal, Zahlen mit Punkt.
 Jedes Kommando wird mit genau einer Zeile beantwortet: `OK`, `ERR <grund>` oder eine Datenzeile.
 Daneben schickt die Firmware unaufgefordert `READY`, `EVT ...` und `RX ...`.
 

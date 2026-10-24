@@ -190,10 +190,18 @@ static void cmdKeyValues(char** t, int n, bool (*apply)(const char*, float)) {
     float v;
     if (!parseFloat(t[i + 1], v)) { Serial.println("ERR bad_value"); return; }
   }
+  const e46::State stBak = st;
+  const e46::Config cfgBak = cfg;
   for (int i = 0; i < n; i += 2) {
     float v;
     parseFloat(t[i + 1], v);
-    if (!apply(t[i], v)) { Serial.println("ERR unknown_key"); return; }
+    if (!apply(t[i], v)) {
+      st = stBak;  // unbekannter Schluessel mitten in der Zeile: nichts uebernehmen
+      cfg = cfgBak;
+      applySpeed();
+      Serial.println("ERR unknown_key");
+      return;
+    }
   }
   Serial.println("OK");
 }
