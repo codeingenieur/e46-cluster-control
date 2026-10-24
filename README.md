@@ -22,7 +22,8 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
 | [host/](host) | Python-Paket `e46cluster` (Bibliothek + CLI) |
 | [docs/hardware.md](docs/hardware.md) | Teileliste, Verdrahtung, Stromversorgung |
 | [docs/can-signals.md](docs/can-signals.md) | Welche Frames das Cluster erwartet, mit Quellen und Zuverlässigkeit |
-| [docs/protocol.md](docs/protocol.md) | USB-Zeilenprotokoll PC ↔ ESP32 |
+| [docs/usb-interface.md](docs/usb-interface.md) | Eigenständige Beschreibung der USB-Schnittstelle für die PC-Anwendung (Jira usw.) |
+| [docs/protocol.md](docs/protocol.md) | USB-Zeilenprotokoll PC ↔ ESP32, vollständige Befehlstabelle |
 | [docs/backlog.md](docs/backlog.md) | Offene Aufgaben (P1: CAN, P2: Rest des Clusters, P3: Jira-Anwendung) |
 
 ## Inbetriebnahme
