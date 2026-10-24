@@ -6,7 +6,7 @@ import threading
 import time
 from typing import Callable, Dict, Optional, Protocol
 
-DEFAULT_BAUD = 921600
+DEFAULT_BAUD = 115200
 
 GAUGES = ("rpm", "speed", "coolant", "oil", "fco")
 FLAGS = ("ign", "mil", "cruise", "eml", "overheat", "oilwarn", "battery", "oilpress")

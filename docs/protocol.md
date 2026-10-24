@@ -1,6 +1,6 @@
 # USB-Protokoll PC ↔ ESP32
 
-ASCII, eine Zeile pro Kommando (`\n`), 921600 Baud, 8N1. Groß-/Kleinschreibung egal, Zahlen mit Punkt.
+ASCII, eine Zeile pro Kommando (`\n`), 115200 Baud, 8N1 (Firmware: `SERIAL_BAUD` in `platformio.ini`, Host: `--baud`; beide Seiten müssen übereinstimmen). Groß-/Kleinschreibung egal, Zahlen mit Punkt.
 Jedes Kommando wird mit genau einer Zeile beantwortet: `OK`, `ERR <grund>` oder eine Datenzeile.
 Daneben schickt die Firmware unaufgefordert `READY`, `EVT ...` und `RX ...`.
 
@@ -43,6 +43,8 @@ Die Konfiguration wird nicht im Flash gespeichert, sie gilt bis zum Neustart.
 
 ## Hinweise
 
-- `SNIFF` verwirft Frames, wenn der Serial-Puffer voll ist, damit der 10-ms-Takt nicht leidet.
+- `SNIFF` verwirft Frames, wenn der Serial-Puffer voll ist, damit der 10-ms-Takt nicht leidet. Bei 115200 Baud
+  passen etwa 450 Frames/s durch (~25 Byte pro Zeile mit 8 Datenbytes); ein dichter Bus liefert mehr. Zum vollständigen Mitschneiden
+  `SERIAL_BAUD` und `--baud` auf 921600 erhöhen.
 - `EVT bus_off`: Der CAN-Controller hat sich abgeschaltet (meist fehlt der ACK eines zweiten Teilnehmers
   oder die Verkabelung ist falsch). Die Firmware startet die Wiederherstellung selbst.

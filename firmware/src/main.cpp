@@ -17,7 +17,7 @@
 #define SPEED_PIN 18
 #endif
 #ifndef SERIAL_BAUD
-#define SERIAL_BAUD 921600
+#define SERIAL_BAUD 115200
 #endif
 
 static const char* FW_VERSION = "0.1.0";
