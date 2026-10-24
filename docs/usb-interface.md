@@ -332,7 +332,7 @@ Eine PC-Implementierung ist fertig, wenn diese Fälle gegen die Hardware **oder*
 | 2 | `SET rpm 3000`, danach `GET` | `OK`, dann `STATE` mit `rpm=3000` |
 | 3 | `SET rpm 2000 bogus 1` | `ERR unknown_key`, `GET` zeigt weiter den alten `rpm`-Wert (Zeile wirkt ganz oder gar nicht) |
 | 4 | `SET mil true` | `ERR bad_value` (nur `0`/`1` erlaubt) |
-| 5 | Antworten mit `\r\n`, mit `\n` allein und eine Zeile ohne Zeilenende am Ende der Eingabe | Parser liefert bei `\r\n` und `\n` dieselben Zeilen |
+| 5 | Antwortzeilen einmal mit `\r\n` (so sendet die Firmware) und einmal mit `\n` allein in den Parser geben | Parser liefert in beiden Fällen dieselben Zeilen ohne `\r` |
 | 6 | Unaufgeforderte Zeilen (`READY ...`, `EVT bus_off`) zwischen Kommando und Antwort | Werden nicht als Antwort gewertet, das Kommando bekommt trotzdem seine richtige Antwort |
 | 7 | Antwort bleibt aus (Timeout) | Fehler wird gemeldet, Anwendung stürzt nicht ab und verbindet neu |
 | 8 | USB-Kabel abziehen und wieder einstecken | Anwendung erkennt den Verlust und verbindet nach dem Einstecken selbstständig wieder |
