@@ -131,6 +131,65 @@ Kommandos nie parallel aus mehreren Threads senden, sondern mit einem Lock seria
 
 ## 4. Kommandos, die die Anwendung braucht
 
+### Übersicht: alle Befehle
+
+| Befehl | Zweck | Verwendung |
+|---|---|---|
+| `PING` | Lebenszeichen, Handshake | Normalbetrieb |
+| `SET k v [k v ...]` | Anzeigen und Leuchten setzen | **Normalbetrieb** |
+| `ZERO` | Drehzahl, Geschwindigkeit, Verbrauch auf 0 | Normalbetrieb |
+| `GET` | Zustand und CAN-Status lesen | Normalbetrieb (Statusanzeige) |
+| `CFG [k v ...]` | Konfiguration lesen/setzen (u. a. Watchdog) | Normalbetrieb und Kalibrierung |
+| `TX 0\|1` | zyklische CAN-Frames an/aus | Kalibrierung |
+| `RAW id hex` | einen beliebigen CAN-Frame einmal senden | Kalibrierung, Experimente |
+| `CYC slot id ms hex` / `CYC slot OFF` | beliebigen CAN-Frame zyklisch senden | Kalibrierung, Experimente |
+| `SNIFF 0\|1` | empfangene CAN-Frames als `RX ...` melden | Kalibrierung |
+| `HELP` | Kurzübersicht der Befehle | Debugging |
+
+### Übersicht: welches Instrument wird womit gesteuert
+
+Alle Anzeigen werden mit `SET <schlüssel> <wert>` gesetzt. **Status:** Alles hier ist am echten Cluster **noch nicht
+verifiziert** (Spalte "Belegung" sagt, wie gut die CAN-Definition in den Quellen belegt ist, Details in
+[can-signals.md](can-signals.md)). Die Reihenfolge der Spalten bleibt gleich, der Befehl ist stabil.
+
+**Zeigerinstrumente und Displays**
+
+| Instrument am Cluster | Befehl | Wert | Belegung | Anmerkung |
+|---|---|---|---|---|
+| Drehzahlmesser | `SET rpm 3000` | U/min, 0–7000 | gut (Faktor ±) | Faktor per `CFG rpm_scale` kalibrierbar |
+| Tacho | `SET speed 80` | km/h, 0–240 | widersprüchlich | Läuft über einen **PWM-Ausgang** des ESP32 (Hardware: Transistor am Tacho-Eingang). Optional zusätzlich über CAN: `CFG speed_can 1` |
+| Kühlmitteltemperatur | `SET coolant 90` | °C, 40–130 | Byte gut, Offset ± | Offset per `CFG temp_offset` kalibrierbar |
+| Öltemperatur | `SET oil 100` | °C, 40–150 | mittel | Nicht jedes Cluster zeigt sie an |
+| Momentanverbrauch | `SET fco 50` | Zählerschritte/s | Skalierung unbekannt | Cluster zeigt erst ab ca. 5 km/h etwas an, also zusätzlich `speed` setzen |
+
+**Warn- und Kontrollleuchten** (jeweils `1` = Leuchte angesteuert, `0` = aus; ob "angesteuert" die Lampe an- oder
+ausschaltet, ist noch zu prüfen, deshalb Invertierung pro Signal konfigurierbar halten)
+
+| Leuchte | Befehl | Belegung |
+|---|---|---|
+| Motorkontrollleuchte (Check Engine, MIL) | `SET mil 1` | gut |
+| Tempomat-Leuchte | `SET cruise 1` | mittel |
+| EML-Leuchte (Motorelektronik) | `SET eml 1` | mittel |
+| Überhitzungswarnung | `SET overheat 1` | mittel |
+| Ölstand-Warnung | `SET oilwarn 1` | mittel |
+| Ladekontrolle (Batterie) | `SET battery 1` | geraten |
+| Öldruck-Leuchte | `SET oilpress 1` | geraten |
+| Zündung-ein-Bit im Motorsteuergerät-Frame | `SET ign 1` | mittel (Standard `1`; das Cluster selbst braucht trotzdem Klemme 15 per Draht) |
+
+Mehrere Werte gehen in einer Zeile: `SET rpm 3000 speed 80 coolant 90 mil 0`.
+
+**Nicht steuerbar (heute)**
+
+| Anzeige | Grund |
+|---|---|
+| Tankanzeige, Außentemperatur | analoge Geber am Cluster, kein CAN. Bräuchte nachgebildete Widerstände (Backlog) |
+| Blinker, Fernlicht, Handbremse, Gurtwarnung, Check-Control-Texte | laufen über K-Bus oder Einzelleitungen (Backlog) |
+| ABS-, ASC/DSC-, Airbag-Leuchten, Ganganzeige, Kilometerstand | noch nicht untersucht (Backlog) |
+| Display-Beleuchtung/Dimmung | nicht umgesetzt (Backlog) |
+
+Wer eine hier nicht gelistete Anzeige ausprobieren will, kann mit `RAW`/`CYC` eigene CAN-Frames schicken. Das ist ein
+Experimentierweg, kein stabiler Teil der Schnittstelle.
+
 ### Werte setzen: `SET`
 
 ```
