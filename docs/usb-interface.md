@@ -172,8 +172,8 @@ ausschaltet, ist noch zu prüfen, deshalb Invertierung pro Signal konfigurierbar
 | EML-Leuchte (Motorelektronik) | `SET eml 1` | mittel |
 | Überhitzungswarnung | `SET overheat 1` | mittel |
 | Ölstand-Warnung | `SET oilwarn 1` | mittel |
-| Ladekontrolle (Batterie) | `SET battery 1` | geraten |
-| Öldruck-Leuchte | `SET oilpress 1` | geraten |
+| Ladekontrolle (Batterie) | `SET battery 1` | geraten, vermutlich **wirkungslos** (Lampe hängt am Draht X11175 Pin 2) |
+| Öldruck-Leuchte | `SET oilpress 1` | geraten, vermutlich **wirkungslos** (Lampe hängt am Draht X11175 Pin 13) |
 | Zündung-ein-Bit im Motorsteuergerät-Frame | `SET ign 1` | mittel (Standard `1`; das Cluster selbst braucht trotzdem Klemme 15 per Draht) |
 
 Mehrere Werte gehen in einer Zeile: `SET rpm 3000 speed 80 coolant 90 mil 0`.

@@ -23,7 +23,15 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [ ] Nativer Test für `frames.h` (Kodierung gegen Referenzwerte)
 - [ ] CI: Firmware-Build und Python-Tests
 
+- [ ] Lampen über 0x153 in der Firmware ergänzen: Bremsfehler (Byte 0 = `0xFF`), Traktionskontrolle (Byte 1 = `0xFF`), von einem Fremdprojekt bestätigt
+- [ ] Tacho-Faktor kalibrieren: Fremdprojekt 6,72 Hz/(km/h), unser Standard 6,833
+- [ ] SimHub-Anbindung am Kombi testen (Skript in `docs/simhub.md`, bisher ungetestet)
+
 ## P2: Nicht per CAN steuerbar (später)
+
+- [ ] Lampen am Draht per Transistor: ABS/DSC (X11175-22), Öldruck (13), Ladekontrolle (2), Handbremse (11); Pegel/Polarität klären
+- [ ] K-Bus: Blinker, Stand-/Abblend-/Fernlicht, Nebellicht, Check-Control (Bibliothek `IbusTrx` und wilhelm-docs; Lichtstatus-Bits siehe can-signals.md)
+- [ ] Hintergrundbeleuchtung (PWM-Dimmer) und Klemme 15 vom ESP32 schalten
 
 - [ ] Tankanzeige: Geber-Widerstand nachbilden (digitales Poti oder Widerstandskette)
 - [ ] Außentemperatur: Sensor-Widerstand nachbilden

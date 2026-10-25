@@ -79,6 +79,30 @@ Daher macht die Firmware beides möglich: PWM immer (Pin `SPEED_PIN`), ASC1 opti
 
 Sendezeit im Fahrzeug: 10 ms (ASC) bzw. 20 ms (DSC). Die Firmware sendet alle 20 ms.
 
+## Bestätigung durch ein laufendes Projekt
+
+[TeksuSiK/e46-cluster-simhub](https://github.com/TeksuSiK/e46-cluster-simhub) (Arduino Mega + MCP2515, Demo-Video im
+README) steuert ein E46-Kombi aus SimHub. Aus dessen Quellcode (nur gelesen, nichts kopiert; das Projekt steht unter
+GPL-3.0), mit unseren Annahmen verglichen:
+
+| Punkt | Projekt | Bewertung |
+|---|---|---|
+| Drehzahl 0x316 | Nur Byte 3 gesetzt: `rpm / 40` (0–7000 → 0–175). Byte 0 und alle anderen bleiben 0 | ✅ passt zu `raw = rpm × 6.4` (MSB = rpm / 40). Byte 0 = 0 genügt also |
+| Kühlmitteltemperatur 0x329 | Nur Byte 1: `(T + 48) / 0.75` | ✅ Offset **−48** bestätigt |
+| 0x545 Byte 0 | Check Engine `0x02`, Tempomat `0x08`, DDE-Leuchte `0x10` | ✅ passt zu MIL / Tempomat / EML |
+| 0x545 Byte 3 | Überhitzung `0x08` | ✅ |
+| Geschwindigkeit | **Draht**: `tone()` mit **6,72 Hz pro km/h** (250 km/h = 1680 Hz) auf einem Digitalpin | ✅ Draht-Weg bestätigt. Unser Standard 6,833 Hz (aus 410 Hz = 60 km/h) weicht 1,7 % ab, per `CFG speed_hz` kalibrieren |
+| Lampen über 0x153 | Byte 0 = `0xFF`: Bremsfehler-Lampe, Byte 1 = `0xFF`: Traktionskontrolle (ASC). Keine Geschwindigkeit in diesem Frame | ✅ mehr Lampen per CAN steuerbar, noch nicht in der Firmware |
+| Ladekontrolle, Öldruck, Handbremse, ABS | **Digitale Pins**, nicht CAN | ⚠️ Unsere Bits in 0x545 Byte 5 (`battery`, `oilpress`) sind vermutlich wirkungslos. Die Lampen hängen an Kombi-Eingängen (X11175 Pin 2, 13, 11, 22) |
+| Zündung, Hintergrundbeleuchtung | Digitalpins (Zündung, PWM-Dimmer) | Kombi-Klemme 15 bzw. Dimmer-Eingang |
+| Blinker, Fern-/Abblend-/Nebellicht, Standlicht, Check-Control-Anzeigen | **K-Bus** (Bibliothek `IbusTrx`) | Lichtstatus-Bits siehe unten |
+
+K-Bus-Lichtstatus in dem Projekt (Bitmaske, Bedeutung aus den Namen abgeleitet, Frame-ID dort nicht lesbar):
+Standlicht `0x01`, Abblendlicht `0x02`, Fernlicht `0x04`, Nebel vorn `0x08`, Nebel hinten `0x10`, Blinker links `0x20`,
+Blinker rechts `0x40`, schnelles Blinken `0x80`. Details zum K-Bus stehen im Projekt
+[wilhelm-docs](https://github.com/piersholt/wilhelm-docs) (I-/K-Bus-Dokumentation, laut Autor unvollständig und nicht
+maßgeblich), das auch das Projekt als Quelle nennt.
+
 ## Was das Cluster selbst sendet
 
 - `0x613` / `0x615` (ICL2/ICL3) vom Cluster zur DME. Inhalt nicht verifiziert; ein Forenbeitrag nennt den
