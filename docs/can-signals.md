@@ -60,6 +60,12 @@ Die Quellen sind uneinig:
 - Bimmerforums: ASC1 `0x153` enthält die Geschwindigkeit (13 Bit ab Bit 3, Intel, Faktor 0.0625 km/h),
   ein M3-Nutzer berichtet aber ein stehendes Tacho trotz anderer funktionierender Anzeigen.
 
+- BMW-Schulungsunterlage ST034 (E46 Driver Information, Quelle unten): Das **Wegsignal** kommt von der ABS/ASC+T- bzw.
+  DSC-Einheit **als Rechtecksignal** zum Kombi (aus dem linken Hinterrad-Drehzahlsensor). Das Kombi reicht es per K-Bus
+  als Geschwindigkeitssignal "A" weiter. Über CAN kommen laut derselben Unterlage von der DME die Signale
+  "Ti" (Einspritzzeit, Verbrauch), Motortemperatur und "TD" (Drehzahl), außerdem Getriebedaten vom AGS.
+  Für dieses E46-Kombi ist der **PWM-Draht der dokumentierte Weg für die Geschwindigkeit**.
+
 Daher macht die Firmware beides möglich: PWM immer (Pin `SPEED_PIN`), ASC1 optional (`cfg speed_can=1`).
 
 ### 0x153 ASC1 (optional)
@@ -91,5 +97,6 @@ auf dem Tisch keine Reaktion zeigt, obwohl `tx_ok` steigt, ist das der erste Ver
 - [ms4x.net: 0x153 ASC1](https://www.ms4x.net/index.php?title=CAN_Bus_ID_0x153_ASC1)
 - [HeinrichG-V12/E46_M3_Cluster](https://github.com/HeinrichG-V12/E46_M3_Cluster) (Nachrichtenliste, DBC/CANoe-Konfig)
 - [david-morton/BMW_E46_Gauge_Cluster_Control](https://github.com/david-morton/BMW_E46_Gauge_Cluster_Control) (Tacho-PWM, X11175 Pin 19)
+- [BMW Schulungsunterlage ST034, E46 Driver Information](https://ia801005.us.archive.org/11/items/BMWTechnicalTrainingDocuments/ST034%20E46%20Complete%20Vehicle/2%20Driver%20Information%20Internet-1.pdf) (Signalwege Draht/CAN/K-Bus, kein Pinout)
 - [bimmerforums: DME1-Decode](https://www.bimmerforums.com/forum/showthread.php?p=25012791)
 - [rusEFI: BMW-Cluster per CAN](https://rusefi.com/forum/viewtopic.php?p=3450)

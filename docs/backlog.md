@@ -31,6 +31,8 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [ ] Check-Control-Meldungen und Textanzeige (Piktogramm-Display) über K-Bus
 - [ ] Einzelleitungs-Leuchten per Transistor/Low-Side-Treiber (je nach Pinbelegung)
 - [ ] Beleuchtungs-Dimmung
+- [ ] Ölstands-Eingang (PWM vom Ölstandssensor) und Dimmer-Eingang (PWM vom Lichtschaltzentrum) ansteuern
+- [ ] Klemmen R, 15 und 50 schalten (Zündungsstellungen)
 - [ ] Kilometerstand, Service-Anzeige, Bordcomputer-Funktionen
 - [ ] Verifizierte Pinbelegung der Stecker dokumentieren (Teilenummer, Variante)
 

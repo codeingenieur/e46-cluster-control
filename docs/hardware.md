@@ -35,6 +35,39 @@ Gegen das Datenblatt des ESP32-WROOM-32E (v1.6) geprüft:
 CAN-H und CAN-L des Transceivers gehen an die CAN-Pins des Kombis. Alle drei Massen (ESP, Transceiver, Kombi)
 verbinden.
 
+## Das vorhandene Kombi
+
+Vom Aufkleber abgelesen (Foto, einzelne Zeichen können falsch gelesen sein):
+
+| Feld | Wert |
+|---|---|
+| BMW-Teilenummer | 62.11-6 906 888 |
+| Hersteller / Herstellernummer | Motometer, 0 263 606 269 |
+| HW / SW | 10.0 / 20.0 |
+| CODE / DIAG / BUS | 04H / 52H / 11H |
+| ÄND (Änderungsstand) / CAN | 59 / 04H |
+| Weitere Nummern | 026602, PM:1010, 010131, 03470212701614 |
+
+Das Feld `CAN :04H` zeigt, dass es ein Kombi mit CAN-Schnittstelle ist. Welche Variante genau (Benzin oder Diesel,
+km/h oder mph, Facelift) dahintersteckt, habe ich über die Teilenummer **nicht** gefunden. Für die Variante zählt die
+Zifferblattskala: Benzin-Kombis zeigen Drehzahl bis ca. 7000, Diesel-Kombis weniger.
+
+## Signalwege laut BMW-Schulungsunterlage (E46)
+
+| Funktion | Weg zum Kombi |
+|---|---|
+| Drehzahl, Motortemperatur, Verbrauch (Ti) | CAN von der DME |
+| Geschwindigkeit ("Wegsignal") | Rechtecksignal von ABS/ASC/DSC (Draht) |
+| Tankanzeige | zwei Geber parallel am Kombi (analog) |
+| Außentemperatur | NTC-Sensor am Kombi (analog) |
+| Ölstand | PWM-Signal vom Ölstandssensor (Draht) |
+| Beleuchtungsdimmer | PWM-Signal vom Lichtschaltzentrum (Draht) |
+| Check-Control-Piktogramme | K-Bus |
+| Zündung | Klemmen R, 15 und 50 (Draht) |
+
+Quelle: [ST034 Driver Information](https://ia801005.us.archive.org/11/items/BMWTechnicalTrainingDocuments/ST034%20E46%20Complete%20Vehicle/2%20Driver%20Information%20Internet-1.pdf).
+Die Unterlage nennt keine Steckerbelegung.
+
 ## Kombi-Anschlüsse
 
 Eine **geprüfte Pinbelegung** habe ich nicht gefunden. Aus dem Schaltplan deiner Variante (ETK/ELSA oder
