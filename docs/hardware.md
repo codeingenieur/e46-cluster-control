@@ -48,9 +48,17 @@ Vom Aufkleber abgelesen (Foto, einzelne Zeichen können falsch gelesen sein):
 | ÄND (Änderungsstand) / CAN | 59 / 04H |
 | Weitere Nummern | 026602, PM:1010, 010131, 03470212701614 |
 
-Das Feld `CAN :04H` zeigt, dass es ein Kombi mit CAN-Schnittstelle ist. Welche Variante genau (Benzin oder Diesel,
-km/h oder mph, Facelift) dahintersteckt, habe ich über die Teilenummer **nicht** gefunden. Für die Variante zählt die
-Zifferblattskala: Benzin-Kombis zeigen Drehzahl bis ca. 7000, Diesel-Kombis weniger.
+Das Feld `CAN :04H` zeigt, dass es ein Kombi mit CAN-Schnittstelle ist. Zur Teilenummer habe ich keine Variantenangabe
+gefunden.
+
+Befund aus den Fotos (Vorderseite und Rückseite):
+
+- Zifferblatt: **km/h**, Skala 20–240. Drehzahlmesser **0–7 (×1000)** mit Rotbereich ab ca. 6, Kühlmittel- und Tankanzeige,
+  Verbrauchsanzeige in km/L (Skala 5–22). Das spricht für ein **Benzin-Kombi**, abgeleitet aus dem Bild, nicht aus einer Quelle.
+- Rückseite: **zwei Steckverbinder**, einer hell (beige/weiß), einer schwarz. Die Fotos sind unscharf, **Pinzahl und
+  Pinnummern sind nicht ablesbar**.
+- Eine verlässliche Steckerbelegung habe ich weiterhin nicht. Gefundene Forenangaben zu Pins (u. a. "Pin 22", "Pin 9/10")
+  stammen von anderen Fahrzeugen oder sind unbelegt und wurden **nicht** übernommen.
 
 ## Signalwege laut BMW-Schulungsunterlage (E46)
 
