@@ -34,7 +34,11 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [ ] Ölstands-Eingang (PWM vom Ölstandssensor) und Dimmer-Eingang (PWM vom Lichtschaltzentrum) ansteuern
 - [ ] Klemmen R, 15 und 50 schalten (Zündungsstellungen)
 - [ ] Kilometerstand, Service-Anzeige, Bordcomputer-Funktionen
-- [ ] Verifizierte Pinbelegung der Stecker dokumentieren (Teilenummer, Variante)
+- [x] Pinbelegung von X11175/X11176 aus Community-Quelle dokumentiert (siehe hardware.md)
+- [ ] Pinbelegung gegen BMW-Schaltplan bzw. per Multimeter am eigenen Kombi (62.11-6 906 888) bestätigen
+- [ ] Gegenstecker (schwarz, 26-polig) beschaffen: Gehäuse- und Kontaktserie klären
+- [ ] Tankgeber nachbilden: links ca. 70–310 Ω, rechts ca. 70–395 Ω (X11175 Pin 15/16 und 11/12)
+- [ ] Außentemperatur nachbilden: NTC ca. 4,7 kΩ bei 25 °C (X11176 Pin 1/2)
 
 ## P3: Anwendung
 

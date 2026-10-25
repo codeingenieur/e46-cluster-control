@@ -55,10 +55,12 @@ Befund aus den Fotos (Vorderseite und Rückseite):
 
 - Zifferblatt: **km/h**, Skala 20–240. Drehzahlmesser **0–7 (×1000)** mit Rotbereich ab ca. 6, Kühlmittel- und Tankanzeige,
   Verbrauchsanzeige in km/L (Skala 5–22). Das spricht für ein **Benzin-Kombi**, abgeleitet aus dem Bild, nicht aus einer Quelle.
-- Rückseite: **zwei Steckverbinder**, einer hell (beige/weiß), einer schwarz. Die Fotos sind unscharf, **Pinzahl und
-  Pinnummern sind nicht ablesbar**.
-- Eine verlässliche Steckerbelegung habe ich weiterhin nicht. Gefundene Forenangaben zu Pins (u. a. "Pin 22", "Pin 9/10")
-  stammen von anderen Fahrzeugen oder sind unbelegt und wurden **nicht** übernommen.
+- Rückseite: **zwei Steckverbinder**, einer hell (beige/weiß), einer schwarz. Das passt zur Beschreibung unten
+  (X11176 weiß 18-polig, X11175 schwarz 26-polig). Die Fotos sind unscharf, Pinzahl und Nummern habe ich daraus nicht
+  gezählt. Vor dem Verdrahten am Gehäuse nachsehen: Auf den Steckern stehen meist die Pinnummern.
+- Die Belegung unten stammt von einer Community-Seite für das Kombi mit **anderer Teilenummer** (62.11-6 931 252, Limousine).
+  Laut Seite gilt sie für Bosch- und Motometer-Kombis, mit Ausnahmen (Pin 7 nur bis Modelljahr 2002, Pin 17 Kabelfarbe
+  wechselt 03/2003). Für 62.11-6 906 888 ist sie **nicht** einzeln bestätigt.
 
 ## Signalwege laut BMW-Schulungsunterlage (E46)
 
@@ -78,15 +80,79 @@ Die Unterlage nennt keine Steckerbelegung.
 
 ## Kombi-Anschlüsse
 
-Eine **geprüfte Pinbelegung** habe ich nicht gefunden. Aus dem Schaltplan deiner Variante (ETK/ELSA oder
-Reparaturleitfaden) brauchst du:
+Quelle: [bmwgm5.com, E46 IKE Connections](https://www.bmwgm5.com/E46_IKE_Connections.htm) (Ausdruck mit demselben Inhalt
+liegt dem Projekt vor). Pin 9 als CAN-Pin bestätigt außerdem ein
+[Forenbeitrag](https://bmwfaq.org/threads/esquema-electrico-cuadro-de-instrumentos.1048821/). **Nicht gegen einen
+BMW-Schaltplan geprüft.** Vor dem ersten Einschalten mit dem Multimeter nachmessen (Masse, Durchgang, kein Kurzschluss
+zwischen Klemme 30 und Masse).
 
-- Dauerplus (KL30), Zündung (KL15) und Masse (KL31). Ohne KL15 wacht das Kombi nicht auf.
-- CAN-H, CAN-L
-- Geschwindigkeitseingang. Laut [Community-Projekt](https://github.com/david-morton/BMW_E46_Gauge_Cluster_Control)
-  ist das **X11175 Pin 19** (410 Hz = 60 km/h). Bitte gegen deinen Schaltplan prüfen.
+Stecker **X11175: schwarz, 26-polig, zwei Reihen.** Pins 1–13 in einer Reihe, 14–26 in der anderen.
 
-Wenn du die Teilenummer vom Kombi-Aufkleber und ein Foto der Stecker schickst, kann ich das konkretisieren.
+**Für den Tischaufbau nötig:**
+
+| Pin | Funktion | Anschluss |
+|---|---|---|
+| X11175-1 | Masse | Netzteil −, ESP32-GND, Transceiver-GND |
+| X11175-4 | Klemme 30 (Dauerplus, über 5-A-Sicherung F43) | Netzteil +12 V |
+| X11175-5 | Klemme 15 (Zündung, über F34) | Netzteil +12 V, zuschaltbar |
+| X11175-6 | Klemme R (über F10) | optional, siehe Hinweis |
+| X11175-9 | CAN-H | Transceiver CAN-H |
+| X11175-10 | CAN-L | Transceiver CAN-L |
+| X11175-19 | Raddrehzahl hinten links (Eingang vom ABS/DSC) | **Tacho-PWM** vom ESP32 über Transistor |
+
+Hinweise:
+
+- Pin 19 ist der **Eingang** für das Tachosignal und passt zum Community-Projekt (410 Hz = 60 km/h). Pin 8
+  ("Speedometer Signal Output") ist dagegen ein **Ausgang** des Kombis: nicht ansteuern.
+- Ob Klemme R (Pin 6) zum Aufwecken nötig ist, ist offen. Zunächst nur KL30, KL15 und Masse anschließen und beobachten.
+- Pin 3 ("Engine Start Signal Feedback") nicht beschalten.
+
+**Weitere Pins von X11175** (für später, Backlog):
+
+| Pin | Funktion |
+|---|---|
+| 2 | Ladekontrolle (Signal) |
+| 7 | Beleuchtung 58G (nur bis Modelljahr 2002) |
+| 8 | Tacho-Signalausgang (Ausgang des Kombis) |
+| 11 / 12 | Tankgeber rechts: Signal / Masse |
+| 13 | Öldruckschalter |
+| 14 | K-Bus |
+| 15 / 16 | Tankgeber links: Signal / Masse |
+| 17 | Ölstandssensor |
+| 18 | Service-Intervall-Reset |
+| 20 | Bremsflüssigkeitsstand |
+| 21 | Airbag-Warnleuchte |
+| 22 | ABS-/DSC-/ASC-Warnleuchte |
+| 23 | Feststellbremsschalter |
+| 24 | Bremsbelagverschleiß |
+| 25 | Diagnose TXD |
+| 26 | Kühlmittelstand |
+
+Stecker **X11176: weiß, 18-polig, zwei Reihen**, größtenteils unbelegt (N/C):
+
+| Pin | Funktion |
+|---|---|
+| 1 / 2 | Außentemperatursensor: Signal / Masse |
+| 4 | Waschwasserstand |
+| 5 | Tempomat aktiv (nur M43) |
+| 6 | Airbag/Überrollsensor (nur Cabrio) |
+| 7 | Rückwärtsgang (nur Schaltgetriebe) |
+| 12 | Fahrergurt (nur Cabrio) |
+| 13 | BC-Taste am Blinkerhebel |
+| 14 | Gong (T3) |
+| 3, 8–11, 15–18 | nicht belegt |
+
+Für den Tischaufbau reicht der **schwarze Stecker X11175**. Der weiße wird erst für die Außentemperatur gebraucht.
+
+**Werte der Geber** (laut derselben Seite), für das spätere Nachbilden von Tank und Außentemperatur:
+
+- Tankgeber links: ca. 70 Ω leer bis ca. 310 Ω voll. Tankgeber rechts: ca. 70 Ω leer bis ca. 395 Ω voll.
+- Außentemperatursensor (NTC): ca. 4,7 kΩ bei 25 °C, 7,33 kΩ bei 15 °C, 3,07 kΩ bei 35 °C.
+
+**Gegenstecker:** Für den schwarzen 26-poligen Stecker braucht man den passenden Gegenstecker (Pigtail) oder ein
+Bench-Kabel. Die Gehäuse-/Kontaktnummern habe ich nicht gefunden. Möglichkeiten: ein fertiges Bench-Anschlusskabel für
+E46-Kombis (es gibt Händler, die eines für Bosch und Motometer anbieten), ein gebrauchter Pigtail mit Stecker aus einem
+E46-Kabelbaum, oder die Kontakte selbst crimpen, sobald Gehäuse und Kontaktserie feststehen.
 
 ## Tachosignal-Pegelwandlung
 

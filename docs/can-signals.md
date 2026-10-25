@@ -64,7 +64,8 @@ Die Quellen sind uneinig:
   DSC-Einheit **als Rechtecksignal** zum Kombi (aus dem linken Hinterrad-Drehzahlsensor). Das Kombi reicht es per K-Bus
   als Geschwindigkeitssignal "A" weiter. Über CAN kommen laut derselben Unterlage von der DME die Signale
   "Ti" (Einspritzzeit, Verbrauch), Motortemperatur und "TD" (Drehzahl), außerdem Getriebedaten vom AGS.
-  Für dieses E46-Kombi ist der **PWM-Draht der dokumentierte Weg für die Geschwindigkeit**.
+  Für dieses E46-Kombi ist der **PWM-Draht der dokumentierte Weg für die Geschwindigkeit**. Eine Community-Pinbelegung
+  nennt dafür **X11175 Pin 19** ("Wheel Speed Rear Left", Eingang), siehe [hardware.md](hardware.md).
 
 Daher macht die Firmware beides möglich: PWM immer (Pin `SPEED_PIN`), ASC1 optional (`cfg speed_can=1`).
 
