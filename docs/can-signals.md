@@ -81,8 +81,8 @@ Sendezeit im Fahrzeug: 10 ms (ASC) bzw. 20 ms (DSC). Die Firmware sendet alle 20
 
 ## Bestätigung durch ein laufendes Projekt
 
-[TeksuSiK/e46-cluster-simhub](https://github.com/TeksuSiK/e46-cluster-simhub) (Arduino Mega + MCP2515, Demo-Video im
-README) steuert ein E46-Kombi aus SimHub. Aus dessen Quellcode (nur gelesen, nichts kopiert; das Projekt steht unter
+[TeksuSiK/e46-cluster-simhub](https://github.com/TeksuSiK/e46-cluster-simhub) (Demo-Video im README) steuert ein
+E46-Kombi. Aus dessen Quellcode (nur gelesen, nichts kopiert; das Projekt steht unter
 GPL-3.0), mit unseren Annahmen verglichen:
 
 | Punkt | Projekt | Bewertung |
@@ -93,7 +93,7 @@ GPL-3.0), mit unseren Annahmen verglichen:
 | 0x545 Byte 3 | Überhitzung `0x08` | ✅ |
 | Geschwindigkeit | **Draht**: `tone()` mit **6,72 Hz pro km/h** (250 km/h = 1680 Hz) auf einem Digitalpin | ✅ Draht-Weg bestätigt. Unser Standard 6,833 Hz (aus 410 Hz = 60 km/h) weicht 1,7 % ab, per `CFG speed_hz` kalibrieren |
 | Lampen über 0x153 | Byte 0 = `0xFF`: Bremsfehler-Lampe, Byte 1 = `0xFF`: Traktionskontrolle (ASC). Keine Geschwindigkeit in diesem Frame | ✅ mehr Lampen per CAN steuerbar, noch nicht in der Firmware |
-| Ladekontrolle, Öldruck, Handbremse, ABS | **Digitale Pins**, nicht CAN | ⚠️ Unsere Bits in 0x545 Byte 5 (`battery`, `oilpress`) sind vermutlich wirkungslos. Die Lampen hängen an Kombi-Eingängen (X11175 Pin 2, 13, 11, 22) |
+| Ladekontrolle, Öldruck, Handbremse, ABS | **Digitale Pins**, nicht CAN | ⚠️ Unsere Bits in 0x545 Byte 5 (`battery`, `oilpress`) sind vermutlich wirkungslos. Die Lampen hängen an Kombi-Eingängen (X11175 Pin 2, 13, 23, 22) |
 | Zündung, Hintergrundbeleuchtung | Digitalpins (Zündung, PWM-Dimmer) | Kombi-Klemme 15 bzw. Dimmer-Eingang |
 | Blinker, Fern-/Abblend-/Nebellicht, Standlicht, Check-Control-Anzeigen | **K-Bus** (Bibliothek `IbusTrx`) | Lichtstatus-Bits siehe unten |
 
