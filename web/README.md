@@ -22,9 +22,10 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
 - Außenform: Die gemessene Kontur (Strahlen von der Mitte, auf die Mittelachse gespiegelt) ist an vier glatte
   Kurvenstücke angepasst (oben, Seite, Ecke, flacher Boden; mittlere Abweichung 2 bis 3 Einheiten), die Silhouette ist
   deshalb ein einziger glatter Pfad. Oben endet sie in einem gleichmäßigen Bogen (Haube abgeschnitten).
-- Platte: oben und an den Schultern die am Foto gemessene Form (Lücke über den Zifferblättern), ab den Seiten weich in eine
-  Parallelkurve zur Außenkante übergehend (Ringdicke 40). Die Außenkante der Leuchtenfelder ist eine Parallelkurve mit
-  festem Abstand 54. Alles ist spiegelsymmetrisch.
+- Platte: ebenfalls aus vier glatten Kurvenstücken (oben ein einziger Bogen von der Mitte bis zur breitesten Stelle,
+  dann Ecke und flacher Boden), angepasst an die gemessene Form. Die Krümmung des oberen Bogens steigt gleichmäßig von der
+  Mitte zur Seite an, ohne Dellen. Oben liegt eine kleine Lücke über den Zifferblättern, an Seiten und Boden ist der Ring
+  40 dick. Die Außenkante der Leuchtenfelder ist eine Parallelkurve zur Silhouette mit festem Abstand 54.
   Das Bild hat rundum Rand, damit nichts abgeschnitten wird (viewBox -40 -90 1680 800).
 - Zifferblätter unten bei 0,884 R flach abgeschnitten, kleine Instrumente mit Achse unterhalb der Mitte
 - Farbfelder im Kühlmittelinstrument: Rechtecke 27,5 x 23,5, Mitte bei Radius 107 und ±37,5° um die Achse, radial gedreht um ±35°
