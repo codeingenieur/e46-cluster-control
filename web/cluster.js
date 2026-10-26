@@ -149,27 +149,33 @@
       const svg = this.svg;
       this._defs();
 
+      // Ebenen: unten Gehäuse und Zifferblätter (werden nachts abgedunkelt), darüber die Abdunklung, darüber alles,
+      // was beleuchtet ist (Zahlen, Striche, Nadeln, Symbole, Leuchten, Display)
+      this.base = el('g', { class: 'layer-base' }, svg);
+      this.shade = el('rect', { class: 'shade', x: 6, y: 6, width: 1588, height: 638, rx: 100, fill: '#000', opacity: 0 }, svg);
+      this.litLayer = el('g', { class: 'layer-lit' }, svg);
+
       // Gehäuse und Frontplatte (Oberkante wölbt sich in der Mitte)
-      el('rect', { x: 6, y: 6, width: 1588, height: 638, rx: 100, fill: 'url(#gHousing)', stroke: '#2c2c30', 'stroke-width': 2 }, svg);
+      el('rect', { x: 6, y: 6, width: 1588, height: 638, rx: 100, fill: 'url(#gHousing)', stroke: '#2c2c30', 'stroke-width': 2 }, this.base);
       const plate = 'M40 580L40 300C40 150 330 58 800 56C1270 58 1560 150 1560 300L1560 580Q1560 612 1528 612L72 612Q40 612 40 580Z';
-      el('path', { d: plate, fill: 'url(#gPlate)', stroke: '#141416', 'stroke-width': 3 }, svg);
-      el('path', { d: plate, fill: 'url(#pGrain)' }, svg);
+      el('path', { d: plate, fill: 'url(#gPlate)', stroke: '#141416', 'stroke-width': 3 }, this.base);
+      el('path', { d: plate, fill: 'url(#pGrain)' }, this.base);
 
       // Fenster oben mittig (MKL)
-      el('rect', { x: 712, y: 66, width: 176, height: 52, rx: 9, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, svg);
+      el('rect', { x: 712, y: 66, width: 176, height: 52, rx: 9, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, this.base);
 
       this._main({
         name: 'speed', cx: SPEEDO.cx, cy: SPEEDO.cy,
         nmin: 0, nmax: 240, a0: -127.5 - 20 * 1.1591, a1: 127.5,    // 20 km/h bei -127,5°, 240 bei +127,5°
         a: (v) => -127.5 + (v - 20) * 1.1591,
-        from: 10, to: 250, step: 10, majorStep: 20, labelFrom: 20, labelTo: 240, font: 32,
+        from: 10, to: 250, step: 10, majorStep: 20, labelFrom: 20, labelTo: 240, font: 28.5,
         texts: [['km/h', 103, 20, 7]], spring: [110, 1.0], needle: { len: 190, wb: 10.3, wt: 2.8, hub: 31, tail: true },
       });
       this._main({
         name: 'rpm', cx: TACHO.cx, cy: TACHO.cy,
         nmin: 0, nmax: 7000, a0: -118.8, a1: 118.8,                   // 0 bei -118,8°, 7000 bei +118,8°
         a: (v) => -118.8 + v * (237.6 / 7),
-        from: 0, to: 7, step: 0.5, majorStep: 1, labelFrom: 0, labelTo: 7, font: 35, red: true,
+        from: 0, to: 7, step: 0.5, majorStep: 1, labelFrom: 0, labelTo: 7, font: 30.5, red: true,
         texts: [['1/min', -81, 20, 0], ['x1000', -59, 20, 0]], spring: [320, 0.8], needle: { len: 190, wb: 11.5, wt: 3.4, hub: 31, tail: true },
       });
       this._consumption(TACHO.cx + 2, TACHO.cy + 144);
@@ -189,6 +195,7 @@
       el('circle', { cx, cy, r: r + 3, fill: '#000', opacity: 0.35 }, g);
       el('circle', { cx, cy, r, fill: 'url(#gHub)' }, g);
       el('circle', { cx, cy, r, fill: 'url(#pGrain)' }, g);
+      el('circle', { class: 'hub-shade', cx, cy, r: r + 3, fill: '#000' }, g);
     }
 
     _needle(g, cx, cy, s, name, spec) {
@@ -205,11 +212,11 @@
 
     /** Tacho und Drehzahlmesser */
     _main(c) {
-      const g = el('g', { class: 'dial dial-' + c.name }, this.svg);
+      const g = el('g', { class: 'dial dial-' + c.name }, this.litLayer);
       const clipR = this._clip(c.name + 'R', c.cx - R - 2, c.cy - R - 2, 2 * R + 4, R + 2 + CUT);
       const clipF = this._clip(c.name + 'F', c.cx - R - 2, c.cy - R - 2, 2 * R + 4, R + 2 + CUT - 10);
-      el('circle', { cx: c.cx, cy: c.cy, r: R, fill: '#0a0b0d', 'clip-path': clipR }, g);
-      el('circle', { cx: c.cx, cy: c.cy, r: RF, fill: 'url(#gDial)', 'clip-path': clipF }, g);
+      el('circle', { cx: c.cx, cy: c.cy, r: R, fill: '#0a0b0d', 'clip-path': clipR }, this.base);
+      el('circle', { cx: c.cx, cy: c.cy, r: RF, fill: 'url(#gDial)', 'clip-path': clipF }, this.base);
 
       const lit = el('g', { class: 'lit' }, g);
       const ticks = el('g', { class: 'ticks' }, lit);
@@ -226,9 +233,9 @@
         if (major) {
           // Zahl direkt unter dem Strich: Abstand je nach Winkel und Stellenzahl
           const txt = String(Math.round(v)), rad = (a * Math.PI) / 180;
-          const ext = Math.abs(Math.sin(rad)) * txt.length * 0.25 * c.font + Math.abs(Math.cos(rad)) * 0.36 * c.font;
+          const ext = Math.abs(Math.sin(rad)) * txt.length * 0.26 * c.font + Math.abs(Math.cos(rad)) * 0.41 * c.font;
           const t = pol(c.cx, c.cy, rOut - longLen - 6 - ext, a);
-          el('text', { x: f2(t[0]), y: f2(t[1]), dy: '.36em', 'text-anchor': 'middle' }, nums, txt);
+          el('text', { x: f2(t[0]), y: f2(t[1]), dy: '.41em', 'text-anchor': 'middle' }, nums, txt);
         }
       }
 
@@ -253,24 +260,24 @@
      */
     _side(name, hubx, hy, dir, c) {
       const ax = hubx + dir * 7.7, RS = 108;
-      const g = el('g', { class: 'dial dial-' + name }, this.svg);
+      const g = el('g', { class: 'dial dial-' + name }, this.litLayer);
       const top = hy - 66 - 112;
       // "Eimer"-Form: Kreis mit flachem Boden (Ring bei hy+34, Fläche bei hy+27)
       const cutRing = this._clip(name + 'R', ax - 120, top, 240, hy + 38 - top);
       const cutFace = this._clip(name + 'F', ax - 120, top, 240, hy + 32 - top);
-      el('circle', { cx: ax, cy: hy - 66, r: 111, fill: '#0a0b0d', 'clip-path': cutRing }, g);
-      el('circle', { cx: ax, cy: hy - 66, r: 105, fill: 'url(#gDial)', 'clip-path': cutFace }, g);
+      el('circle', { cx: ax, cy: hy - 66, r: 111, fill: '#0a0b0d', 'clip-path': cutRing }, this.base);
+      el('circle', { cx: ax, cy: hy - 66, r: 105, fill: 'url(#gDial)', 'clip-path': cutFace }, this.base);
       const lit = el('g', { class: 'lit' }, g);
 
       c.ticks.forEach((t) => tickLine(lit, ax, hy, RS, t[0], t[1], 3.2, 'thin'));
-      (c.marks || []).forEach((m) => {
-        const p = pol(ax, hy, RS, m[0]);
-        el('rect', { x: f2(p[0] - 13.5), y: f2(p[1] - 13.5), width: 27, height: 27, rx: 1.5, fill: m[1], transform: 'rotate(' + f2(m[0] * 0.4) + ' ' + f2(p[0]) + ' ' + f2(p[1]) + ')' }, lit);
+      (c.marks || []).forEach((m) => {   // [Winkel auf der Skala, Farbe, Drehung]; Rechteck 27,5 tangential x 23,5 radial
+        const p = pol(ax, hy, 107, m[0]);
+        el('rect', { x: f2(p[0] - 13.75), y: f2(p[1] - 11.75), width: 27.5, height: 23.5, rx: 1.2, fill: m[1], transform: 'rotate(' + m[2] + ' ' + f2(p[0]) + ' ' + f2(p[1]) + ')' }, lit);
       });
       const nums = el('g', { class: 'numerals' }, lit);
       (c.labels || []).forEach((l) => {
         const p = pol(ax, hy, l[2], l[1]);
-        el('text', { x: f2(p[0]), y: f2(p[1]), dy: '.36em', 'text-anchor': 'middle', 'font-size': l[3] }, nums, l[0]);
+        el('text', { x: f2(p[0]), y: f2(p[1]), dy: '.41em', 'text-anchor': 'middle', 'font-size': l[3] }, nums, l[0]);
       });
       // Symbol mittig auf der Achse
       const icon = el('g', { class: 'unit-icon', transform: 'translate(' + f2(ax + (c.iconDx || 0)) + ' ' + (hy - 71) + ')' }, lit);
@@ -290,7 +297,7 @@
       const g = this._side('fuel', cx, hy, 1, {
         min: 0, max: 1, a0: -46.6, a1: 46.6, spring: [6, 1.5], icon: 'pump', iconDx: -1.5,
         ticks: [[-46.6, 20], [-23.3, 18], [0, 22], [23.3, 18], [46.6, 20]],
-        labels: [['0', -40, 127, 17.5], ['1/2', 0, 134, 16], ['1/1', 38.5, 124, 16]],
+        labels: [['0', -40, 127, 15], ['1/2', 0, 134, 14.5], ['1/1', 38.5, 124, 14.5]],
       });
       // Reserveleuchte: matter Punkt links neben der Nadel
       const lamp = el('g', { class: 'lamp amber', transform: 'translate(' + (cx - 86) + ' ' + (hy - 51) + ')' }, g);
@@ -311,13 +318,13 @@
       this._side('coolant', cx, hy, -1, {
         min: 40, max: 130, a0: -47.5, a1: 47.5, spring: [10, 1.3], icon: 'therm', toFrac,
         ticks: [[-47.5, 22], [-16, 19], [16, 19], [47.5, 22]],
-        marks: [[-37, '#2288d2'], [37, '#e04526']],
+        marks: [[-37.5, '#2288d2', -35], [37.5, '#e04526', 35]],
       });
     }
 
     /** Momentanverbrauch unten im Drehzahlmesser (L/100 km), elliptische Skala */
     _consumption(cx, cy) {
-      const g = el('g', { class: 'mini mini-fco' }, this.svg);
+      const g = el('g', { class: 'mini mini-fco' }, this.litLayer);
       const lit = el('g', { class: 'lit' }, g);
       const RX = 111, RY = 86.5, T = 68.4;
       const pos = (v, k) => { const t = -T + (v / 20) * 2 * T, a = (t * Math.PI) / 180; return [cx + k * RX * Math.sin(a), cy - k * RY * Math.cos(a)]; };
@@ -330,9 +337,9 @@
           x1: f2(p[0] + ux * h), y1: f2(p[1] + uy * h), x2: f2(p[0] - ux * h), y2: f2(p[1] - uy * h),
         }, lit);
       }
-      const nums = el('g', { class: 'numerals', 'font-size': 19 }, lit);
+      const nums = el('g', { class: 'numerals', 'font-size': 17.5 }, lit);
       [['0', -77, -35], ['10', -3, -67], ['20', 68, -33]].forEach((l) => {
-        el('text', { x: cx + l[1], y: cy + l[2], dy: '.36em', 'text-anchor': 'middle' }, nums, l[0]);
+        el('text', { x: cx + l[1], y: cy + l[2], dy: '.41em', 'text-anchor': 'middle' }, nums, l[0]);
       });
       el('text', { class: 'unit', x: cx, y: cy - 40, 'text-anchor': 'middle', 'font-size': 13 }, lit, 'L/100km');
       const angFn = (f) => { const t = ((-T + f * 2 * T) * Math.PI) / 180; return (Math.atan2(RX * Math.sin(t), RY * Math.cos(t)) * 180) / Math.PI; };
@@ -342,7 +349,7 @@
 
     /** Drücker für Uhr/Trip: matter Stift mit Chromring, zeigt schräg nach außen unten */
     _pin(x, y, dir) {
-      const g = el('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + dir + ' 1)' }, this.svg);
+      const g = el('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + dir + ' 1)' }, this.base);
       el('rect', { x: -34, y: -9, width: 36, height: 18, rx: 9, fill: '#3c3c40', transform: 'rotate(18)' }, g);
       el('rect', { x: -34, y: -9, width: 36, height: 18, rx: 9, fill: 'url(#pGrain)', transform: 'rotate(18)' }, g);
       el('circle', { r: 18, fill: '#0b0b0d', stroke: '#9a9da3', 'stroke-width': 3, 'stroke-opacity': 0.7 }, g);
@@ -352,16 +359,16 @@
 
     /** Leuchtenleiste unten mit Mittendisplay, Blinkerpfeilen und den Warnleuchten */
     _strip() {
-      const svg = this.svg;
+      const svg = this.litLayer, base = this.base;
       [[100, 400], [436, 638], [953, 1170], [1190, 1495]].forEach((p) => {
-        el('rect', { x: p[0], y: STRIP_Y, width: p[1] - p[0], height: STRIP_H, rx: 10, fill: 'url(#gPanel)', stroke: '#101114', 'stroke-width': 2 }, svg);
+        el('rect', { x: p[0], y: STRIP_Y, width: p[1] - p[0], height: STRIP_H, rx: 10, fill: 'url(#gPanel)', stroke: '#101114', 'stroke-width': 2 }, base);
       });
       // dezente Symbole der unbelegten Leuchten (wie am echten Kombi sichtbar, wenn aus)
-      const deco = el('g', { class: 'deco' }, svg);
+      const deco = el('g', { class: 'deco' }, base);
       el('path', { d: 'M-40 0q0 -14 14 -14h52q14 0 14 14q0 14 -14 14h-52q-14 0 -14 -14ZM-18 -11v22M18 -11v22', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5, transform: 'translate(537 546)' }, deco);
       [1250, 1342, 1434].forEach((x) => el('circle', { cx: x, cy: 546, r: 17, fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5 }, deco));
       // kleines Fenster zwischen den Zifferblättern
-      el('rect', { x: 776, y: 424, width: 48, height: 48, rx: 8, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, svg);
+      el('rect', { x: 776, y: 424, width: 48, height: 48, rx: 8, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, base);
 
       for (const id in LAMP_POS) {
         const m = LAMP_META[id], p = LAMP_POS[id];
@@ -459,6 +466,10 @@
       const night = this._night, dim = this._dim;
       this.svg.style.setProperty('--lit', String(night ? 0.55 + 0.45 * dim : 1));
       this.svg.style.setProperty('--glow', String(night ? dim : 0));
+      // Nachts wird alles Unbeleuchtete dunkel, nur das Beleuchtete leuchtet
+      const shade = night ? 0.68 : 0;
+      this.shade.setAttribute('opacity', String(shade));
+      this.svg.style.setProperty('--shade-a', String(shade));
     }
 
     _draw(n) {

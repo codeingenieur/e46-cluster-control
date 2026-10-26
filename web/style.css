@@ -43,29 +43,39 @@ svg.cluster { display: block; width: 100%; height: auto; user-select: none; }
 
 /* ---------- Kombi (SVG) ---------- */
 svg.cluster {
-  font-family: "Barlow Semi Condensed", "Bahnschrift", "DIN Alternate", "Arial Narrow", system-ui, sans-serif;
-  font-weight: 600;
+  font-family: "Oswald", "Bahnschrift", "DIN Alternate", "Arial Narrow", system-ui, sans-serif;
+  font-weight: 500;
   --lit: 1;
   --glow: 0;
-  --dot-on: #ff7b52;
-  --dot-off: #9b1d18;
+  --shade-a: 0;
+  --dot-on: #ffb383;
+  --dot-off: #9a1914;
 }
-svg.cluster * { transition: opacity .5s, fill .5s, stroke .5s, filter .5s, color .3s; }
+svg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }
 svg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }
 
-.numerals { font-weight: 600; }
 .numerals text, .unit { fill: #eeeeee; }
 .unit-icon { color: #eeeeee; }
 .unit { font-family: "Barlow", "Bahnschrift", "DIN Alternate", system-ui, sans-serif; font-weight: 600; }
 
-.lit {
-  opacity: var(--lit);
-  filter: drop-shadow(0 0 calc(var(--glow) * 5px) rgba(255, 170, 90, .7));
-}
+.lit { opacity: var(--lit); }
+.hub-shade { opacity: var(--shade-a); pointer-events: none; }
 
 .tick { stroke: #eeeeee; stroke-linecap: butt; }
 .redband { stroke: #dc2a21; }
 .deco { color: #c9ccd4; opacity: .10; }
+.shade { pointer-events: none; }
+
+/* Nachtmodus: Unbeleuchtetes wird dunkel (Abdunkelung per Ebene), Beleuchtetes leuchtet warmweiß mit orangem Hof */
+.cluster.night .lit {
+  filter: drop-shadow(0 0 2px rgba(255, 170, 90, calc(.85 * var(--glow)))) drop-shadow(0 0 calc(var(--glow) * 7px) rgba(255, 110, 30, .6));
+}
+.cluster.night .numerals text, .cluster.night .unit, .cluster.night .unit-icon { fill: #fff1de; color: #fff1de; }
+.cluster.night .tick { stroke: #fff1de; }
+.cluster.night .redband { stroke: #ff3b28; }
+.cluster.night .needle-tail { fill: #17171a; }
+.cluster.night .turn:not(.on) { opacity: .35; }
+.cluster.night .lamp:not(.on) { opacity: .05; }
 
 /* Nadeln: tagsüber weiß, nachts orange beleuchtet */
 .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }
@@ -76,6 +86,7 @@ svg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transit
 .cluster.off .needle-shape { fill: #bdbdc2; }
 .cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }
 .cluster.off .lit { opacity: .3; filter: none; }
+.cluster.off .needle-tail { fill: #3b3b3f; }
 
 .glass { pointer-events: none; }
 

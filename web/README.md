@@ -20,6 +20,7 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
   weißem Strich bei 6,5 und einem großen Block
 - Verbrauchsanzeige (L/100 km): ±68,4°, elliptische Skala, Striche alle 2
 - Zifferblätter unten bei 0,884 R flach abgeschnitten, kleine Instrumente mit Achse unterhalb der Mitte
+- Farbfelder im Kühlmittelinstrument: Rechtecke 27,5 x 23,5, Mitte bei Radius 107 und ±37,5° um die Achse, radial gedreht um ±35°
 - Nadeln weiß (zweifarbig), nachts orange beleuchtet, Naben matt grau, hinten ein kleiner Stummel
 - Tank und Kühlmittel: Die Nabe liegt 7,7 Einheiten außerhalb der Symmetrieachse. Teilstriche, Zahlen, Symbol und
   Farbfelder sind um diese Achse zentriert, die Nadel zeigt von der Nabe auf diese Skala
@@ -30,11 +31,23 @@ von Wikimedia Commons (CC BY-SA 2.5). Das Foto dient nur zum Abmessen und ist ni
 
 Nicht belegt: das Aussehen bei Nacht (kein beleuchtetes Foto gefunden).
 
+## Nachtmodus
+
+Die Zeichnung besteht aus drei Ebenen: Gehäuse und Zifferblätter unten, darüber eine Abdunklung, darüber alles
+Beleuchtete (Zahlen, Striche, Nadeln, Symbole, Leuchten, Display). Im Nachtmodus wird nur die untere Ebene dunkel,
+das Beleuchtete bleibt hell und bekommt einen warmen Hof. Die Helligkeit regelt Leuchtstärke und Hof.
+Das Aussehen bei Nacht ist nicht an einem Foto belegt.
+
 ## Schrift
 
-Zwei Schnitte der Barlow (SIL Open Font License 1.1, Teilmenge Basic Latin + Grad-Zeichen, siehe `fonts.css`):
+Die Ziffern des Originals sind keine Helvetica: In einem Formtest (Ziffern 0 bis 6 aus dem Foto ausgeschnitten, jede
+Kandidatenschrift auf denselben Rahmen skaliert, Überdeckung gemessen) kommen Helvetica-artige Schnitte (Arimo,
+Archivo Narrow) bei der „1" nur auf etwa 0,47, die schmalen Gothic-/DIN-artigen Schriften auf über 0,8.
 
-- **Barlow Semi Condensed 600** für die Skalenzahlen: Ink-Breite von „140" zur Ziffernhöhe 1,76, im Foto 1,80;
-  Strichstärke 0,16 der Ziffernhöhe wie im Foto
-- **Barlow 600** für „km/h", „1/min", „x1000" und „L/100km", die im Original deutlich breiter gesetzt sind
-- Schriftgrößen aus der gemessenen Ziffernhöhe: Tacho 0,112 R, Drehzahlmesser 0,124 R, Beschriftungen 0,07 R
+- **Oswald 500** für die Skalenzahlen: beste Überdeckung und beste natürliche Proportionen (Nullbreite 0,51 zu 0,48 im
+  Foto, „140" 1,61 zu 1,69, „200" 1,76 zu 1,87)
+- **Barlow 600** für „km/h", „1/min", „x1000" und „L/100km", die im Original breiter gesetzt sind
+- Schriftgrößen aus der gemessenen Ziffernhöhe
+
+Beide: SIL Open Font License 1.1, Teilmenge Basic Latin + Grad-Zeichen, siehe `fonts.css`. Die Originalschrift ist
+es nicht, nur ein Ersatz.
