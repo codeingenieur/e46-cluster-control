@@ -19,13 +19,12 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
 - Drehzahlmesser: 0 bei -118,8°, 7000 bei +118,8°. Roter Bereich 6 bis 7 in drei kleinen Segmenten,
   weißem Strich bei 6,5 und einem großen Block
 - Verbrauchsanzeige (L/100 km): ±68,4°, elliptische Skala, Striche alle 2
-- Außenform: Die gemessene Kontur (Strahlen von der Mitte, auf die Mittelachse gespiegelt) ist an vier glatte
-  Kurvenstücke angepasst (oben, Seite, Ecke, flacher Boden; mittlere Abweichung 2 bis 3 Einheiten), die Silhouette ist
-  deshalb ein einziger glatter Pfad. Oben endet sie in einem gleichmäßigen Bogen (Haube abgeschnitten).
-- Platte: ebenfalls aus vier glatten Kurvenstücken (oben ein einziger Bogen von der Mitte bis zur breitesten Stelle,
-  dann Ecke und flacher Boden), angepasst an die gemessene Form. Die Krümmung des oberen Bogens steigt gleichmäßig von der
-  Mitte zur Seite an, ohne Dellen. Oben liegt eine kleine Lücke über den Zifferblättern, an Seiten und Boden ist der Ring
-  40 dick. Die Außenkante der Leuchtenfelder ist eine Parallelkurve zur Silhouette mit festem Abstand 54.
+- Außenform und Platte: je eine kubische B-Spline pro Hälfte (von der Scheitelmitte bis zum Beginn des flachen Bodens, dort
+  Krümmung 0), gespiegelt und als Bézier-Stücke ausgegeben. Die Krümmung ist überall stetig (Sprung unter 0,03 bei Werten von
+  0,2 bis 6, jeweils x1000), es gibt also keinen Übergang vom großen Bogen oben zu den Rundungen, der als Ecke wirkt. Angepasst
+  ist die Kontur an die Messung am Frontfoto (Abweichung etwa 1 Einheit zum vorherigen Stand). Oben endet sie in einem
+  gleichmäßigen Bogen (Haube abgeschnitten), über den Zifferblättern liegt eine kleine Lücke, an Seiten und Boden ist der Ring
+  etwa 40 dick. Die Außenkante der Leuchtenfelder ist eine Parallelkurve zur Silhouette mit festem Abstand 54.
   Das Bild hat rundum Rand, damit nichts abgeschnitten wird (viewBox -40 -90 1680 800).
 - Zifferblätter unten bei 0,884 R flach abgeschnitten, kleine Instrumente mit Achse unterhalb der Mitte
 - Farbfelder im Kühlmittelinstrument: Rechtecke 27,5 x 23,5, Mitte bei Radius 107 und ±37,5° um die Achse, radial gedreht um ±35°
