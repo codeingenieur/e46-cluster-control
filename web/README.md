@@ -23,9 +23,10 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
   Krümmung 0), gespiegelt und als Bézier-Stücke ausgegeben. Die Krümmung ist überall stetig (Sprung unter 0,03 bei Werten von
   0,2 bis 6, jeweils x1000), es gibt also keinen Übergang vom großen Bogen oben zu den Rundungen, der als Ecke wirkt. Angepasst
   ist die Kontur an die Messung am Frontfoto (Abweichung etwa 1 Einheit zum vorherigen Stand). Oben endet sie in einem
-  gleichmäßigen Bogen (Haube abgeschnitten). Der innere Plattenrand folgt einer Linie, die direkt auf das Foto gezeichnet
-  wurde (per Bildabgleich in die Zeichnungskoordinaten umgerechnet, gespiegelt, geglättet und als B-Spline angepasst, Abweichung
-  im Mittel 1,5 Einheiten); der flache Boden ist unverändert. Die Außenkante der Leuchtenfelder ist eine Parallelkurve zur
+  gleichmäßigen Bogen (Haube abgeschnitten). Der innere Plattenrand ist über seine Krümmung definiert (steigt vom
+  Scheitel gleichmäßig an, fällt zum flachen Boden auf null ab, keine Wellen) und an eine Linie angepasst, die direkt auf das
+  Foto gezeichnet wurde (per Bildabgleich umgerechnet, gespiegelt, geglättet; Abweichung im Mittel unter 2 Einheiten). Über beiden
+  Zifferblättern bleibt etwa 15 Abstand. Die Außenkante der Leuchtenfelder ist eine Parallelkurve zur
   Platte mit festem Abstand 14.
   Das Bild hat rundum Rand, damit nichts abgeschnitten wird (viewBox -40 -90 1680 800).
 - Zifferblätter unten bei 0,884 R flach abgeschnitten, kleine Instrumente mit Achse unterhalb der Mitte
