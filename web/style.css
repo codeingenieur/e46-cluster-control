@@ -28,7 +28,7 @@ header.top p { margin: 0; color: var(--dim); font-size: 13px; }
 /* ---------- Bühne ---------- */
 .stage { position: relative; background: #000; border-radius: 22px; padding: 6px; box-shadow: 0 30px 80px #000c, 0 0 0 1px var(--line); }
 .stage:fullscreen { display: flex; align-items: center; justify-content: center; border-radius: 0; padding: 0; }
-.stage:fullscreen #cluster { width: min(100vw, calc(100vh * 1600 / 650)); }
+.stage:fullscreen #cluster { width: min(100vw, calc(100vh * 1600 / 785)); }
 #cluster { width: 100%; }
 svg.cluster { display: block; width: 100%; height: auto; user-select: none; }
 
