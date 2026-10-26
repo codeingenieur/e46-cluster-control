@@ -44,7 +44,7 @@ svg.cluster { display: block; width: 100%; height: auto; user-select: none; }
 /* ---------- Kombi (SVG) ---------- */
 svg.cluster {
   font-family: "Barlow Semi Condensed", "Bahnschrift", "DIN Alternate", "Arial Narrow", system-ui, sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   --lit: 1;
   --glow: 0;
   --dot-on: #ff7b52;
@@ -56,7 +56,7 @@ svg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transit
 .numerals { font-weight: 600; }
 .numerals text, .unit { fill: #eeeeee; }
 .unit-icon { color: #eeeeee; }
-.unit { font-weight: 600; letter-spacing: .02em; }
+.unit { font-family: "Barlow", "Bahnschrift", "DIN Alternate", system-ui, sans-serif; font-weight: 600; }
 
 .lit {
   opacity: var(--lit);

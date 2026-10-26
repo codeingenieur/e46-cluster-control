@@ -52,7 +52,6 @@
     selfTest = on ? { t: 0 } : null;
   });
   toggle($('#b-night'), (on) => cluster.setLight({ night: on }));
-  toggle($('#b-lcd'), (on) => cluster.setLcdStyle(on ? 'blue' : 'red'));
   $('#s-dim').addEventListener('input', (e) => cluster.setLight({ dim: Number(e.target.value) }));
   document.querySelectorAll('#lamps [data-lamp]').forEach((b) => toggle(b, (on) => { state[b.dataset.lamp] = on; }));
   document.querySelectorAll('#turn [data-turn]').forEach((b) => toggle(b, (on) => { state.turn[b.dataset.turn] = on; }));

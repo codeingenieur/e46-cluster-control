@@ -48,8 +48,10 @@
     battery: '<rect x="-17" y="-7" width="34" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-11 -7v-5h6v5M5 -7v-5h6v5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-11 2.5h7M7.5 -1v7M4 2.5h7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
     oilpress: '<path d="M-17 -4H-6L-2 -11H6V-7H11L19 -13L21 -11L15 -3V6Q15 9 12 9H-12Q-17 9 -17 4Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="-1" cy="15" r="2.6" fill="currentColor"/><path d="M-1 0v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
     // nur Zifferblatt-Symbole
-    pump: '<path d="M-9 14V-12a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3V14M-12 14H11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="-5" y="-9" width="8" height="8" fill="currentColor"/><path d="M7 -6l6 3v12a3 3 0 0 0 6 0V-6l-4-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
-    therm: '<path d="M-3 -15a3 3 0 0 1 6 0V3a5.5 5.5 0 1 1 -6 0Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M-17 11q4 -4 8 0t8 0t8 0t8 0M-17 18q4 -4 8 0t8 0t8 0t8 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" transform="translate(4 0)"/>',
+    // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
+    pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+    // Thermometer mit Wellen, um x=0 zentriert (35 breit, 32 hoch)
+    therm: '<path d="M-3 2V-12.4a3 3 0 0 1 6 0V2" fill="none" stroke="currentColor" stroke-width="3.2"/><circle cy="5" r="5.4" fill="currentColor"/><path d="M4.6 -10h5M4.6 -5.5h5M4.6 -1h5" stroke="currentColor" stroke-width="2.4"/><path d="M-18 12.5q3 -3.2 6 0t6 0t6 0t6 0t6 0t6 0M-18 18.5q3 -3.2 6 0t6 0t6 0t6 0t6 0t6 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
   };
   const LAMP_META = {
     mil: ['amber', 'Motorkontrollleuchte'],
@@ -107,7 +109,8 @@
       this._build();
       this.setPower(true);
       this.setLight({ night: false, dim: 0.85 });
-      this.setLcdStyle('red');
+      this.svg.style.setProperty('--dot-on', '#ffb383');
+      this.svg.style.setProperty('--dot-off', '#9a1914');
     }
 
     // ---------- Aufbau ----------
@@ -124,13 +127,13 @@
         stops.forEach((s) => el('stop', { offset: s[0], 'stop-color': s[1] }, g));
       };
       lin('gHousing', 0, 0, 0, 1, [[0, '#26262a'], [0.1, '#0f0f11'], [1, '#08080a']]);
-      lin('gPlate', 0, 0, 0, 1, [[0, '#626266'], [0.5, '#505055'], [1, '#3f3f44']]);
-      rad('gDial', [[0, '#2c2f34'], [0.8, '#1e2024'], [1, '#17181c']], { cx: '42%', cy: '36%', r: '75%' });
+      lin('gPlate', 0, 0, 0, 1, [[0, '#58585c'], [0.5, '#48484c'], [1, '#39393d']]);
+      rad('gDial', [[0, '#33363b'], [0.8, '#24262a'], [1, '#1b1c20']], { cx: '42%', cy: '36%', r: '75%' });
       rad('gHub', [[0, '#434347'], [1, '#34343a']], { cx: '40%', cy: '35%', r: '70%' });
       lin('gNeedle', 0, 0, 1, 0, [[0, '#f6f6f6'], [0.5, '#e6e6e8'], [0.5, '#c6c6ca'], [1, '#b2b2b8']]);
       lin('gGlass', 0, 0, 1, 1, [[0, '#ffffff', 0.09], [0.4, '#ffffff', 0.02], [0.5, '#ffffff', 0], [1, '#ffffff', 0]]);
       lin('gPanel', 0, 0, 0, 1, [[0, '#272a2f'], [1, '#181a1e']]);
-      this.lcdGrad = lin('gLcd', 0, 0, 0, 1, [[0, '#d2302a'], [1, '#b3211b']]);
+      lin('gLcd', 0, 0, 0, 1, [[0, '#d2302a'], [1, '#b3211b']]);
       // Körnung der Frontplatte und der matten Naben
       const p = el('pattern', { id: 'pGrain', width: 96, height: 96, patternUnits: 'userSpaceOnUse' }, d);
       el('image', { href: global.E46_GRAIN || '', width: 96, height: 96 }, p);
@@ -159,15 +162,15 @@
         name: 'speed', cx: SPEEDO.cx, cy: SPEEDO.cy,
         nmin: 0, nmax: 240, a0: -127.5 - 20 * 1.1591, a1: 127.5,    // 20 km/h bei -127,5°, 240 bei +127,5°
         a: (v) => -127.5 + (v - 20) * 1.1591,
-        from: 10, to: 250, step: 10, majorStep: 20, labelFrom: 20, labelTo: 240, font: 28,
-        texts: [['km/h', 96, 20, 7]], spring: [110, 1.0], needle: { len: 190, wb: 10.3, wt: 2.8, hub: 31, tail: true },
+        from: 10, to: 250, step: 10, majorStep: 20, labelFrom: 20, labelTo: 240, font: 32,
+        texts: [['km/h', 103, 20, 7]], spring: [110, 1.0], needle: { len: 190, wb: 10.3, wt: 2.8, hub: 31, tail: true },
       });
       this._main({
         name: 'rpm', cx: TACHO.cx, cy: TACHO.cy,
         nmin: 0, nmax: 7000, a0: -118.8, a1: 118.8,                   // 0 bei -118,8°, 7000 bei +118,8°
         a: (v) => -118.8 + v * (237.6 / 7),
-        from: 0, to: 7, step: 0.5, majorStep: 1, labelFrom: 0, labelTo: 7, font: 38, red: true,
-        texts: [['1/min', -99, 15, 0], ['x1000', -80, 15, 0]], spring: [320, 0.8], needle: { len: 190, wb: 11.5, wt: 3.4, hub: 31, tail: true },
+        from: 0, to: 7, step: 0.5, majorStep: 1, labelFrom: 0, labelTo: 7, font: 35, red: true,
+        texts: [['1/min', -81, 20, 0], ['x1000', -59, 20, 0]], spring: [320, 0.8], needle: { len: 190, wb: 11.5, wt: 3.4, hub: 31, tail: true },
       });
       this._consumption(TACHO.cx + 2, TACHO.cy + 144);
 
@@ -183,7 +186,7 @@
 
     /** Matte Nabe mit Schatten */
     _hub(g, cx, cy, r) {
-      el('circle', { cx, cy, r: r + 5, fill: '#000', opacity: 0.45 }, g);
+      el('circle', { cx, cy, r: r + 3, fill: '#000', opacity: 0.35 }, g);
       el('circle', { cx, cy, r, fill: 'url(#gHub)' }, g);
       el('circle', { cx, cy, r, fill: 'url(#pGrain)' }, g);
     }
@@ -223,7 +226,7 @@
         if (major) {
           // Zahl direkt unter dem Strich: Abstand je nach Winkel und Stellenzahl
           const txt = String(Math.round(v)), rad = (a * Math.PI) / 180;
-          const ext = Math.abs(Math.sin(rad)) * txt.length * 0.27 * c.font + Math.abs(Math.cos(rad)) * 0.36 * c.font;
+          const ext = Math.abs(Math.sin(rad)) * txt.length * 0.25 * c.font + Math.abs(Math.cos(rad)) * 0.36 * c.font;
           const t = pol(c.cx, c.cy, rOut - longLen - 6 - ext, a);
           el('text', { x: f2(t[0]), y: f2(t[1]), dy: '.36em', 'text-anchor': 'middle' }, nums, txt);
         }
@@ -243,47 +246,59 @@
       this._needle(g, c.cx, c.cy, s, c.name, { min: c.nmin, max: c.nmax, a0: c.a0, a1: c.a1, spring: c.spring });
     }
 
-    /** Gemeinsamer Rahmen der kleinen Instrumente: "Eimer"-Form, Achse unterhalb der Mitte */
-    _bucket(name, cx, hy) {
+    /**
+     * Nebeninstrumente (Tank links, Kühlmittel rechts). Wie am Original liegt die Nabe nicht auf der Symmetrieachse
+     * der Skala: Teilstriche, Zahlen, Symbol und Farbfelder sind um eine Achse zentriert, die 7,7 Einheiten weiter
+     * innen liegt als die Nabe. Die Nadel zeigt von der Nabe aus auf Punkte dieser Skala.
+     */
+    _side(name, hubx, hy, dir, c) {
+      const ax = hubx + dir * 7.7, RS = 108;
       const g = el('g', { class: 'dial dial-' + name }, this.svg);
-      const top = hy - 66 - 116;
-      // Zuschnitt: Oberkante offen, Unterkante flach bei hy+34 (Ring) bzw. hy+28 (Fläche)
-      const cutRing = this._clip(name + 'R', cx - 120, top, 240, hy + 34 - top);
-      const cutFace = this._clip(name + 'F', cx - 120, top, 240, hy + 27 - top);
-      el('circle', { cx, cy: hy - 66, r: 116, fill: '#0a0b0d', 'clip-path': cutRing }, g);
-      el('circle', { cx, cy: hy - 66, r: 105, fill: 'url(#gDial)', 'clip-path': cutFace }, g);
-      return el('g', { class: 'lit' }, g);
+      const top = hy - 66 - 112;
+      // "Eimer"-Form: Kreis mit flachem Boden (Ring bei hy+34, Fläche bei hy+27)
+      const cutRing = this._clip(name + 'R', ax - 120, top, 240, hy + 38 - top);
+      const cutFace = this._clip(name + 'F', ax - 120, top, 240, hy + 32 - top);
+      el('circle', { cx: ax, cy: hy - 66, r: 111, fill: '#0a0b0d', 'clip-path': cutRing }, g);
+      el('circle', { cx: ax, cy: hy - 66, r: 105, fill: 'url(#gDial)', 'clip-path': cutFace }, g);
+      const lit = el('g', { class: 'lit' }, g);
+
+      c.ticks.forEach((t) => tickLine(lit, ax, hy, RS, t[0], t[1], 3.2, 'thin'));
+      (c.marks || []).forEach((m) => {
+        const p = pol(ax, hy, RS, m[0]);
+        el('rect', { x: f2(p[0] - 13.5), y: f2(p[1] - 13.5), width: 27, height: 27, rx: 1.5, fill: m[1], transform: 'rotate(' + f2(m[0] * 0.4) + ' ' + f2(p[0]) + ' ' + f2(p[1]) + ')' }, lit);
+      });
+      const nums = el('g', { class: 'numerals' }, lit);
+      (c.labels || []).forEach((l) => {
+        const p = pol(ax, hy, l[2], l[1]);
+        el('text', { x: f2(p[0]), y: f2(p[1]), dy: '.36em', 'text-anchor': 'middle', 'font-size': l[3] }, nums, l[0]);
+      });
+      // Symbol mittig auf der Achse
+      const icon = el('g', { class: 'unit-icon', transform: 'translate(' + f2(ax + (c.iconDx || 0)) + ' ' + (hy - 71) + ')' }, lit);
+      icon.innerHTML = ICONS[c.icon];
+
+      // Die Nadel zeigt von der Nabe auf den Punkt der Skala (Radius RS um die Achse)
+      const angFn = (f) => {
+        const q = pol(ax, hy, RS, c.a0 + f * (c.a1 - c.a0));
+        return (Math.atan2(q[0] - hubx, hy - q[1]) * 180) / Math.PI;
+      };
+      this._needle(g, hubx, hy, { len: 108, wb: 9, wt: 3.6, hub: 24, tail0: 12 }, name,
+        { min: c.min, max: c.max, a0: c.a0, a1: c.a1, spring: c.spring, toFrac: c.toFrac, angFn });
+      return g;
     }
 
     _fuel(cx, hy) {
-      const lit = this._bucket('fuel', cx, hy);
-      const g = lit.parentNode;
-      [-43, -21.5, 0, 21.5, 43].forEach((a) => tickLine(lit, cx, hy, 114, a, 22, 3.2, 'thin'));
-      const nums = el('g', { class: 'numerals' }, lit);
-      [['0', -34, 123, 21, 500], ['1/2', 0, 140, 19, 600], ['1/1', 37, 135, 19, 600]].forEach((l) => {
-        const p = pol(cx, hy, l[2], l[1]);
-        el('text', { x: f2(p[0]), y: f2(p[1]), dy: '.36em', 'text-anchor': 'middle', 'font-size': l[3], 'font-weight': l[4] }, nums, l[0]);
+      const g = this._side('fuel', cx, hy, 1, {
+        min: 0, max: 1, a0: -46.6, a1: 46.6, spring: [6, 1.5], icon: 'pump', iconDx: -1.5,
+        ticks: [[-46.6, 20], [-23.3, 18], [0, 22], [23.3, 18], [46.6, 20]],
+        labels: [['0', -40, 127, 17.5], ['1/2', 0, 134, 16], ['1/1', 38.5, 124, 16]],
       });
-      const icon = el('g', { class: 'unit-icon', transform: 'translate(' + (cx + 17) + ' ' + (hy - 78) + ') scale(1.05)' }, lit);
-      icon.innerHTML = ICONS.pump;
-      // Reserveleuchte: matter Punkt links
-      const lamp = el('g', { class: 'lamp amber', transform: 'translate(' + (cx - 76) + ' ' + (hy - 59) + ')' }, g);
-      el('circle', { r: 10.5, fill: 'currentColor' }, lamp);
+      // Reserveleuchte: matter Punkt links neben der Nadel
+      const lamp = el('g', { class: 'lamp amber', transform: 'translate(' + (cx - 86) + ' ' + (hy - 51) + ')' }, g);
+      el('circle', { r: 9.5, fill: 'currentColor' }, lamp);
       this.lamps.fuelwarn = lamp;
-      this._needle(g, cx, hy, { len: 113, wb: 9.5, wt: 3.6, hub: 23, tail0: 12 }, 'fuel',
-        { min: 0, max: 1, a0: -43, a1: 43, spring: [6, 1.5] });
     }
 
     _coolant(cx, hy) {
-      const lit = this._bucket('coolant', cx, hy);
-      const g = lit.parentNode;
-      [-47.5, -19, 19, 47.5].forEach((a) => tickLine(lit, cx, hy, a < -40 || a > 40 ? 113 : 116, a, 22, 3.2, 'thin'));
-      [[-36, '#1f87c8'], [36, '#d5291f']].forEach((m) => {
-        const p = pol(cx, hy, 121, m[0]);
-        el('rect', { x: f2(p[0] - 14), y: f2(p[1] - 14), width: 28, height: 28, rx: 1.5, fill: m[1], transform: 'rotate(' + m[0] + ' ' + f2(p[0]) + ' ' + f2(p[1]) + ')' }, lit);
-      });
-      const icon = el('g', { class: 'unit-icon', transform: 'translate(' + (cx - 10) + ' ' + (hy - 84) + ') scale(.95)' }, lit);
-      icon.innerHTML = ICONS.therm;
       // Betriebstemperatur in der Mitte: die Nadel bleibt von ca. 80 bis 100 °C fast ruhig
       const table = [[40, 0], [60, 0.2], [80, 0.44], [100, 0.56], [115, 0.78], [130, 1]];
       const toFrac = (v) => {
@@ -293,8 +308,11 @@
         }
         return 1;
       };
-      this._needle(g, cx, hy, { len: 113, wb: 9.5, wt: 3.6, hub: 23, tail0: 12 }, 'coolant',
-        { min: 40, max: 130, a0: -47.5, a1: 47.5, spring: [10, 1.3], toFrac });
+      this._side('coolant', cx, hy, -1, {
+        min: 40, max: 130, a0: -47.5, a1: 47.5, spring: [10, 1.3], icon: 'therm', toFrac,
+        ticks: [[-47.5, 22], [-16, 19], [16, 19], [47.5, 22]],
+        marks: [[-37, '#2288d2'], [37, '#e04526']],
+      });
     }
 
     /** Momentanverbrauch unten im Drehzahlmesser (L/100 km), elliptische Skala */
@@ -312,11 +330,11 @@
           x1: f2(p[0] + ux * h), y1: f2(p[1] + uy * h), x2: f2(p[0] - ux * h), y2: f2(p[1] - uy * h),
         }, lit);
       }
-      const nums = el('g', { class: 'numerals', 'font-size': 18 }, lit);
+      const nums = el('g', { class: 'numerals', 'font-size': 19 }, lit);
       [['0', -77, -35], ['10', -3, -67], ['20', 68, -33]].forEach((l) => {
         el('text', { x: cx + l[1], y: cy + l[2], dy: '.36em', 'text-anchor': 'middle' }, nums, l[0]);
       });
-      el('text', { class: 'unit', x: cx, y: cy - 44, 'text-anchor': 'middle', 'font-size': 13 }, lit, 'L/100km');
+      el('text', { class: 'unit', x: cx, y: cy - 40, 'text-anchor': 'middle', 'font-size': 13 }, lit, 'L/100km');
       const angFn = (f) => { const t = ((-T + f * 2 * T) * Math.PI) / 180; return (Math.atan2(RX * Math.sin(t), RY * Math.cos(t)) * 180) / Math.PI; };
       this._needle(g, cx, cy, { len: 92, wb: 6.5, wt: 3, hub: 24, tail0: 12 }, 'fco',
         { min: 0, max: 20, a0: -T, a1: T, spring: [14, 1.1], angFn });
@@ -428,21 +446,9 @@
         this._lcdLast[key] = str;
         draw(str);
       };
-      set('odo', v.odo, (s) => { this._dots(this.lcdRows.odo, s, 668, 514, 3.1, 3.7, 'start'); this._dots(this.lcdRows.km, 'km', 788, 524, 1.9, 2.3, 'start'); });
-      set('trip', v.trip, (s) => this._dots(this.lcdRows.trip, s, 920, 514, 3.1, 3.7, 'end'));
-      set('clock', v.clock, (s) => this._dots(this.lcdRows.clock, s, 794, 548, 3.1, 3.7, 'middle'));
-    }
-
-    /** 'red' (Standard) oder 'blue' (helle, blau-weiße Variante) */
-    setLcdStyle(style) {
-      const s = style === 'blue'
-        ? ['#a9cbe3', '#86aecb', '#14293a', '#7da4c0']
-        : ['#c92a24', '#ad1d17', '#ffb383', '#9a1914'];
-      const st = this.lcdGrad.querySelectorAll('stop');
-      st[0].setAttribute('stop-color', s[0]);
-      st[1].setAttribute('stop-color', s[1]);
-      this.svg.style.setProperty('--dot-on', s[2]);
-      this.svg.style.setProperty('--dot-off', s[3]);
+      set('odo', v.odo, (s) => { this._dots(this.lcdRows.odo, s, 667, 513, 3.25, 3.9, 'start'); this._dots(this.lcdRows.km, 'km', 797, 526, 1.9, 2.3, 'start'); });
+      set('trip', v.trip, (s) => this._dots(this.lcdRows.trip, s, 921, 513, 3.25, 3.9, 'end'));
+      set('clock', v.clock, (s) => this._dots(this.lcdRows.clock, s, 794, 548, 3.25, 3.9, 'middle'));
     }
 
     setPower(on) { this.svg.classList.toggle('off', !on); }
