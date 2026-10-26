@@ -19,11 +19,12 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
 - Drehzahlmesser: 0 bei -118,8°, 7000 bei +118,8°. Roter Bereich 6 bis 7 in drei kleinen Segmenten,
   weißem Strich bei 6,5 und einem großen Block
 - Verbrauchsanzeige (L/100 km): ±68,4°, elliptische Skala, Striche alle 2
-- Außenform: Silhouette per Strahlen von der Mitte aus dem Frontfoto abgenommen und auf die Mittelachse gespiegelt
-  (Linse mit flachem Boden und stark gerundeten unteren Ecken, oben ein gleichmäßiger, spiegelsymmetrischer Bogen: die Haube ist abgeschnitten).
-  Die Platte ist aus gemessenen Randpunkten gebaut und etwa 7 % schmaler als im ersten Entwurf, außen liegt der
-  schwarze Linsenrand. Das Bild hat rundum Rand, damit nichts abgeschnitten wird (viewBox -40 -90 1680 780). Zwischen den Zifferblättern
-  und dem oberen Plattenrand liegt eine kleine Lücke, die äußeren Leuchtenfelder sind an der Plattenrundung beschnitten.
+- Außenform: Die gemessene Kontur (Strahlen von der Mitte, auf die Mittelachse gespiegelt) ist an vier glatte
+  Kurvenstücke angepasst (oben, Seite, Ecke, flacher Boden; mittlere Abweichung 2 bis 3 Einheiten), die Silhouette ist
+  deshalb ein einziger glatter Pfad. Oben endet sie in einem gleichmäßigen Bogen (Haube abgeschnitten).
+- Platte und Leuchtenfelder sind echte Parallelkurven zur Außenkante: Ringdicke der Platte 40 (oben 90, damit über den
+  Zifferblättern eine Lücke bleibt), Außenkante der Leuchtenfelder mit festem Abstand 54. Alles ist spiegelsymmetrisch.
+  Das Bild hat rundum Rand, damit nichts abgeschnitten wird (viewBox -40 -90 1680 800).
 - Zifferblätter unten bei 0,884 R flach abgeschnitten, kleine Instrumente mit Achse unterhalb der Mitte
 - Farbfelder im Kühlmittelinstrument: Rechtecke 27,5 x 23,5, Mitte bei Radius 107 und ±37,5° um die Achse, radial gedreht um ±35°
 - Nadeln weiß (zweifarbig), nachts orange beleuchtet, Naben matt grau, hinten ein kleiner Stummel
