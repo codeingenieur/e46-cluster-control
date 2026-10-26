@@ -64,8 +64,8 @@
   };
   // Lage in der Leuchtenleiste: [x, y, Skalierung]
   const LAMP_POS = {
-    mil: [800, 107, 0.95],
-    overheat: [152, 528, 0.95], oilwarn: [250, 528, 0.95], battery: [348, 528, 0.95], oilpress: [152, 568, 0.95],
+    mil: [800, 79, 0.95],
+    overheat: [185, 526, 0.95], oilwarn: [265, 526, 0.95], battery: [345, 526, 0.95], oilpress: [275, 567, 0.95],
     eml: [1010, 547, 1.0], cruise: [1105, 547, 1.0],
   };
 
@@ -94,17 +94,18 @@
   const CUT = 181;               // Zifferblatt unten flach abgeschnitten (0,884 R unter der Nabe)
   const SPEEDO = { cx: 578, cy: 296 }, TACHO = { cx: 1022, cy: 296 };
   const FUEL = { cx: 244, cy: 434 }, COOL = { cx: 1356, cy: 434 };
-  const STRIP_Y = 497, STRIP_H = 98;
+  const STRIP_Y = 497, STRIP_H = 95;
 
-  // Außenform, am Frontfoto abgenommen (Strahlen von der Mitte, auf die Mittelachse gespiegelt): Linse mit flachem Boden,
-  // oben die Haube. Platte: gemessene Randpunkte, rechte Hälfte gespiegelt.
-  const SILHOUETTE = 'M800 -125C809 -125 819 -125 828 -124C837 -124 847 -124 856 -124C866 -123 875 -122 885 -122C894 -121 904 -120 913 -119C923 -118 933 -117 943 -116C953 -115 963 -114 973 -112C983 -111 993 -109 1004 -107C1014 -105 1025 -104 1036 -102C1047 -100 1058 -98 1070 -95C1081 -93 1093 -91 1105 -88C1118 -85 1130 -82 1143 -79C1155 -75 1167 -71 1180 -66C1193 -61 1206 -56 1219 -51C1232 -45 1245 -39 1258 -33C1271 -26 1284 -19 1296 -10C1309 -2 1321 7 1331 17C1341 27 1350 39 1358 51C1367 62 1372 75 1382 87C1392 99 1405 110 1418 122C1430 134 1445 147 1458 160C1471 174 1485 188 1497 203C1509 218 1520 234 1531 251C1541 267 1550 285 1558 303C1565 321 1571 339 1574 358C1578 376 1579 395 1578 413C1577 432 1574 450 1569 468C1564 485 1557 503 1547 519C1536 534 1523 549 1507 562C1492 575 1474 586 1453 595C1433 604 1410 610 1386 614C1362 619 1334 619 1310 620C1285 621 1261 620 1240 620C1218 619 1199 619 1181 619C1163 619 1146 619 1131 619C1115 618 1101 618 1087 618C1073 618 1061 618 1048 618C1036 618 1025 618 1014 618C1002 618 992 618 982 618C971 618 962 618 952 618C943 618 933 618 924 618C915 618 907 618 898 618C889 618 881 618 873 618C864 618 856 618 848 618C840 618 832 618 824 618C816 618 808 618 800 618C792 618 784 618 776 618C768 618 760 618 752 618C744 618 736 618 727 618C719 618 711 618 702 618C693 618 685 618 676 618C667 618 657 618 648 618C638 618 629 618 618 618C608 618 598 618 586 618C575 618 564 618 552 618C539 618 527 618 513 618C499 618 485 618 469 619C454 619 437 619 419 619C401 619 382 619 360 620C339 620 315 621 290 620C266 619 238 619 214 614C190 610 167 604 147 595C126 586 108 575 93 562C77 549 64 534 53 519C43 503 36 485 31 468C26 450 23 432 22 413C21 395 22 376 26 358C29 339 35 321 42 303C50 285 59 267 69 251C80 234 91 218 103 203C115 188 129 174 142 160C155 147 170 134 182 122C195 110 208 99 218 87C228 75 233 62 242 51C250 39 259 27 269 17C279 7 291 -2 304 -10C316 -19 329 -26 342 -33C355 -39 368 -45 381 -51C394 -56 407 -61 420 -66C433 -71 445 -75 457 -79C470 -82 482 -85 495 -88C507 -91 519 -93 530 -95C542 -98 553 -100 564 -102C575 -104 586 -105 596 -107C607 -109 617 -111 627 -112C637 -114 647 -115 657 -116C667 -117 677 -118 687 -119C696 -120 706 -121 715 -122C725 -122 734 -123 744 -124C753 -124 763 -124 772 -124C781 -125 791 -125 800 -125Z';
-  const PLATE = 'M800 84.8C867 85 948 88 1001 92.7C1055 98 1080 104 1120 113.8C1160 123 1204 136 1239 149.5C1274 163 1306 181 1329 193.0C1352 205 1359 210 1378 223.4C1396 237 1423 259 1441 276.2C1458 294 1472 311 1483 329.0C1494 347 1504 363 1510 381.8C1515 400 1518 422 1519 441.2C1519 460 1516 478 1514 494.0C1510 510 1507 527 1500 540.2C1494 553 1488 563 1474 571.9C1460 580 1441 587 1417 591.7C1393 596 1434 597 1331 598.3C1228 600 991 602 800 600.9C609 600 295 596 183 591.7C71 587 140 580 126 571.9C112 563 106 553 100 540.2C93 527 90 510 86 494.0C84 478 81 460 81 441.2C82 422 85 400 90 381.8C96 363 106 347 117 329.0C128 311 142 294 159 276.2C177 259 204 237 222 223.4C241 210 248 205 271 193.0C294 181 326 163 361 149.5C396 136 440 123 480 113.8C520 104 545 98 599 92.7C652 88 733 85 800 84.8Z';
+  // Außenform, am Frontfoto abgenommen (Strahlen von der Mitte, auf die Mittelachse gespiegelt): Linse mit flachem Boden
+  // und stark gerundeten unteren Ecken, oben ein gleichmäßiger Bogen (Haube abgeschnitten). Platte: gemessene Randpunkte,
+  // rechte Hälfte gespiegelt, Oberkante mit Abstand über den Zifferblättern.
+  const SILHOUETTE = 'M800 -33C819 -33 838 -33 857 -32C876 -32 894 -31 913 -30C931 -29 949 -28 966 -26C984 -25 1001 -23 1018 -21C1035 -19 1052 -17 1068 -15C1084 -12 1100 -10 1116 -7C1132 -4 1147 -1 1162 3C1176 6 1191 10 1205 14C1219 18 1232 22 1245 26C1258 31 1271 35 1283 40C1296 45 1307 51 1319 56C1330 61 1341 67 1351 73C1361 79 1371 85 1380 92C1390 98 1397 104 1407 112C1416 120 1425 129 1437 141C1449 152 1465 167 1478 181C1491 195 1503 210 1514 226C1525 242 1536 259 1545 276C1554 293 1562 312 1567 330C1573 348 1577 367 1578 386C1580 404 1578 423 1575 441C1572 459 1567 477 1560 494C1552 511 1542 527 1529 542C1516 556 1500 569 1482 580C1464 591 1444 600 1421 607C1399 613 1373 616 1348 619C1323 621 1296 620 1273 620C1250 620 1229 620 1209 620C1189 619 1171 619 1155 619C1138 619 1123 619 1108 619C1094 619 1080 618 1067 618C1054 618 1042 618 1030 618C1019 618 1008 618 997 618C987 618 977 618 967 618C957 618 947 618 938 618C929 618 920 618 911 618C902 618 894 618 885 618C877 618 868 618 860 618C852 618 844 618 836 618C828 618 820 618 812 618C804 618 796 618 788 618C780 618 772 618 764 618C756 618 748 618 740 618C732 618 723 618 715 618C706 618 698 618 689 618C680 618 671 618 662 618C653 618 643 618 633 618C623 618 613 618 603 618C592 618 581 618 570 618C558 618 546 618 533 618C520 618 506 619 492 619C477 619 462 619 445 619C429 619 411 619 391 620C371 620 350 620 327 620C304 620 277 621 252 619C227 616 201 613 179 607C156 600 136 591 118 580C100 569 84 556 71 542C58 527 48 511 40 494C33 477 28 459 25 441C22 423 20 404 22 386C23 367 27 348 33 330C38 312 46 293 55 276C64 259 75 242 86 226C97 210 109 195 122 181C135 167 151 152 163 141C175 129 184 120 193 112C203 104 210 98 220 92C229 85 239 79 249 73C259 67 270 61 281 56C293 51 304 45 317 40C329 35 342 31 355 26C368 22 381 18 395 14C409 10 424 6 438 3C453 -1 468 -4 484 -7C500 -10 516 -12 532 -15C548 -17 565 -19 582 -21C599 -23 616 -25 634 -26C651 -28 669 -29 687 -30C706 -31 724 -32 743 -32C762 -33 781 -33 800 -33Z';
+  const PLATE = 'M800 57C867 57 948 60 1001 66C1055 71 1080 78 1120 89C1160 99 1204 114 1239 129C1274 145 1306 165 1329 180C1352 195 1359 202 1378 217C1396 233 1423 256 1441 274C1458 293 1472 311 1483 329C1495 347 1504 363 1510 382C1515 400 1518 423 1519 441C1519 460 1517 478 1513 494C1510 510 1507 527 1500 540C1494 553 1488 563 1474 572C1460 580 1441 587 1417 592C1393 596 1434 597 1331 598C1228 600 977 601 800 601C623 601 372 600 269 598C166 597 207 596 183 592C159 587 140 580 126 572C112 563 106 553 100 540C93 527 90 510 87 494C83 478 81 460 81 441C82 423 85 400 90 382C96 363 105 347 117 329C128 311 142 293 159 274C177 256 204 233 222 217C241 202 248 195 271 180C294 165 326 145 361 129C396 114 440 99 480 89C520 78 545 71 599 66C652 60 733 57 800 57Z';
 
   class E46Cluster {
     constructor(host) {
       this.svg = el('svg', {
-        viewBox: '-40 -170 1680 860', class: 'cluster', role: 'img',
+        viewBox: '-40 -90 1680 780', class: 'cluster', role: 'img',
         'aria-label': 'BMW E46 Kombiinstrument',
       });
       host.appendChild(this.svg);
@@ -138,10 +139,6 @@
       lin('gNeedle', 0, 0, 1, 0, [[0, '#f6f6f6'], [0.5, '#e6e6e8'], [0.5, '#c6c6ca'], [1, '#b2b2b8']]);
       lin('gGlass', 0, 0, 1, 1, [[0, '#ffffff', 0.09], [0.4, '#ffffff', 0.02], [0.5, '#ffffff', 0], [1, '#ffffff', 0]]);
       lin('gPanel', 0, 0, 0, 1, [[0, '#272a2f'], [1, '#181a1e']]);
-      // Haube einheitlich dunkel (leicht bräunlich, nach unten in die Grundfarbe übergehend); Haubenschatten auf der Platte
-      const ug = (id, y1, y2, stops) => { const g = lin(id, 0, 0, 0, 0, stops); g.setAttribute('gradientUnits', 'userSpaceOnUse'); g.setAttribute('y1', y1); g.setAttribute('y2', y2); return g; };
-      ug('gHoodFace', -125, 120, [[0, '#241b14'], [0.5, '#17120e'], [1, '#0b0a09']]);
-      ug('gHoodShadow', 85, 330, [[0, '#1b1109', 0.92], [1, '#1b1109', 0]]);
       lin('gLcd', 0, 0, 0, 1, [[0, '#d2302a'], [1, '#b3211b']]);
       // Körnung der Frontplatte und der matten Naben
       const p = el('pattern', { id: 'pGrain', width: 96, height: 96, patternUnits: 'userSpaceOnUse' }, d);
@@ -149,9 +146,10 @@
     }
 
     /** Beliebige Form als Beschneidung */
-    _clip2(id, d) {
+    _clip2(id, d, transform) {
       const c = el('clipPath', { id }, this.defs);
-      el('path', { d }, c);
+      const pth = el('path', { d }, c);
+      if (transform) pth.setAttribute('transform', transform);
       return 'url(#' + id + ')';
     }
 
@@ -171,19 +169,15 @@
       this.shade = el('path', { class: 'shade', d: SILHOUETTE, fill: '#000', opacity: 0 }, svg);
       this.litLayer = el('g', { class: 'layer-lit' }, svg);
 
-      // Außenform: Linse mit Haube
+      // Außenform: Linse
       el('path', { d: SILHOUETTE, fill: '#0a0a0a', stroke: '#35353a', 'stroke-width': 2.5 }, this.base);
-      const sc = this._clip2('silClip', SILHOUETTE);
-      const g1 = el('g', { 'clip-path': sc }, this.base);
-      el('rect', { x: -40, y: -170, width: 1680, height: 500, fill: 'url(#gHoodFace)' }, g1);   // Haube
 
       el('path', { d: PLATE, fill: 'url(#gPlate)', stroke: '#050505', 'stroke-width': 4 }, this.base);
       el('path', { d: PLATE, fill: 'url(#pGrain)' }, this.base);
-      el('path', { d: PLATE, fill: 'url(#gHoodShadow)' }, this.base);
       el('path', { d: PLATE, fill: 'none', stroke: '#fff', 'stroke-opacity': 0.12, 'stroke-width': 1.5, transform: 'translate(0 1.5)' }, this.base);
 
       // Fenster oben mittig (MKL)
-      el('rect', { x: 717, y: 84, width: 166, height: 46, rx: 9, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, this.base);
+      el('rect', { x: 717, y: 56, width: 166, height: 46, rx: 9, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, this.base);
 
       this._main({
         name: 'speed', cx: SPEEDO.cx, cy: SPEEDO.cy,
@@ -382,8 +376,10 @@
     /** Leuchtenleiste unten mit Mittendisplay, Blinkerpfeilen und den Warnleuchten */
     _strip() {
       const svg = this.litLayer, base = this.base;
+      // Die äußeren Felder folgen der Rundung der Platte: Beschneidung mit der leicht verkleinerten Plattenform
+      const panels = el('g', { 'clip-path': this._clip2('stripClip', PLATE, 'translate(800 340) scale(.955 .975) translate(-800 -340)') }, base);
       [[100, 400], [436, 638], [953, 1170], [1190, 1495]].forEach((p) => {
-        el('rect', { x: p[0], y: STRIP_Y, width: p[1] - p[0], height: STRIP_H, rx: 10, fill: 'url(#gPanel)', stroke: '#101114', 'stroke-width': 2 }, base);
+        el('rect', { x: p[0], y: STRIP_Y, width: p[1] - p[0], height: STRIP_H, rx: 10, fill: 'url(#gPanel)', stroke: '#101114', 'stroke-width': 2 }, panels);
       });
       // dezente Symbole der unbelegten Leuchten (wie am echten Kombi sichtbar, wenn aus)
       const deco = el('g', { class: 'deco' }, base);
