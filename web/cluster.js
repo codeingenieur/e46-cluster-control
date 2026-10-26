@@ -100,13 +100,11 @@
   // oben die Haube. Platte: gemessene Randpunkte, rechte Hälfte gespiegelt.
   const SILHOUETTE = 'M800 -125C809 -125 819 -125 828 -124C837 -124 847 -124 856 -124C866 -123 875 -122 885 -122C894 -121 904 -120 913 -119C923 -118 933 -117 943 -116C953 -115 963 -114 973 -112C983 -111 993 -109 1004 -107C1014 -105 1025 -104 1036 -102C1047 -100 1058 -98 1070 -95C1081 -93 1093 -91 1105 -88C1118 -85 1130 -82 1143 -79C1155 -75 1167 -71 1180 -66C1193 -61 1206 -56 1219 -51C1232 -45 1245 -39 1258 -33C1271 -26 1284 -19 1296 -10C1309 -2 1321 7 1331 17C1341 27 1350 39 1358 51C1367 62 1372 75 1382 87C1392 99 1405 110 1418 122C1430 134 1445 147 1458 160C1471 174 1485 188 1497 203C1509 218 1520 234 1531 251C1541 267 1550 285 1558 303C1565 321 1571 339 1574 358C1578 376 1579 395 1578 413C1577 432 1574 450 1569 468C1564 485 1557 503 1547 519C1536 534 1523 549 1507 562C1492 575 1474 586 1453 595C1433 604 1410 610 1386 614C1362 619 1334 619 1310 620C1285 621 1261 620 1240 620C1218 619 1199 619 1181 619C1163 619 1146 619 1131 619C1115 618 1101 618 1087 618C1073 618 1061 618 1048 618C1036 618 1025 618 1014 618C1002 618 992 618 982 618C971 618 962 618 952 618C943 618 933 618 924 618C915 618 907 618 898 618C889 618 881 618 873 618C864 618 856 618 848 618C840 618 832 618 824 618C816 618 808 618 800 618C792 618 784 618 776 618C768 618 760 618 752 618C744 618 736 618 727 618C719 618 711 618 702 618C693 618 685 618 676 618C667 618 657 618 648 618C638 618 629 618 618 618C608 618 598 618 586 618C575 618 564 618 552 618C539 618 527 618 513 618C499 618 485 618 469 619C454 619 437 619 419 619C401 619 382 619 360 620C339 620 315 621 290 620C266 619 238 619 214 614C190 610 167 604 147 595C126 586 108 575 93 562C77 549 64 534 53 519C43 503 36 485 31 468C26 450 23 432 22 413C21 395 22 376 26 358C29 339 35 321 42 303C50 285 59 267 69 251C80 234 91 218 103 203C115 188 129 174 142 160C155 147 170 134 182 122C195 110 208 99 218 87C228 75 233 62 242 51C250 39 259 27 269 17C279 7 291 -2 304 -10C316 -19 329 -26 342 -33C355 -39 368 -45 381 -51C394 -56 407 -61 420 -66C433 -71 445 -75 457 -79C470 -82 482 -85 495 -88C507 -91 519 -93 530 -95C542 -98 553 -100 564 -102C575 -104 586 -105 596 -107C607 -109 617 -111 627 -112C637 -114 647 -115 657 -116C667 -117 677 -118 687 -119C696 -120 706 -121 715 -122C725 -122 734 -123 744 -124C753 -124 763 -124 772 -124C781 -125 791 -125 800 -125Z';
   const PLATE = 'M800 84.8C867 85 948 88 1001 92.7C1055 98 1080 104 1120 113.8C1160 123 1204 136 1239 149.5C1274 163 1306 181 1329 193.0C1352 205 1359 210 1378 223.4C1396 237 1423 259 1441 276.2C1458 294 1472 311 1483 329.0C1494 347 1504 363 1510 381.8C1515 400 1518 422 1519 441.2C1519 460 1516 478 1514 494.0C1510 510 1507 527 1500 540.2C1494 553 1488 563 1474 571.9C1460 580 1441 587 1417 591.7C1393 596 1434 597 1331 598.3C1228 600 991 602 800 600.9C609 600 295 596 183 591.7C71 587 140 580 126 571.9C112 563 106 553 100 540.2C93 527 90 510 86 494.0C84 478 81 460 81 441.2C82 422 85 400 90 381.8C96 363 106 347 117 329.0C128 311 142 294 159 276.2C177 259 204 237 222 223.4C241 210 248 205 271 193.0C294 181 326 163 361 149.5C396 136 440 123 480 113.8C520 104 545 98 599 92.7C652 88 733 85 800 84.8Z';
-  // Unterkante der Haubenoberfläche (die Haube endet links und rechts in einer Spitze bei y = 70)
-  const HOOD_RIM = [[222, 70], [300, 22], [401, -1], [560, -28], [800, -41], [1040, -28], [1199, -1], [1300, 22], [1378, 70]];
 
   class E46Cluster {
     constructor(host) {
       this.svg = el('svg', {
-        viewBox: '0 -135 1600 785', class: 'cluster', role: 'img',
+        viewBox: '-40 -170 1680 860', class: 'cluster', role: 'img',
         'aria-label': 'BMW E46 Kombiinstrument',
       });
       host.appendChild(this.svg);
@@ -140,17 +138,10 @@
       lin('gNeedle', 0, 0, 1, 0, [[0, '#f6f6f6'], [0.5, '#e6e6e8'], [0.5, '#c6c6ca'], [1, '#b2b2b8']]);
       lin('gGlass', 0, 0, 1, 1, [[0, '#ffffff', 0.09], [0.4, '#ffffff', 0.02], [0.5, '#ffffff', 0], [1, '#ffffff', 0]]);
       lin('gPanel', 0, 0, 0, 1, [[0, '#272a2f'], [1, '#181a1e']]);
-      // Haube: Oberfläche matt dunkelgrau, Stirnfläche braun-schwarz; Haubenschatten auf der Platte
+      // Haube einheitlich dunkel (leicht bräunlich, nach unten in die Grundfarbe übergehend); Haubenschatten auf der Platte
       const ug = (id, y1, y2, stops) => { const g = lin(id, 0, 0, 0, 0, stops); g.setAttribute('gradientUnits', 'userSpaceOnUse'); g.setAttribute('y1', y1); g.setAttribute('y2', y2); return g; };
-      ug('gHoodTop', -125, -40, [[0, '#5c5b56'], [0.5, '#44433f'], [1, '#302f2c']]);
-      ug('gHoodFace', -45, 120, [[0, '#3a2c20'], [0.5, '#1a1511'], [1, '#0c0b0a']]);
+      ug('gHoodFace', -125, 120, [[0, '#241b14'], [0.5, '#17120e'], [1, '#0b0a09']]);
       ug('gHoodShadow', 85, 330, [[0, '#1b1109', 0.92], [1, '#1b1109', 0]]);
-      ug('gRimLight', -125, 40, [[0, '#8a8984', 0.55], [1, '#8a8984', 0]]);
-      // Stirnfläche läuft seitlich an den Haubenspitzen weich aus
-      const fx = el('linearGradient', { id: 'gFadeX', gradientUnits: 'userSpaceOnUse', x1: 222, y1: 0, x2: 1378, y2: 0 }, d);
-      [[0, '#000'], [0.1, '#fff'], [0.9, '#fff'], [1, '#000']].forEach((st) => el('stop', { offset: st[0], 'stop-color': st[1] }, fx));
-      const mk = el('mask', { id: 'mFace', maskUnits: 'userSpaceOnUse', x: 0, y: -135, width: 1600, height: 785 }, d);
-      el('rect', { x: 0, y: -135, width: 1600, height: 785, fill: 'url(#gFadeX)' }, mk);
       lin('gLcd', 0, 0, 0, 1, [[0, '#d2302a'], [1, '#b3211b']]);
       // Körnung der Frontplatte und der matten Naben
       const p = el('pattern', { id: 'pGrain', width: 96, height: 96, patternUnits: 'userSpaceOnUse' }, d);
@@ -162,16 +153,6 @@
       const c = el('clipPath', { id }, this.defs);
       el('path', { d }, c);
       return 'url(#' + id + ')';
-    }
-
-    /** Offener glatter Pfad (Catmull-Rom) durch die Punkte */
-    _smooth(P) {
-      let d = 'M' + P[0][0] + ' ' + P[0][1];
-      for (let i = 0; i < P.length - 1; i++) {
-        const p0 = P[Math.max(i - 1, 0)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(i + 2, P.length - 1)];
-        d += 'C' + f2(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + f2(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + f2(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + f2(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + p2[0] + ' ' + p2[1];
-      }
-      return d;
     }
 
     _clip(id, x, y, w, h) {
@@ -191,16 +172,10 @@
       this.litLayer = el('g', { class: 'layer-lit' }, svg);
 
       // Außenform: Linse mit Haube
-      el('path', { d: SILHOUETTE, fill: '#0a0a0a', stroke: '#2a2a2d', 'stroke-width': 2 }, this.base);
-      const rim = this._smooth(HOOD_RIM);
+      el('path', { d: SILHOUETTE, fill: '#0a0a0a', stroke: '#35353a', 'stroke-width': 2.5 }, this.base);
       const sc = this._clip2('silClip', SILHOUETTE);
-      const hoodAbove = this._clip2('hoodAbove', rim + 'L1378 -200L222 -200Z');
-      const hoodFace = this._clip2('hoodFace', rim + 'L1378 330L222 330Z');
       const g1 = el('g', { 'clip-path': sc }, this.base);
-      el('rect', { x: 0, y: -135, width: 1600, height: 200, fill: 'url(#gHoodTop)', 'clip-path': hoodAbove }, g1);   // Oberfläche
-      el('rect', { x: 0, y: -135, width: 1600, height: 470, fill: 'url(#gHoodFace)', 'clip-path': hoodFace, mask: 'url(#mFace)' }, g1);   // Stirnfläche
-      el('path', { d: rim, fill: 'none', stroke: '#050505', 'stroke-width': 5 }, g1);                                   // Kante
-      el('path', { d: SILHOUETTE, fill: 'none', stroke: 'url(#gRimLight)', 'stroke-width': 3 }, this.base);             // Licht auf der Oberkante
+      el('rect', { x: -40, y: -170, width: 1680, height: 500, fill: 'url(#gHoodFace)' }, g1);   // Haube
 
       el('path', { d: PLATE, fill: 'url(#gPlate)', stroke: '#050505', 'stroke-width': 4 }, this.base);
       el('path', { d: PLATE, fill: 'url(#pGrain)' }, this.base);

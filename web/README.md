@@ -20,9 +20,9 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
   weißem Strich bei 6,5 und einem großen Block
 - Verbrauchsanzeige (L/100 km): ±68,4°, elliptische Skala, Striche alle 2
 - Außenform: Silhouette per Strahlen von der Mitte aus dem Frontfoto abgenommen und auf die Mittelachse gespiegelt
-  (Linse mit flachem Boden und stark gerundeten unteren Ecken, oben die Haube mit Oberfläche, Kante und Stirnfläche).
+  (Linse mit flachem Boden und stark gerundeten unteren Ecken, oben die einheitlich dunkle Haube).
   Die Platte ist aus gemessenen Randpunkten gebaut und etwa 7 % schmaler als im ersten Entwurf, außen liegt der
-  schwarze Linsenrand. Das Bild reicht dafür 135 Einheiten nach oben (viewBox 1600 x 785).
+  schwarze Linsenrand. Das Bild hat rundum Rand, damit nichts abgeschnitten wird (viewBox -40 -170 1680 860).
 - Zifferblätter unten bei 0,884 R flach abgeschnitten, kleine Instrumente mit Achse unterhalb der Mitte
 - Farbfelder im Kühlmittelinstrument: Rechtecke 27,5 x 23,5, Mitte bei Radius 107 und ±37,5° um die Achse, radial gedreht um ±35°
 - Nadeln weiß (zweifarbig), nachts orange beleuchtet, Naben matt grau, hinten ein kleiner Stummel
