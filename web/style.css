@@ -28,7 +28,7 @@ header.top p { margin: 0; color: var(--dim); font-size: 13px; }
 /* ---------- Bühne ---------- */
 .stage { position: relative; background: #000; border-radius: 22px; padding: 6px; box-shadow: 0 30px 80px #000c, 0 0 0 1px var(--line); }
 .stage:fullscreen { display: flex; align-items: center; justify-content: center; border-radius: 0; padding: 0; }
-.stage:fullscreen #cluster { width: min(100vw, calc(100vh * 1600 / 620)); }
+.stage:fullscreen #cluster { width: min(100vw, calc(100vh * 1600 / 640)); }
 #cluster { width: 100%; }
 svg.cluster { display: block; width: 100%; height: auto; user-select: none; }
 
@@ -45,52 +45,53 @@ svg.cluster { display: block; width: 100%; height: auto; user-select: none; }
 svg.cluster {
   font-family: "Bahnschrift", "DIN Alternate", "Barlow Condensed", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
   --lit: 1;
-  --glow: 1;
+  --glow: 0;
 }
-svg.cluster * { transition: opacity .5s, fill .5s, stroke .5s, filter .5s; }
+svg.cluster * { transition: opacity .5s, fill .5s, stroke .5s, filter .5s, color .3s; }
 svg.cluster .needle-wrap, svg.cluster .needle-wrap * { transition: none; }
 
-.numerals text, .unit, .unit-icon { fill: #f3f0e8; }
-.numerals text.red { fill: #ff4a3a; }
-.unit-icon { color: #f3f0e8; }
-.unit { font-weight: 500; letter-spacing: .04em; opacity: .85; }
+.numerals text, .unit { fill: #f4f2ee; }
+.unit-icon { color: #f4f2ee; }
+.unit { font-weight: 500; letter-spacing: .03em; }
 .numerals { font-weight: 500; }
 
 .lit {
-  opacity: calc(var(--lit));
-  filter: drop-shadow(0 0 calc(var(--glow) * 5px) rgba(255, 170, 90, .65));
+  opacity: var(--lit);
+  filter: drop-shadow(0 0 calc(var(--glow) * 5px) rgba(255, 170, 90, .7));
 }
 
-.tick { stroke: #f3f0e8; stroke-linecap: butt; }
-.tick.major { stroke-width: 5; }
-.tick.mid   { stroke-width: 3.2; }
-.tick.minor { stroke-width: 1.8; opacity: .85; }
-.tick.red   { stroke: #ff4a3a; }
-.redband    { stroke: #d6281b; stroke-width: 7; }
-.mini-arc   { stroke: #f3f0e8; stroke-width: 2.4; opacity: .7; }
-.mini-red   { stroke: #ff4a3a; stroke-width: 6; }
+.tick { stroke: #f4f2ee; stroke-linecap: butt; }
+.tick.major { stroke-width: 5.5; }
+.tick.minor { stroke-width: 3.5; }
+.redband { stroke: #e2461f; stroke-width: 26; }
+.mini-red { stroke: #e2461f; stroke-width: 5; }
 
-.needle-wrap {
-  filter: drop-shadow(4px 6px 4px rgba(0, 0, 0, .65)) drop-shadow(0 0 calc(var(--glow) * 9px) rgba(255, 70, 0, .85));
+/* Nadeln: tagsüber weiß, nachts orange beleuchtet */
+.needle-shape { fill: #f6f5f2; }
+.needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .6)); }
+.cluster.night .needle-shape { fill: #ff7a38; }
+.cluster.night .needle-wrap {
+  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 calc(var(--glow) * 8px) rgba(255, 90, 20, .9));
 }
-.cluster.off .needle-shape { fill: #4a1d10; }
-.cluster.off .needle-wrap { filter: drop-shadow(4px 6px 4px rgba(0, 0, 0, .65)); }
-.cluster.off .lit, .cluster.off .lcd { opacity: .1; filter: none; }
+.cluster.off .needle-shape { fill: #cfcdc8; }
+.cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .6)); }
+.cluster.off .lit, .cluster.off .lcd { opacity: .22; filter: none; }
 
 .glass { pointer-events: none; }
 
 /* Leuchten */
-.lamp { opacity: .09; color: var(--amber); }
+.lamp { opacity: .10; color: var(--amber); }
 .lamp.green { color: var(--green); }
 .lamp.red { color: var(--red); }
 .lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }
-.lamp.turn.on { animation: blink .8s steps(1) infinite; }
-@keyframes blink { 0% { opacity: 1; } 50% { opacity: .09; filter: none; } }
+
+.turn { color: #3b3331; }
+.turn.on { color: var(--green); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }
 
 /* Mittendisplay */
-.lcd text { fill: #ff8a3d; filter: drop-shadow(0 0 4px rgba(255, 110, 20, .7)); font-variant-numeric: tabular-nums; }
-.lcd .lcd-dim { fill: #b5612a; filter: none; }
-.lcd .lcd-rule { stroke: #5a2f14; stroke-width: 2; }
+.lcd text { fill: #ff9a4d; filter: drop-shadow(0 0 4px rgba(255, 120, 30, .6)); font-variant-numeric: tabular-nums; }
+.lcd .lcd-dim { fill: #c56d2d; filter: none; }
 
 /* ---------- Bedienfeld ---------- */
 .panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 16px; }

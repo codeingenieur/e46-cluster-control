@@ -29,7 +29,7 @@
       </div>
       <div class="chips">
         <button class="chip" type="button" id="b-ign" aria-pressed="true">Zündung</button>
-        <button class="chip" type="button" id="b-night" aria-pressed="true">Nachtlicht</button>
+        <button class="chip" type="button" id="b-night" aria-pressed="false">Nachtlicht</button>
       </div>
       <div class="row">
         <label for="s-dim">Helligkeit</label>
@@ -43,8 +43,9 @@
       <div class="row"><label for="s-speed">Geschwindigkeit</label><input type="range" id="s-speed" min="0" max="240" step="1" value="0"><output id="o-speed"></output></div>
       <div class="row"><label for="s-coolant">Kühlmittel</label><input type="range" id="s-coolant" min="40" max="130" step="1" value="40"><output id="o-coolant"></output></div>
       <div class="row"><label for="s-oil">Öltemperatur</label><input type="range" id="s-oil" min="40" max="150" step="1" value="40"><output id="o-oil"></output></div>
+      <div class="row"><label for="s-fco">Verbrauch</label><input type="range" id="s-fco" min="0" max="20" step="0.1" value="0"><output id="o-fco"></output></div>
       <div class="row"><label for="s-fuel">Tank</label><input type="range" id="s-fuel" min="0" max="1" step="0.01" value="0.65"><output id="o-fuel"></output></div>
-      <p class="hint">Tank, Blinker und Mittendisplay erscheinen nur auf dem Bildschirm, das echte Cluster bekommt sie nicht (siehe README).</p>
+      <p class="hint">Verbrauch, Tank, Blinker und Mittendisplay erscheinen nur auf dem Bildschirm, das echte Cluster bekommt sie nicht (siehe README).</p>
     </div>
 
     <div class="card">

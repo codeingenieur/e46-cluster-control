@@ -39,6 +39,7 @@
       this.oil = 40;
       this.fuel = 0.65;
       this.dist = 0;
+      this.fco = 0;
     }
 
     update(dt) {
@@ -85,6 +86,14 @@
       this.oil += ((102 + 10 * load) - this.oil) * (dt / 80);
       this.fuel = Math.max(0.05, this.fuel - dt * 0.0006 * (0.4 + load));
       this.dist += this.speed / 3600 * dt;
+
+      // Momentanverbrauch L/100km: Schub = 0, Vollgas hoch, sonst grob drehzahl- und tempoabhängig
+      let fco;
+      if (this.speed < 3) fco = 0.8;
+      else if (this.speed > goal.v + 1) fco = 0;
+      else if (accelerating) fco = this.hard ? 17 : 9 + this.speed / 25;
+      else fco = 4.5 + this.speed / 22;
+      this.fco += (fco - this.fco) * Math.min(1, dt * 3);
       return this;
     }
 

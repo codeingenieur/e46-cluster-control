@@ -9,7 +9,7 @@
   const state = {
     mode: 'demo',
     ign: true,
-    rpm: 0, speed: 0, coolant: 40, oil: 40, fuel: 0.65,
+    rpm: 0, speed: 0, coolant: 40, oil: 40, fuel: 0.65, fco: 0,
     mil: false, eml: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
     turn: { left: false, right: false, hazard: false },
     odo: 148213, trip: 0,
@@ -22,6 +22,7 @@
     speed: ['#s-speed', '#o-speed', (v) => Math.round(v) + ' km/h'],
     coolant: ['#s-coolant', '#o-coolant', (v) => Math.round(v) + ' °C'],
     oil: ['#s-oil', '#o-oil', (v) => Math.round(v) + ' °C'],
+    fco: ['#s-fco', '#o-fco', (v) => v.toFixed(1) + ' L'],
     fuel: ['#s-fuel', '#o-fuel', (v) => Math.round(v * 100) + ' %'],
   };
   Object.keys(sliders).forEach((k) => {
@@ -127,7 +128,7 @@
     if (state.mode === 'demo') {
       sim.update(dt);
       state.rpm = sim.rpm; state.speed = sim.speed;
-      state.coolant = sim.coolant; state.oil = sim.oil; state.fuel = sim.fuel;
+      state.coolant = sim.coolant; state.oil = sim.oil; state.fuel = sim.fuel; state.fco = sim.fco;
       state.trip = sim.dist;
     } else {
       state.trip += state.speed / 3600 * dt;
@@ -135,14 +136,14 @@
 
     // Anzeigeziele (Zündung aus: Nadeln auf 0; Sweep wie beim echten Kombi)
     let tgt = state.ign
-      ? { rpm: state.rpm, speed: state.speed, coolant: state.coolant, fuel: state.fuel }
-      : { rpm: 0, speed: 0, coolant: 40, fuel: 0 };
+      ? { rpm: state.rpm, speed: state.speed, coolant: state.coolant, fuel: state.fuel, fco: state.fco }
+      : { rpm: 0, speed: 0, coolant: 40, fuel: 0, fco: 0 };
     let allLamps = false;
     if (selfTest && state.ign) {
       selfTest.t += dt;
       const t = selfTest.t;
-      if (t < 1.1) tgt = { rpm: 7000, speed: 260, coolant: 130, fuel: 1 };
-      else if (t < 2.2) tgt = { rpm: 0, speed: 0, coolant: 40, fuel: 0 };
+      if (t < 1.1) tgt = { rpm: 7000, speed: 240, coolant: 130, fuel: 1, fco: 20 };
+      else if (t < 2.2) tgt = { rpm: 0, speed: 0, coolant: 40, fuel: 0, fco: 0 };
       else selfTest = null;
       allLamps = t < 2.6;
     }
