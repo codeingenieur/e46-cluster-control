@@ -201,7 +201,7 @@
       this._fuel(FUEL.cx, FUEL.cy);
       this._coolant(COOL.cx, COOL.cy);
 
-      [[352, 459, 1], [1248, 459, -1]].forEach((k) => this._pin(k[0], k[1], k[2]));
+      [[384, 459, 1], [1216, 459, -1]].forEach((k) => this._pin(k[0], k[1], k[2]));
       this._strip();
 
       // Glasreflex über der Frontplatte
@@ -273,12 +273,13 @@
     }
 
     /**
-     * Nebeninstrumente (Tank links, Kühlmittel rechts). Wie am Original liegt die Nabe nicht auf der Symmetrieachse
-     * der Skala: Teilstriche, Zahlen, Symbol und Farbfelder sind um eine Achse zentriert, die 7,7 Einheiten weiter
-     * innen liegt als die Nabe. Die Nadel zeigt von der Nabe aus auf Punkte dieser Skala.
+     * Nebeninstrumente (Tank links, Kühlmittel rechts). Skala, Zahlen, Symbol, Farbfelder und Nabe liegen auf einer gemeinsamen
+     * Symmetrieachse: zeigt die Nadel senkrecht nach oben, steht sie genau auf der mittleren Markierung (1/2). Die Achse liegt
+     * 7,7 Einheiten weiter innen als die ursprünglich übergebene Position.
      */
     _side(name, hubx, hy, dir, c) {
       const ax = hubx + dir * 7.7, RS = 108;
+      hubx = ax;   // Nabe auf der Skalenachse: zeigt die Nadel senkrecht nach oben, steht sie genau auf der mittleren Markierung
       const g = el('g', { class: 'dial dial-' + name }, this.litLayer);
       const top = hy - 66 - 112;
       // "Eimer"-Form: Kreis mit flachem Boden (Ring bei hy+34, Fläche bei hy+27)
