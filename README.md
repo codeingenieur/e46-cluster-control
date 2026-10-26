@@ -18,6 +18,7 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
 
 | Pfad | Zweck |
 |---|---|
+| [web/](web) | Digitales Kombiinstrument als Website (Zeiger, Demo-Fahrt, optional Anbindung an den ESP32) |
 | [firmware/](firmware) | PlatformIO-Projekt für den ESP32 (Arduino-Framework, TWAI-Treiber) |
 | [host/](host) | Python-Paket `e46cluster` (Bibliothek + CLI) |
 | [docs/hardware.md](docs/hardware.md) | Teileliste, Verdrahtung, Stromversorgung |
@@ -52,6 +53,16 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
        cl.set(mil=True)           # Motorkontrollleuchte
        cl.watchdog(2000)          # Nadeln auf 0, wenn der PC 2 s nichts sendet
    ```
+
+## Digitales Kombi (Website)
+
+`web/index.html` im Browser öffnen, kein Build und kein Server nötig. Die Seite zeigt Drehzahlmesser, Tacho,
+Kühlmittel- und Tankanzeige, Leuchten und das Mittendisplay mit federnden Nadeln und dem Nadel-Sweep beim Einschalten.
+Betriebsarten: **Demo-Fahrt** (Schaltgetriebe-Simulation) oder **Manuell** (Regler). Taste `F` = Vollbild.
+
+Mit **Verbinden** (Chrome/Edge, Web Serial) schickt die Seite dieselben Werte per `SET` an den ESP32, sodass das echte
+Cluster mitläuft. Das nutzt nur das Protokoll aus [docs/usb-interface.md](docs/usb-interface.md) und ist, wie der Rest,
+nicht am echten Cluster getestet. Tank, Blinker und Mittendisplay gibt es nur auf dem Bildschirm.
 
 ## Typischer Bring-up-Ablauf
 
