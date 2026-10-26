@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>e46-cluster Widget</title>
+<style>
+  body { margin: 0; background: #08080a; color: #e8e6e1; font: 15px/1.45 "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 18px; margin: 4px 0 12px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  input[type=text] { flex: 1; min-width: 240px; background: #121316; color: inherit; border: 1px solid #24262b; border-radius: 10px; padding: 9px 12px; font: 14px ui-monospace, monospace; }
+  button { background: #17181c; color: inherit; border: 1px solid #24262b; border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  button:hover { border-color: #3a3d44; }
+  pre { background: #121316; border: 1px solid #24262b; border-radius: 12px; padding: 12px; margin: 0; min-height: 7em; max-height: 14em; overflow: auto; font: 13px ui-monospace, monospace; }
+  small { color: #8b8d94; }
+</style>
+</head>
+<body>
+<main>
+  <h1>&lt;e46-cluster&gt; als Widget</h1>
+
+  <!-- So wird es eingebunden: Skript laden, Element setzen. Attribute sind optional. -->
+  <e46-cluster id="c" rpm="0" speed="0"></e46-cluster>
+
+  <div class="row">
+    <input id="cmd" type="text" value="SET rpm 3000 speed 80 coolant 90 mil 1" aria-label="Befehl" autocomplete="off">
+    <button id="send">Senden</button>
+  </div>
+  <div class="row">
+    <button data-c="SET rpm 6500 speed 200">Vollgas</button>
+    <button data-c="ZERO">ZERO</button>
+    <button data-c="SET left 1">Blinker links</button>
+    <button data-c="SET left 0 right 0 hazard 0">Blinker aus</button>
+    <button data-c="SET night 1">Nacht</button>
+    <button data-c="SET night 0">Tag</button>
+    <button data-c="SET dim 0.4">dunkler</button>
+    <button data-c="SET demo 1">Demo-Fahrt</button>
+    <button data-c="SET demo 0">Demo aus</button>
+    <button data-c="SET ign 0">Zündung aus</button>
+    <button data-c="SET ign 1">Zündung an</button>
+    <button data-c="SELFTEST">Selbsttest</button>
+    <button data-c="GET">GET</button>
+    <button data-c="HELP">HELP</button>
+  </div>
+  <pre id="log" aria-live="polite"></pre>
+  <p><small>Befehle wie beim ESP32 (docs/protocol.md), erweitert um fuel, left, right, hazard, night, dim, demo, odo, trip, clock.
+  Per Skript: <code>document.getElementById('c').command('SET rpm 3000')</code> oder <code>el.rpm = 3000</code>.</small></p>
+</main>
+
+<script src="e46-cluster.js"></script>
+<script>
+  const el = document.getElementById('c'), log = document.getElementById('log'), inp = document.getElementById('cmd');
+  const say = (t) => { log.textContent = t + '\n' + log.textContent; };
+  function run(line) { say('> ' + line + '\n' + el.command(line)); }
+  document.getElementById('send').onclick = () => run(inp.value);
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(inp.value); });
+  document.querySelectorAll('[data-c]').forEach((b) => b.onclick = () => { inp.value = b.dataset.c; run(b.dataset.c); });
+  el.addEventListener('clusterready', () => say('clusterready (Version ' + el.command('PING').split(' ')[2] + ')'));
+</script>
+</body>
+</html>

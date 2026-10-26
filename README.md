@@ -60,6 +60,9 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
 Kühlmittel- und Tankanzeige, Leuchten und das Mittendisplay mit federnden Nadeln und dem Nadel-Sweep beim Einschalten.
 Betriebsarten: **Demo-Fahrt** (Schaltgetriebe-Simulation) oder **Manuell** (Regler). Taste `F` = Vollbild.
 
+**Als Widget:** `web/widget/e46-cluster.js` registriert das Element `<e46-cluster>` für HTML und Angular, steuerbar per
+Attribut, Property oder Befehl (`SET rpm 3000`), siehe [web/widget/README.md](web/widget/README.md).
+
 Mit **Verbinden** (Chrome/Edge, Web Serial) schickt die Seite dieselben Werte per `SET` an den ESP32, sodass das echte
 Cluster mitläuft. Das nutzt nur das Protokoll aus [docs/usb-interface.md](docs/usb-interface.md) und ist, wie der Rest,
 nicht am echten Cluster getestet. Tank, Blinker und Mittendisplay gibt es nur auf dem Bildschirm.

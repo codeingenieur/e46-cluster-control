@@ -8,6 +8,7 @@
 | `sim.js` | Demo-Fahrt (Schaltgetriebe, Warmlaufen) |
 | `serial.js` | Anbindung an den ESP32 über Web Serial, Protokoll aus `docs/usb-interface.md` |
 | `app.js`, `index.html`, `style.css` | Bedienung |
+| `widget/` | **Web Component `<e46-cluster>`** für HTML/Angular, ein einziges Skript, steuerbar per Befehl (siehe `widget/README.md`) |
 | `fonts.css`, `grain.js` | Eingebettete Schrift und Körnung (Frontplatte, matte Naben) |
 
 ## Woher die Maße kommen
