@@ -52,6 +52,7 @@
     selfTest = on ? { t: 0 } : null;
   });
   toggle($('#b-night'), (on) => cluster.setLight({ night: on }));
+  toggle($('#b-lcd'), (on) => cluster.setLcdStyle(on ? 'blue' : 'red'));
   $('#s-dim').addEventListener('input', (e) => cluster.setLight({ dim: Number(e.target.value) }));
   document.querySelectorAll('#lamps [data-lamp]').forEach((b) => toggle(b, (on) => { state[b.dataset.lamp] = on; }));
   document.querySelectorAll('#turn [data-turn]').forEach((b) => toggle(b, (on) => { state.turn[b.dataset.turn] = on; }));
@@ -109,18 +110,6 @@
   // ---------- Hauptschleife ----------
   let last = performance.now(), uiTimer = 0;
 
-  function gearLabel() {
-    if (state.mode === 'demo') return sim.gearLabel;
-    if (state.speed < 3) return 'N';
-    const ratio = state.rpm / state.speed;   // nächstliegende Gangübersetzung
-    let best = 1, err = Infinity;
-    DriveSim.RATIOS.forEach((r, i) => {
-      const e = Math.abs(Math.log(ratio / (r * DriveSim.RPM_PER_KMH)));
-      if (e < err) { err = e; best = i + 1; }
-    });
-    return err < 0.35 ? String(best) : '–';
-  }
-
   function frame(now) {
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
@@ -152,6 +141,7 @@
 
     const lamps = {};
     LAMPS.forEach((k) => { lamps[k] = state.ign && (allLamps || state[k]); });
+    lamps.fuelwarn = state.ign && (allLamps || state.fuel < 0.1);
     cluster.setLamps(lamps);
 
     const blink = state.turn.hazard;
@@ -159,11 +149,9 @@
 
     const d = new Date();
     cluster.setLcd({
-      temp: '18.5 °C',
+      odo: String(Math.floor(state.odo + state.trip)).padStart(6, '0'),
+      trip: state.trip.toFixed(1),
       clock: String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'),
-      gear: state.ign ? gearLabel() : '',
-      odo: String(Math.floor(state.odo + state.trip)) + ' km',
-      trip: 'A ' + state.trip.toFixed(1) + ' km',
     });
 
     // Regler und Zahlenwerte nachziehen, gedrosselt auf 10 Hz
