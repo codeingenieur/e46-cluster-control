@@ -80,7 +80,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
   // Lage in der Leuchtenleiste: [x, y, Skalierung]
   const LAMP_POS = {
     mil: [800, 95, 0.95],
-    overheat: [170, 522, 0.95], oilwarn: [250, 522, 0.95], battery: [330, 522, 0.95], oilpress: [290, 562, 0.95],
+    overheat: [185, 544, 0.95], oilwarn: [245, 544, 0.95], battery: [305, 544, 0.95], oilpress: [365, 544, 0.95],
     lab: [1023, 547, 1.0], cruise: [1103, 547, 1.0],
     arrk: [1245, 546, 1.15], tt: [1320, 546, 1.0], defect: [1395, 546, 1.0],
   };
@@ -217,7 +217,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       this._fuel(FUEL.cx, FUEL.cy);
       this._coolant(COOL.cx, COOL.cy);
 
-      [[384, 459, 1], [1216, 459, -1]].forEach((k) => this._pin(k[0], k[1], k[2]));
+      [384, 1216].forEach((x) => this._pin(x, 459));
       this._strip();
 
       // Glasreflex über der Frontplatte
@@ -383,14 +383,11 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
         { min: 0, max: 20, a0: -T, a1: T, spring: [14, 1.1], angFn });
     }
 
-    /** Drücker für Uhr/Trip: matter Stift mit Chromring, zeigt schräg nach außen unten */
-    _pin(x, y, dir) {
-      const g = el('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + dir + ' 1)' }, this.base);
-      el('rect', { x: -34, y: -9, width: 36, height: 18, rx: 9, fill: '#3c3c40', transform: 'rotate(18)' }, g);
-      el('rect', { x: -34, y: -9, width: 36, height: 18, rx: 9, fill: 'url(#pGrain)', transform: 'rotate(18)' }, g);
+    /** Drücker für Uhr/Trip: ein runder Knopf mit hellem Ring */
+    _pin(x, y) {
+      const g = el('g', { transform: 'translate(' + x + ' ' + y + ')' }, this.base);
       el('circle', { r: 18, fill: '#0b0b0d', stroke: '#9a9da3', 'stroke-width': 3, 'stroke-opacity': 0.7 }, g);
       el('circle', { r: 12, fill: '#16161a' }, g);
-      el('circle', { cx: 24, cy: -5, r: 8, fill: '#050506', opacity: 0.55 }, g);
     }
 
     /** Leuchtenleiste unten mit Mittendisplay, Blinkerpfeilen und den Warnleuchten */
@@ -498,6 +495,11 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     setPower(on) { this.svg.classList.toggle('off', !on); }
 
     setLight(o) {
+      if (o.night != null && !!o.night !== !!this._night) {
+        // Ohne Übergänge umschalten: sonst laufen Deckkraft, Farben und Filter unterschiedlich schnell und die Ebenen sind kurz nicht deckungsgleich
+        this.svg.classList.add('sw');
+        requestAnimationFrame(() => requestAnimationFrame(() => this.svg.classList.remove('sw')));
+      }
       if (o.night != null) { this.svg.classList.toggle('night', !!o.night); this._night = !!o.night; }
       if (o.dim != null) this._dim = o.dim;
       const night = this._night, dim = this._dim;
@@ -677,7 +679,7 @@ const KEYS = {
 };
 const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
 
-const CSS = ":host { display: block; line-height: 0; }\n.box { width: 100%; }\nsvg.cluster { display: block; width: 100%; height: auto; }\n/* ---------- Kombi (SVG) ---------- */\nsvg.cluster {\n  font-family: \"Oswald\", \"Bahnschrift\", \"DIN Alternate\", \"Arial Narrow\", system-ui, sans-serif;\n  font-weight: 500;\n  --lit: 1;\n  --glow: 0;\n  --shade-a: 0;\n  --dot-on: #ffb383;\n  --dot-off: #9a1914;\n}\nsvg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }\nsvg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }\n\n.numerals text, .unit { fill: #eeeeee; }\n.unit-icon { color: #eeeeee; }\n.unit { font-family: \"Barlow\", \"Bahnschrift\", \"DIN Alternate\", system-ui, sans-serif; font-weight: 600; }\n\n.lit { opacity: var(--lit); }\n.hub-shade { opacity: var(--shade-a); pointer-events: none; }\n\n.tick { stroke: #eeeeee; stroke-linecap: butt; }\n.redband { stroke: #dc2a21; }\n.deco { color: #c9ccd4; opacity: .10; }\n.shade { pointer-events: none; }\n\n/* Nachtmodus: Unbeleuchtetes wird dunkel (Abdunkelung per Ebene), Beleuchtetes leuchtet warmwei\u00df mit orangem Hof */\n.cluster.night .lit {\n  filter: drop-shadow(0 0 2px rgba(255, 170, 90, calc(.85 * var(--glow)))) drop-shadow(0 0 calc(var(--glow) * 7px) rgba(255, 110, 30, .6));\n}\n.cluster.night .numerals text, .cluster.night .unit, .cluster.night .unit-icon { fill: #fff1de; color: #fff1de; }\n.cluster.night .tick { stroke: #fff1de; }\n.cluster.night .redband { stroke: #ff3b28; }\n.cluster.night .needle-tail { fill: #17171a; }\n.cluster.night .turn:not(.on) { opacity: .35; }\n.cluster.night .lamp:not(.on) { opacity: .05; }\n\n/* Nadeln: tags\u00fcber wei\u00df, nachts orange beleuchtet */\n.needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.night .needle-shape { fill: #ff7a38; }\n.cluster.night .needle-wrap {\n  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)) drop-shadow(0 0 calc(var(--glow) * 8px) rgba(255, 90, 20, .9));\n}\n.cluster.off .needle-shape { fill: #bdbdc2; }\n.cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.off .lit { opacity: .3; filter: none; }\n.cluster.off .needle-tail { fill: #3b3b3f; }\n\n.glass { pointer-events: none; }\n\n/* Leuchten */\n.lamp { opacity: .10; color: var(--amber, #ffb000); }\n.lamp.green { color: var(--green, #3ddc5a); }\n.lamp.red { color: var(--red, #ff2a1a); }\n.lamp.blue { color: #4a7fe0; }\n.lamp.orange { color: #ff7a01; }\n.lamp.jira { color: #e5493a; }\n.lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }\n\n.turn { color: #4a3f43; }\n.turn.on { color: var(--green, #3ddc5a); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }\n@keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }\n\n/* Mittendisplay: rote Punktmatrix */\n.lcd .dot { fill: var(--dot-off); }\n.lcd .dot.on { fill: var(--dot-on); }\n.lcd { filter: drop-shadow(0 0 2px rgba(255, 90, 50, .55)); }\n.cluster.off .lcd { opacity: .15; filter: none; }\n\n";
+const CSS = ":host { display: block; line-height: 0; }\n.box { width: 100%; }\nsvg.cluster { display: block; width: 100%; height: auto; }\n/* ---------- Kombi (SVG) ---------- */\nsvg.cluster {\n  font-family: \"Oswald\", \"Bahnschrift\", \"DIN Alternate\", \"Arial Narrow\", system-ui, sans-serif;\n  font-weight: 500;\n  --lit: 1;\n  --glow: 0;\n  --shade-a: 0;\n  --dot-on: #ffb383;\n  --dot-off: #9a1914;\n}\nsvg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }\nsvg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }\nsvg.cluster.sw, svg.cluster.sw * { transition: none !important; }   /* Tag/Nacht: alles in einem Schritt */\n\n.numerals text, .unit { fill: #eeeeee; }\n.unit-icon { color: #eeeeee; }\n.unit { font-family: \"Barlow\", \"Bahnschrift\", \"DIN Alternate\", system-ui, sans-serif; font-weight: 600; }\n\n.lit { opacity: var(--lit); }\n.hub-shade { opacity: var(--shade-a); pointer-events: none; }\n\n.tick { stroke: #eeeeee; stroke-linecap: butt; }\n.redband { stroke: #dc2a21; }\n.deco { color: #c9ccd4; opacity: .10; }\n.shade { pointer-events: none; }\n\n/* Nachtmodus: Unbeleuchtetes wird dunkel (Abdunkelung per Ebene), Beleuchtetes leuchtet warmwei\u00df mit orangem Hof */\n.cluster.night .lit {\n  filter: drop-shadow(0 0 2px rgba(255, 170, 90, calc(.85 * var(--glow)))) drop-shadow(0 0 calc(var(--glow) * 7px) rgba(255, 110, 30, .6));\n}\n.cluster.night .numerals text, .cluster.night .unit, .cluster.night .unit-icon { fill: #fff1de; color: #fff1de; }\n.cluster.night .tick { stroke: #fff1de; }\n.cluster.night .redband { stroke: #ff3b28; }\n.cluster.night .needle-tail { fill: #17171a; }\n.cluster.night .turn:not(.on) { opacity: .35; }\n.cluster.night .lamp:not(.on) { opacity: .05; }\n\n/* Nadeln: tags\u00fcber wei\u00df, nachts orange beleuchtet */\n.needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.night .needle-shape { fill: #ff7a38; }\n.cluster.night .needle-wrap {\n  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)) drop-shadow(0 0 calc(var(--glow) * 8px) rgba(255, 90, 20, .9));\n}\n.cluster.off .needle-shape { fill: #bdbdc2; }\n.cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.off .lit { opacity: .3; filter: none; }\n.cluster.off .needle-tail { fill: #3b3b3f; }\n\n.glass { pointer-events: none; }\n\n/* Leuchten */\n.lamp { opacity: .10; color: var(--amber, #ffb000); }\n.lamp.green { color: var(--green, #3ddc5a); }\n.lamp.red { color: var(--red, #ff2a1a); }\n.lamp.blue { color: #4a7fe0; }\n.lamp.orange { color: #ff7a01; }\n.lamp.jira { color: #e5493a; }\n.lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }\n\n.turn { color: #4a3f43; }\n.turn.on { color: var(--green, #3ddc5a); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }\n@keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }\n\n/* Mittendisplay: rote Punktmatrix */\n.lcd .dot { fill: var(--dot-off); }\n.lcd .dot.on { fill: var(--dot-on); }\n.lcd { filter: drop-shadow(0 0 2px rgba(255, 90, 50, .55)); }\n.cluster.off .lcd { opacity: .15; filter: none; }\n\n";
 
 const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
 const toBool = (v) => !(v === false || v === null || v === 'false' || v === '0' || v === 0);
