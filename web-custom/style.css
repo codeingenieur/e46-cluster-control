@@ -53,6 +53,7 @@ svg.cluster {
 }
 svg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }
 svg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }
+svg.cluster.sw, svg.cluster.sw * { transition: none !important; }   /* Tag/Nacht: alles in einem Schritt */
 
 .numerals text, .unit { fill: #eeeeee; }
 .unit-icon { color: #eeeeee; }

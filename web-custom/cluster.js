@@ -217,7 +217,7 @@
       this._fuel(FUEL.cx, FUEL.cy);
       this._coolant(COOL.cx, COOL.cy);
 
-      [[384, 459, 1], [1216, 459, -1]].forEach((k) => this._pin(k[0], k[1], k[2]));
+      [384, 1216].forEach((x) => this._pin(x, 459));
       this._strip();
 
       // Glasreflex über der Frontplatte
@@ -385,14 +385,11 @@
         { min: 0, max: 20, a0: -T, a1: T, spring: [14, 1.1], angFn });
     }
 
-    /** Drücker für Uhr/Trip: matter Stift mit Chromring, zeigt schräg nach außen unten */
-    _pin(x, y, dir) {
-      const g = el('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + dir + ' 1)' }, this.base);
-      el('rect', { x: -34, y: -9, width: 36, height: 18, rx: 9, fill: '#3c3c40', transform: 'rotate(18)' }, g);
-      el('rect', { x: -34, y: -9, width: 36, height: 18, rx: 9, fill: 'url(#pGrain)', transform: 'rotate(18)' }, g);
+    /** Drücker für Uhr/Trip: ein runder Knopf mit hellem Ring */
+    _pin(x, y) {
+      const g = el('g', { transform: 'translate(' + x + ' ' + y + ')' }, this.base);
       el('circle', { r: 18, fill: '#0b0b0d', stroke: '#9a9da3', 'stroke-width': 3, 'stroke-opacity': 0.7 }, g);
       el('circle', { r: 12, fill: '#16161a' }, g);
-      el('circle', { cx: 24, cy: -5, r: 8, fill: '#050506', opacity: 0.55 }, g);
     }
 
     /** Leuchtenleiste unten mit Mittendisplay, Blinkerpfeilen und den Warnleuchten */
@@ -500,6 +497,11 @@
     setPower(on) { this.svg.classList.toggle('off', !on); }
 
     setLight(o) {
+      if (o.night != null && !!o.night !== !!this._night) {
+        // Ohne Übergänge umschalten: sonst laufen Deckkraft, Farben und Filter unterschiedlich schnell und die Ebenen sind kurz nicht deckungsgleich
+        this.svg.classList.add('sw');
+        requestAnimationFrame(() => requestAnimationFrame(() => this.svg.classList.remove('sw')));
+      }
       if (o.night != null) { this.svg.classList.toggle('night', !!o.night); this._night = !!o.night; }
       if (o.dim != null) this._dim = o.dim;
       const night = this._night, dim = this._dim;
