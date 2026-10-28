@@ -5,12 +5,13 @@
   const cluster = new E46Cluster($('#cluster'));
   const sim = new DriveSim();
 
-  const LAMPS = ['mil', 'eml', 'cruise', 'overheat', 'oilwarn', 'battery', 'oilpress'];
+  const LAMPS = ['mil', 'lab', 'cruise', 'overheat', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'defect'];
   const state = {
     mode: 'demo',
     ign: true,
     rpm: 0, speed: 0, coolant: 40, oil: 40, fuel: 0.65, fco: 0,
-    mil: false, eml: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
+    mil: false, lab: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
+    arrk: false, tt: false, defect: false,
     turn: { left: false, right: false, hazard: false },
     odo: 148213, trip: 0,
   };
@@ -140,7 +141,8 @@
 
     const lamps = {};
     LAMPS.forEach((k) => { lamps[k] = state.ign && (allLamps || state[k]); });
-    lamps.fuelwarn = state.ign && (allLamps || state.fuel < 0.1);
+    // Tankleuchte: erst wenn der Tank leer ist und die Nadel wirklich auf 0 angekommen ist (nicht schon beim Zielwert)
+    lamps.fuelwarn = state.ign && (allLamps || (state.fuel <= 0.02 && cluster.needles.fuel.f <= 0.012));
     cluster.setLamps(lamps);
 
     const blink = state.turn.hazard;

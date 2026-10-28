@@ -11,17 +11,19 @@ const NUMBERS = {          // Property: [min, max, Standard]
 };
 const BOOLS = {            // Property: Standard
   ignition: true, night: false, demo: false,
-  mil: false, eml: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
+  mil: false, lab: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
+  arrk: false, tt: false, defect: false,
   turnLeft: false, turnRight: false, hazard: false,
 };
-const LAMPS = ['mil', 'eml', 'cruise', 'overheat', 'oilwarn', 'battery', 'oilpress'];
+const LAMPS = ['mil', 'lab', 'cruise', 'overheat', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'defect'];
 
 // Befehlsschlüssel -> Property. Die ersten Schlüssel sind identisch zum ESP32-Protokoll (docs/protocol.md).
 const KEYS = {
   rpm: 'rpm', speed: 'speed', coolant: 'coolant', oil: 'oil', fco: 'fco',
-  ign: 'ignition', mil: 'mil', cruise: 'cruise', eml: 'eml', overheat: 'overheat', oilwarn: 'oilwarn',
+  ign: 'ignition', mil: 'mil', cruise: 'cruise', eml: 'lab', overheat: 'overheat', oilwarn: 'oilwarn',
   battery: 'battery', oilpress: 'oilpress',
   // nur im Widget
+  lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect',
   fuel: 'fuel', left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
@@ -203,7 +205,8 @@ class E46ClusterElement extends HTMLElement {
 
     const lit = {};
     LAMPS.forEach((k) => { lit[k] = s.ignition && (all || s[k]); });
-    lit.fuelwarn = s.ignition && (all || s.fuel < 0.1);
+    // Tankleuchte: erst wenn der Tank leer ist und die Nadel wirklich auf 0 angekommen ist (nicht schon beim Zielwert)
+    lit.fuelwarn = s.ignition && (all || (s.fuel <= 0.02 && c.needles.fuel.f <= 0.012));
     lit.left = s.ignition && (s.turnLeft || s.hazard);
     lit.right = s.ignition && (s.turnRight || s.hazard);
     c.setLamps(lit);

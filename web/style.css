@@ -91,13 +91,16 @@ svg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transit
 .glass { pointer-events: none; }
 
 /* Leuchten */
-.lamp { opacity: .10; color: var(--amber); }
-.lamp.green { color: var(--green); }
-.lamp.red { color: var(--red); }
+.lamp { opacity: .10; color: var(--amber, #ffb000); }
+.lamp.green { color: var(--green, #3ddc5a); }
+.lamp.red { color: var(--red, #ff2a1a); }
+.lamp.blue { color: #4a7fe0; }
+.lamp.orange { color: #ff7a01; }
+.lamp.jira { color: #e5493a; }
 .lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }
 
 .turn { color: #4a3f43; }
-.turn.on { color: var(--green); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }
+.turn.on { color: var(--green, #3ddc5a); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }
 @keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }
 
 /* Mittendisplay: rote Punktmatrix */

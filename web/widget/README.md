@@ -74,9 +74,11 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `speed` | 0 bis 260 | Tacho (km/h) |
 | `coolant` | 40 bis 130 | Kühlmitteltemperatur (°C) |
 | `oil` | 40 bis 150 | Öltemperatur (nur Wert, das Original zeigt sie nicht) |
-| `fuel` | 0 bis 1 | Tankinhalt, unter 0,1 leuchtet die Reserveleuchte |
+| `fuel` | 0 bis 1 | Tankinhalt. Bei leerem Tank (0) leuchtet die Reserveleuchte, aber erst, wenn die Nadel wirklich bei 0 angekommen ist |
 | `fco` | 0 bis 20 | Momentanverbrauch (L/100 km) |
-| `mil`, `eml`, `cruise`, `overheat`, `oilwarn`, `battery`, `oilpress` | bool | Warnleuchten |
+| `mil`, `cruise`, `overheat`, `oilwarn`, `battery`, `oilpress` | bool | Warnleuchten |
+| `lab` | bool | Labor-Leuchte (roter Erlenmeyerkolben, nur Kontur). Sitzt an der Stelle der früheren EML-Leuchte. Der Schlüssel `eml` gilt im Widget als Alias dafür |
+| `arrk`, `tt`, `defect` | bool | eigene Leuchten: arrk-Logo (blau), TT-Logo (orange), Jira-Defect-Symbol (rotes Quadrat mit ausgestanztem Kreis). Nur Anzeige |
 | `turnLeft`, `turnRight`, `hazard` | bool | Blinker, Warnblinker |
 | `ignition` | bool | aus: Nadeln auf 0, Lampen aus. an: Selbsttest (Nadelsweep, Lampentest) |
 | `night` | bool | Nachtmodus: Platte dunkel, Beleuchtetes leuchtet |
@@ -102,8 +104,8 @@ Eine Zeile wirkt ganz oder gar nicht. Antworten wie beim ESP32.
 | `RESET` | alles auf Standard | `OK` |
 | `PING` / `HELP` | Lebenszeichen / Schlüsselliste | `PONG …` / `HELP …` |
 
-Schlüssel (wie am ESP32): `rpm speed coolant oil fco ign mil cruise eml overheat oilwarn battery oilpress`. Nur im Widget:
-`fuel left right hazard night dim demo odo trip clock`. Beispiel: `SET rpm 3000 speed 80 coolant 90 mil 1 left 1 night 1`.
+Schlüssel (wie am ESP32): `rpm speed coolant oil fco ign mil cruise eml overheat oilwarn battery oilpress` (`eml` schaltet hier die Labor-Leuchte). Nur im Widget:
+`lab arrk tt defect fuel left right hazard night dim demo odo trip clock`. Beispiel für eine Jira-Anzeige: `SET defect 1`. Beispiel: `SET rpm 3000 speed 80 coolant 90 mil 1 left 1 night 1`.
 
 Dadurch kann **derselbe Befehlsstrom** das Widget und das echte Cluster steuern: Befehle erst an den ESP32 schicken, dieselbe Zeile
 an `kombi.command(...)`. (Eine Brücke dafür ist `../serial.js`, `Esp32Link`.)

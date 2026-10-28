@@ -49,12 +49,16 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
   // Piktogramme in einem 40x40-Feld um (0,0)
   const ICONS = {
     mil: '<path d="M-16 -5H-9L-6 -11H6V-6H11L14 -3H19V8H14L11 11H-8L-12 7H-19V-1H-16Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>',
-    eml: '<rect x="-18" y="-12" width="36" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><text y="5" text-anchor="middle" font-size="14" font-weight="600" fill="currentColor">EML</text>',
+    lab: '<path d="M-6 -16H6M-4.5 -16V-4L-15 12.5Q-17.5 16 -13.5 16H13.5Q17.5 16 15 12.5L4.5 -4V-16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M-9.5 5H9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
     cruise: '<path d="M-15 8A18 18 0 1 1 15 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M0 4L9 -9" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle r="3.5" cy="4" fill="currentColor"/>',
     overheat: '<path d="M-3.5 -15a3.5 3.5 0 0 1 7 0V2.5a8 8 0 1 1 -7 0Z" fill="none" stroke="currentColor" stroke-width="3" transform="translate(-6 2)"/><path d="M5 -4h10M5 3h10M5 10h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
     oilwarn: '<path d="M-17 -2H-6L-2 -9H6V-5H11L19 -11L21 -9L15 -1V8Q15 11 12 11H-12Q-17 11 -17 6Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M-12 16q3 2 6 0t6 0t6 0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>',
     battery: '<rect x="-17" y="-7" width="34" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-11 -7v-5h6v5M5 -7v-5h6v5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-11 2.5h7M7.5 -1v7M4 2.5h7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
     oilpress: '<path d="M-17 -4H-6L-2 -11H6V-7H11L19 -13L21 -11L15 -3V6Q15 9 12 9H-12Q-17 9 -17 4Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="-1" cy="15" r="2.6" fill="currentColor"/><path d="M-1 0v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
+    // eigene Leuchten: arrk- und TT-Logo (aus arrk.svg / tt.svg) und das Jira-Defect-Symbol (rotes Quadrat mit ausgestanztem, durchsichtigem Kreis)
+    arrk: '<polygon points="10.9,-17 -15.2,16.9 -4.9,16.9 5.4,3.2 7.2,16.9 15.2,16.9" fill="currentColor"/>',
+    tt: '<g transform="scale(.25) translate(-307 -277)"><path d="M333.6,327.3c0-7.4,0-14.2,0-21c0-15,0-29.9,0-44.9c0-9-2.4-11.5-11.6-11.5c-19.6-0.1-39.3,0-58.9,0c-2,0-3.9-0.2-5.8-0.3c-1.7-19.3,17-40.3,35.7-40.4c24.3-0.1,48.6,0,72.9,0c6.8,0,9.1,2.4,9.1,9.4c0,23.1-0.2,46.2,0.1,69.3c0.2,12.6-4.9,22.1-14.5,29.6C352.9,323.5,344.2,326.7,333.6,327.3z" fill="currentColor"/><path d="M263.7,344.5c-5.8,0-11.6-0.1-17.5,0c-4.6,0.1-7.3-2.6-7.3-6.5c-0.1-12.8-0.4-25.6,0.8-38.3c0.9-9.9,9.4-16.7,19.2-16.9c11.6-0.3,23.3-0.2,34.9-0.1c5.1,0.1,7.2,2.3,7.3,7.4c0.1,11.3,0.2,22.6,0,33.9c-0.2,11.5-9.4,20.3-20.9,20.4C274.7,344.6,269.2,344.5,263.7,344.5z" fill="currentColor"/></g>',
+    defect: '<path fill-rule="evenodd" d="M-11 -17H11A6 6 0 0 1 17 -11V11A6 6 0 0 1 11 17H-11A6 6 0 0 1 -17 11V-11A6 6 0 0 1 -11 -17ZM0 -8.5A8.5 8.5 0 1 0 0 8.5A8.5 8.5 0 1 0 0 -8.5Z" fill="currentColor"/>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
     pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -63,18 +67,22 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
   };
   const LAMP_META = {
     mil: ['amber', 'Motorkontrollleuchte'],
-    eml: ['amber', 'EML'],
+    lab: ['red', 'Labor'],
     cruise: ['green', 'Tempomat'],
     overheat: ['red', 'Überhitzung'],
     oilwarn: ['amber', 'Ölstand'],
     battery: ['red', 'Ladekontrolle'],
     oilpress: ['red', 'Öldruck'],
+    arrk: ['blue', 'arrk'],
+    tt: ['orange', 'TT'],
+    defect: ['jira', 'Jira: Defect'],
   };
   // Lage in der Leuchtenleiste: [x, y, Skalierung]
   const LAMP_POS = {
     mil: [800, 95, 0.95],
     overheat: [170, 522, 0.95], oilwarn: [250, 522, 0.95], battery: [330, 522, 0.95], oilpress: [290, 562, 0.95],
-    eml: [1023, 547, 1.0], cruise: [1103, 547, 1.0],
+    lab: [1023, 547, 1.0], cruise: [1103, 547, 1.0],
+    arrk: [1245, 546, 1.15], tt: [1320, 546, 1.0], defect: [1395, 546, 1.0],
   };
 
   // 5x7-Punktmatrix für das Mittendisplay (Zeilen von oben, 1 = Punkt an)
@@ -396,7 +404,6 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       // dezente Symbole der unbelegten Leuchten (wie am echten Kombi sichtbar, wenn aus)
       const deco = el('g', { class: 'deco' }, base);
       el('path', { d: 'M-40 0q0 -14 14 -14h52q14 0 14 14q0 14 -14 14h-52q-14 0 -14 -14ZM-18 -11v22M18 -11v22', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5, transform: 'translate(537 546)' }, deco);
-      [1270, 1350, 1430].forEach((x) => el('circle', { cx: x, cy: 546, r: 17, fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5 }, deco));
       // kleines Fenster zwischen den Zifferblättern
       el('rect', { x: 776, y: 424, width: 48, height: 48, rx: 8, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, base);
 
@@ -652,23 +659,25 @@ const NUMBERS = {          // Property: [min, max, Standard]
 };
 const BOOLS = {            // Property: Standard
   ignition: true, night: false, demo: false,
-  mil: false, eml: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
+  mil: false, lab: false, cruise: false, overheat: false, oilwarn: false, battery: false, oilpress: false,
+  arrk: false, tt: false, defect: false,
   turnLeft: false, turnRight: false, hazard: false,
 };
-const LAMPS = ['mil', 'eml', 'cruise', 'overheat', 'oilwarn', 'battery', 'oilpress'];
+const LAMPS = ['mil', 'lab', 'cruise', 'overheat', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'defect'];
 
 // Befehlsschlüssel -> Property. Die ersten Schlüssel sind identisch zum ESP32-Protokoll (docs/protocol.md).
 const KEYS = {
   rpm: 'rpm', speed: 'speed', coolant: 'coolant', oil: 'oil', fco: 'fco',
-  ign: 'ignition', mil: 'mil', cruise: 'cruise', eml: 'eml', overheat: 'overheat', oilwarn: 'oilwarn',
+  ign: 'ignition', mil: 'mil', cruise: 'cruise', eml: 'lab', overheat: 'overheat', oilwarn: 'oilwarn',
   battery: 'battery', oilpress: 'oilpress',
   // nur im Widget
+  lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect',
   fuel: 'fuel', left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
 const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
 
-const CSS = ":host { display: block; line-height: 0; }\n.box { width: 100%; }\nsvg.cluster { display: block; width: 100%; height: auto; }\n/* ---------- Kombi (SVG) ---------- */\nsvg.cluster {\n  font-family: \"Oswald\", \"Bahnschrift\", \"DIN Alternate\", \"Arial Narrow\", system-ui, sans-serif;\n  font-weight: 500;\n  --lit: 1;\n  --glow: 0;\n  --shade-a: 0;\n  --dot-on: #ffb383;\n  --dot-off: #9a1914;\n}\nsvg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }\nsvg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }\n\n.numerals text, .unit { fill: #eeeeee; }\n.unit-icon { color: #eeeeee; }\n.unit { font-family: \"Barlow\", \"Bahnschrift\", \"DIN Alternate\", system-ui, sans-serif; font-weight: 600; }\n\n.lit { opacity: var(--lit); }\n.hub-shade { opacity: var(--shade-a); pointer-events: none; }\n\n.tick { stroke: #eeeeee; stroke-linecap: butt; }\n.redband { stroke: #dc2a21; }\n.deco { color: #c9ccd4; opacity: .10; }\n.shade { pointer-events: none; }\n\n/* Nachtmodus: Unbeleuchtetes wird dunkel (Abdunkelung per Ebene), Beleuchtetes leuchtet warmwei\u00df mit orangem Hof */\n.cluster.night .lit {\n  filter: drop-shadow(0 0 2px rgba(255, 170, 90, calc(.85 * var(--glow)))) drop-shadow(0 0 calc(var(--glow) * 7px) rgba(255, 110, 30, .6));\n}\n.cluster.night .numerals text, .cluster.night .unit, .cluster.night .unit-icon { fill: #fff1de; color: #fff1de; }\n.cluster.night .tick { stroke: #fff1de; }\n.cluster.night .redband { stroke: #ff3b28; }\n.cluster.night .needle-tail { fill: #17171a; }\n.cluster.night .turn:not(.on) { opacity: .35; }\n.cluster.night .lamp:not(.on) { opacity: .05; }\n\n/* Nadeln: tags\u00fcber wei\u00df, nachts orange beleuchtet */\n.needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.night .needle-shape { fill: #ff7a38; }\n.cluster.night .needle-wrap {\n  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)) drop-shadow(0 0 calc(var(--glow) * 8px) rgba(255, 90, 20, .9));\n}\n.cluster.off .needle-shape { fill: #bdbdc2; }\n.cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.off .lit { opacity: .3; filter: none; }\n.cluster.off .needle-tail { fill: #3b3b3f; }\n\n.glass { pointer-events: none; }\n\n/* Leuchten */\n.lamp { opacity: .10; color: var(--amber); }\n.lamp.green { color: var(--green); }\n.lamp.red { color: var(--red); }\n.lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }\n\n.turn { color: #4a3f43; }\n.turn.on { color: var(--green); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }\n@keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }\n\n/* Mittendisplay: rote Punktmatrix */\n.lcd .dot { fill: var(--dot-off); }\n.lcd .dot.on { fill: var(--dot-on); }\n.lcd { filter: drop-shadow(0 0 2px rgba(255, 90, 50, .55)); }\n.cluster.off .lcd { opacity: .15; filter: none; }\n\n";
+const CSS = ":host { display: block; line-height: 0; }\n.box { width: 100%; }\nsvg.cluster { display: block; width: 100%; height: auto; }\n/* ---------- Kombi (SVG) ---------- */\nsvg.cluster {\n  font-family: \"Oswald\", \"Bahnschrift\", \"DIN Alternate\", \"Arial Narrow\", system-ui, sans-serif;\n  font-weight: 500;\n  --lit: 1;\n  --glow: 0;\n  --shade-a: 0;\n  --dot-on: #ffb383;\n  --dot-off: #9a1914;\n}\nsvg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }\nsvg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }\n\n.numerals text, .unit { fill: #eeeeee; }\n.unit-icon { color: #eeeeee; }\n.unit { font-family: \"Barlow\", \"Bahnschrift\", \"DIN Alternate\", system-ui, sans-serif; font-weight: 600; }\n\n.lit { opacity: var(--lit); }\n.hub-shade { opacity: var(--shade-a); pointer-events: none; }\n\n.tick { stroke: #eeeeee; stroke-linecap: butt; }\n.redband { stroke: #dc2a21; }\n.deco { color: #c9ccd4; opacity: .10; }\n.shade { pointer-events: none; }\n\n/* Nachtmodus: Unbeleuchtetes wird dunkel (Abdunkelung per Ebene), Beleuchtetes leuchtet warmwei\u00df mit orangem Hof */\n.cluster.night .lit {\n  filter: drop-shadow(0 0 2px rgba(255, 170, 90, calc(.85 * var(--glow)))) drop-shadow(0 0 calc(var(--glow) * 7px) rgba(255, 110, 30, .6));\n}\n.cluster.night .numerals text, .cluster.night .unit, .cluster.night .unit-icon { fill: #fff1de; color: #fff1de; }\n.cluster.night .tick { stroke: #fff1de; }\n.cluster.night .redband { stroke: #ff3b28; }\n.cluster.night .needle-tail { fill: #17171a; }\n.cluster.night .turn:not(.on) { opacity: .35; }\n.cluster.night .lamp:not(.on) { opacity: .05; }\n\n/* Nadeln: tags\u00fcber wei\u00df, nachts orange beleuchtet */\n.needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.night .needle-shape { fill: #ff7a38; }\n.cluster.night .needle-wrap {\n  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)) drop-shadow(0 0 calc(var(--glow) * 8px) rgba(255, 90, 20, .9));\n}\n.cluster.off .needle-shape { fill: #bdbdc2; }\n.cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }\n.cluster.off .lit { opacity: .3; filter: none; }\n.cluster.off .needle-tail { fill: #3b3b3f; }\n\n.glass { pointer-events: none; }\n\n/* Leuchten */\n.lamp { opacity: .10; color: var(--amber, #ffb000); }\n.lamp.green { color: var(--green, #3ddc5a); }\n.lamp.red { color: var(--red, #ff2a1a); }\n.lamp.blue { color: #4a7fe0; }\n.lamp.orange { color: #ff7a01; }\n.lamp.jira { color: #e5493a; }\n.lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }\n\n.turn { color: #4a3f43; }\n.turn.on { color: var(--green, #3ddc5a); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }\n@keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }\n\n/* Mittendisplay: rote Punktmatrix */\n.lcd .dot { fill: var(--dot-off); }\n.lcd .dot.on { fill: var(--dot-on); }\n.lcd { filter: drop-shadow(0 0 2px rgba(255, 90, 50, .55)); }\n.cluster.off .lcd { opacity: .15; filter: none; }\n\n";
 
 const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
 const toBool = (v) => !(v === false || v === null || v === 'false' || v === '0' || v === 0);
@@ -844,7 +853,8 @@ class E46ClusterElement extends HTMLElement {
 
     const lit = {};
     LAMPS.forEach((k) => { lit[k] = s.ignition && (all || s[k]); });
-    lit.fuelwarn = s.ignition && (all || s.fuel < 0.1);
+    // Tankleuchte: erst wenn der Tank leer ist und die Nadel wirklich auf 0 angekommen ist (nicht schon beim Zielwert)
+    lit.fuelwarn = s.ignition && (all || (s.fuel <= 0.02 && c.needles.fuel.f <= 0.012));
     lit.left = s.ignition && (s.turnLeft || s.hazard);
     lit.right = s.ignition && (s.turnRight || s.hazard);
     c.setLamps(lit);
