@@ -1,0 +1,147 @@
+:root {
+  --bg: #08080a;
+  --card: #121316;
+  --line: #24262b;
+  --text: #e8e6e1;
+  --dim: #8b8d94;
+  --accent: #ff6a1f;
+  --amber: #ffb000;
+  --red: #ff2a1a;
+  --green: #3ddc5a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 50% -10%, #17181c, var(--bg) 70%) fixed;
+  color: var(--text);
+  font: 15px/1.45 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+main { max-width: 1280px; margin: 0 auto; padding: 16px; }
+
+header.top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding: 6px 4px 14px; }
+header.top h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: .02em; }
+header.top p { margin: 0; color: var(--dim); font-size: 13px; }
+
+/* ---------- Bühne ---------- */
+.stage { position: relative; background: #000; border-radius: 22px; padding: 6px; box-shadow: 0 30px 80px #000c, 0 0 0 1px var(--line); }
+.stage:fullscreen { display: flex; align-items: center; justify-content: center; border-radius: 0; padding: 0; }
+.stage:fullscreen #cluster { width: min(100vw, calc(100vh * 1680 / 800)); }
+#cluster { width: 100%; }
+svg.cluster { display: block; width: 100%; height: auto; user-select: none; }
+
+.fab {
+  position: absolute; right: 14px; bottom: 12px; z-index: 2;
+  background: #0008; color: var(--dim); border: 1px solid var(--line); border-radius: 10px;
+  padding: 6px 10px; cursor: pointer; font: inherit; font-size: 13px;
+}
+.fab:hover { color: var(--text); }
+.stage:fullscreen .fab { opacity: 0; transition: opacity .3s; }
+.stage:fullscreen:hover .fab { opacity: 1; }
+
+/* ---------- Kombi (SVG) ---------- */
+svg.cluster {
+  font-family: "Oswald", "Bahnschrift", "DIN Alternate", "Arial Narrow", system-ui, sans-serif;
+  font-weight: 500;
+  --lit: 1;
+  --glow: 0;
+  --shade-a: 0;
+  --dot-on: #ffb383;
+  --dot-off: #9a1914;
+}
+svg.cluster * { transition: opacity .6s, fill .6s, stroke .6s, filter .6s, color .3s; }
+svg.cluster .needle-wrap, svg.cluster .needle-wrap *, svg.cluster .dot { transition: none; }
+
+.numerals text, .unit { fill: #eeeeee; }
+.unit-icon { color: #eeeeee; }
+.unit { font-family: "Barlow", "Bahnschrift", "DIN Alternate", system-ui, sans-serif; font-weight: 600; }
+
+.lit { opacity: var(--lit); }
+.hub-shade { opacity: var(--shade-a); pointer-events: none; }
+
+.tick { stroke: #eeeeee; stroke-linecap: butt; }
+.redband { stroke: #dc2a21; }
+.deco { color: #c9ccd4; opacity: .10; }
+.shade { pointer-events: none; }
+
+/* Nachtmodus: Unbeleuchtetes wird dunkel (Abdunkelung per Ebene), Beleuchtetes leuchtet warmweiß mit orangem Hof */
+.cluster.night .lit {
+  filter: drop-shadow(0 0 2px rgba(255, 170, 90, calc(.85 * var(--glow)))) drop-shadow(0 0 calc(var(--glow) * 7px) rgba(255, 110, 30, .6));
+}
+.cluster.night .numerals text, .cluster.night .unit, .cluster.night .unit-icon { fill: #fff1de; color: #fff1de; }
+.cluster.night .tick { stroke: #fff1de; }
+.cluster.night .redband { stroke: #ff3b28; }
+.cluster.night .needle-tail { fill: #17171a; }
+.cluster.night .turn:not(.on) { opacity: .35; }
+.cluster.night .lamp:not(.on) { opacity: .05; }
+
+/* Nadeln: tagsüber weiß, nachts orange beleuchtet */
+.needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }
+.cluster.night .needle-shape { fill: #ff7a38; }
+.cluster.night .needle-wrap {
+  filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)) drop-shadow(0 0 calc(var(--glow) * 8px) rgba(255, 90, 20, .9));
+}
+.cluster.off .needle-shape { fill: #bdbdc2; }
+.cluster.off .needle-wrap { filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .55)); }
+.cluster.off .lit { opacity: .3; filter: none; }
+.cluster.off .needle-tail { fill: #3b3b3f; }
+
+.glass { pointer-events: none; }
+
+/* Leuchten */
+.lamp { opacity: .10; color: var(--amber, #ffb000); }
+.lamp.green { color: var(--green, #3ddc5a); }
+.lamp.red { color: var(--red, #ff2a1a); }
+.lamp.blue { color: #4a7fe0; }
+.lamp.orange { color: #ff7a01; }
+.lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }
+
+.turn { color: #4a3f43; }
+.turn.on { color: var(--green, #3ddc5a); filter: drop-shadow(0 0 8px currentColor); animation: blink .8s steps(1) infinite; }
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: .25; filter: none; } }
+
+/* Mittendisplay: rote Punktmatrix */
+.lcd .dot { fill: var(--dot-off); }
+.lcd .dot.on { fill: var(--dot-on); }
+.lcd { filter: drop-shadow(0 0 2px rgba(255, 90, 50, .55)); }
+.cluster.off .lcd { opacity: .15; filter: none; }
+
+/* ---------- Bedienfeld ---------- */
+.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 16px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.card h2 { margin: 0 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+
+.row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+.row > label { width: 110px; flex: none; color: var(--dim); font-size: 13px; }
+.row output { width: 78px; flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+.row small { color: var(--dim); font-size: 11px; }
+input[type=range] { flex: 1; min-width: 0; accent-color: var(--accent); }
+input[type=range]:disabled { opacity: .45; }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--dim); padding: 8px 16px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed=true] { background: var(--accent); color: #140700; font-weight: 600; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip, .btn {
+  border: 1px solid var(--line); background: #17181c; color: var(--text); border-radius: 999px;
+  padding: 7px 14px; font: inherit; font-size: 13px; cursor: pointer;
+}
+.chip[aria-pressed=true] { border-color: var(--accent); background: #2a160b; color: #ffb185; }
+.chip:hover, .btn:hover { border-color: #3a3d44; }
+.btn.primary { background: var(--accent); color: #140700; border-color: var(--accent); font-weight: 600; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.link-status { margin: 12px 0 0; font-size: 13px; color: var(--dim); min-height: 2.8em; }
+.link-status.ok { color: var(--green); }
+.link-status.err { color: #ff8a7a; }
+.hint { font-size: 12px; color: var(--dim); margin: 10px 0 0; }
+
+@media (max-width: 640px) {
+  main { padding: 8px; }
+  .stage { border-radius: 14px; padding: 3px; }
+  .row > label { width: 92px; }
+  .fab { position: static; display: block; margin: 6px 6px 2px auto; }
+}

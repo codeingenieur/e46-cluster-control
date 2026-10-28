@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E46 Kombi: Jira-Variante</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="top">
+    <h1>E46 Kombi &middot; Jira-Variante</h1>
+    <p>Defects, Nightrun-Tickets, Sprint &middot; Taste <kbd>F</kbd> für Vollbild</p>
+  </header>
+
+  <section class="stage" id="stage">
+    <div id="cluster"></div>
+    <button class="fab" id="fs" type="button">Vollbild</button>
+  </section>
+
+  <section class="panel">
+    <div class="card">
+      <h2>Betrieb</h2>
+      <div class="row">
+        <div class="seg" role="group" aria-label="Betriebsart">
+          <button type="button" id="m-demo" aria-pressed="true">Demo-Fahrt</button>
+          <button type="button" id="m-manual" aria-pressed="false">Manuell</button>
+        </div>
+      </div>
+      <div class="chips">
+        <button class="chip" type="button" id="b-ign" aria-pressed="true">Zündung</button>
+        <button class="chip" type="button" id="b-night" aria-pressed="false">Nachtlicht</button>
+      </div>
+      <div class="row">
+        <label for="s-dim">Helligkeit</label>
+        <input type="range" id="s-dim" min="0" max="1" step="0.01" value="0.85">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Werte</h2>
+      <div class="row"><label for="s-defects">Aktive Defects</label><input type="range" id="s-defects" min="0" max="60" step="1" value="0"><output id="o-defects"></output></div>
+      <div class="row"><label for="s-success">BAC30 Success</label><input type="range" id="s-success" min="0" max="100" step="1" value="0"><output id="o-success"></output></div>
+      <div class="row"><label for="s-nightrun">Nightrun-Tickets</label><input type="range" id="s-nightrun" min="0" max="30" step="1" value="0"><output id="o-nightrun"></output></div>
+      <div class="row"><label for="s-fco">Verbrauch</label><input type="range" id="s-fco" min="0" max="20" step="0.1" value="0"><output id="o-fco"></output></div>
+      <div class="row"><label for="s-sprint">Sprint-Restzeit</label><input type="range" id="s-sprint" min="0" max="1" step="0.01" value="0.65"><output id="o-sprint"></output></div>
+      <p class="hint"><b>Drehzahlmesser</b> = aktive Defects (0 bis 50, bei 50 leuchtet die Jira-Defect-Leuchte). <b>Kühlmittel</b> = offene Nightrun-Tickets (intern 0 bis 20, darüber leuchtet NR). <b>Tank</b> = Sprint-Restzeit (leer = Sprintende). <b>Tacho</b> = Testresults, BAC30 Success in % (0 bis 100). Verbrauch, Blinker und Mittendisplay sind unverändert.</p>
+    </div>
+
+    <div class="card">
+      <h2>Leuchten</h2>
+      <div class="chips" id="lamps">
+        <button class="chip" type="button" data-lamp="mil" aria-pressed="false">Motor (MKL)</button>
+        <button class="chip" type="button" data-lamp="lab" aria-pressed="false">Labor</button>
+        <button class="chip" type="button" data-lamp="cruise" aria-pressed="false">Tempomat</button>
+        <button class="chip" type="button" data-lamp="oilwarn" aria-pressed="false">Ölstand</button>
+        <button class="chip" type="button" data-lamp="battery" aria-pressed="false">Batterie</button>
+        <button class="chip" type="button" data-lamp="oilpress" aria-pressed="false">Öldruck</button>
+        <button class="chip" type="button" data-lamp="arrk" aria-pressed="false">arrk</button>
+        <button class="chip" type="button" data-lamp="tt" aria-pressed="false">TT</button>
+      </div>
+      <p class="hint">NR und Jira Defect schalten sich selbst über die Werte. Labor, arrk und TT gibt es nur auf dem Bildschirm.</p>
+      <h2 style="margin-top:18px">Blinker (nur Anzeige)</h2>
+      <div class="chips" id="turn">
+        <button class="chip" type="button" data-turn="left" aria-pressed="false">Links</button>
+        <button class="chip" type="button" data-turn="right" aria-pressed="false">Rechts</button>
+        <button class="chip" type="button" data-turn="hazard" aria-pressed="false">Warnblinker</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Echtes Cluster (ESP32)</h2>
+      <div class="chips">
+        <button class="btn primary" type="button" id="b-connect">Verbinden</button>
+        <button class="btn" type="button" id="b-disconnect" disabled>Trennen</button>
+      </div>
+      <p class="link-status" id="link-status" role="status" aria-live="polite">Nicht verbunden.</p>
+      <p class="hint">Sendet die Nadelstellungen per USB an den ESP32 (Protokoll: docs/protocol.md): Defects 0 bis 50 als Drehzahl 0 bis 7000, Testresults als Geschwindigkeit (gleiche Nadelstellung), Nightrun-Füllstand als Kühlmitteltemperatur, NR als Überhitzungsleuchte. Geht nur in Chrome oder Edge. Noch nicht an echter Hardware getestet.</p>
+    </div>
+  </section>
+</main>
+
+<script src="grain.js"></script>
+<script src="cluster.js"></script>
+<script src="sim.js"></script>
+<script src="serial.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
