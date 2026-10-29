@@ -79,7 +79,7 @@
   const LAMP_POS = {
     mil: [800, 95, 0.95],
     arrk: [205, 546, 1.15], tt: [280, 546, 1.0], oilwarn: [355, 546, 1.0],   // eine Reihe, spiegelbildlich zu lab / nr / defect rechts
-    cruise: [1063, 547, 1.0],
+    battery: [1026, 546, 1.0], cruise: [1101, 547, 1.0],   // zwei Leuchten im Feld rechts neben dem Display, Abstand wie bei den anderen Gruppen
     lab: [1245, 546, 1.0], nr: [1320, 546, 1.0], defect: [1395, 546, 1.0],
   };
 
