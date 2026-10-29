@@ -231,7 +231,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
         nmin: 0, nmax: 50, a0: -118.8, a1: 118.8,                     // 0 bei -118,8°, 50 bei +118,8° (aktive Defects)
         a: (v) => -118.8 + v * (237.6 / 50),
         from: 0, to: 50, step: 2, majorStep: 10, labelFrom: 0, labelTo: 50, font: 30.5, red: { from: 45, to: 50 },
-        texts: [['Defects', -81, 20, 0], ['aktiv', -59, 20, 0]], spring: [320, 0.8], needle: { len: 190, wb: 11.5, wt: 3.4, hub: 31, tail: true },
+        texts: [['Defects', -81, 20, 0], ['active', -59, 20, 0]], spring: [320, 0.8], needle: { len: 190, wb: 11.5, wt: 3.4, hub: 31, tail: true },
       });
       this._consumption(TACHO.cx + 2, TACHO.cy + 144);
 

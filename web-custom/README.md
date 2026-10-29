@@ -5,7 +5,7 @@ Widget und ESP32-Anbindung sind wie beim Original, die Anzeigen und Beschriftung
 
 | Instrument | Original | Jira-Variante |
 |---|---|---|
-| Drehzahlmesser | Drehzahl 0 bis 7 (x1000) | **aktive Defects 0 bis 50**, Beschriftung „Defects aktiv", rote Zone 45 bis 50. Bei 50 leuchtet die Jira-Defect-Leuchte |
+| Drehzahlmesser | Drehzahl 0 bis 7 (x1000) | **aktive Defects 0 bis 50**, Beschriftung „Defects active", rote Zone 45 bis 50. Bei 50 leuchtet die Jira-Defect-Leuchte |
 | Kühlmittel | Temperatur mit Skala | **offene Nightrun-Tickets**, Füllstandsanzeige mit den Teilstrichen, aber **ohne Zahlen**, Beschriftung „NR Defects", intern 0 bis 20. Darüber leuchtet **NR** (roter Schriftzug, rechts im Leuchtenfeld neben dem Defect-Symbol), die Nadel bleibt am Anschlag |
 | Tank | Tankinhalt, Zapfsäule | **Sprint-Restzeit**, Sanduhr, 1/1 = Sprintstart, 0 = Sprintende (Reserveleuchte bei leer) |
 | Tacho | km/h 20 bis 240 | **Testresults: BAC30 Success %**, Skala **0 bis 100** auf denselben Strichen (gleiche Winkel und Abstände), Zahlen alle 10, ohne die zwei Randstriche vor 0 und hinter 100 |
