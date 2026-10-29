@@ -59,6 +59,7 @@
   });
   toggle($('#b-night'), (on) => cluster.setLight({ night: on }));
   toggle($('#b-chaos'), (on) => { state.chaos = on; });
+  toggle($('#b-xmas'), (on) => cluster.setXmas(on));
   $('#s-dim').addEventListener('input', (e) => cluster.setLight({ dim: Number(e.target.value) }));
   document.querySelectorAll('#lamps [data-lamp]').forEach((b) => toggle(b, (on) => { state[b.dataset.lamp] = on; }));
   document.querySelectorAll('#turn [data-turn]').forEach((b) => toggle(b, (on) => { state.turn[b.dataset.turn] = on; }));
@@ -80,6 +81,8 @@
   const nrLampOn = () => state.ign && state.nightrun > MAX_NIGHTRUN && cluster.needles.coolant.f >= 0.985;
 
   // ---------- ESP32 ----------
+  // Die Schaltfläche "Echtes Cluster" ist vorerst aus der Seite genommen; der Code bleibt und läuft, sobald die Karte wieder in index.html steht.
+  if ($('#b-connect')) {
   const statusEl = $('#link-status');
   const btnConnect = $('#b-connect'), btnDisconnect = $('#b-disconnect');
   const link = new Esp32Link({
@@ -132,6 +135,7 @@
     return o;
   }
   setInterval(() => link.sync(wire()), 50);
+  }
 
   // ---------- Hauptschleife ----------
   let last = performance.now(), uiTimer = 0;

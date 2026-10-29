@@ -16,7 +16,7 @@ Die Leuchten für 50 Defects und NR schalten sich selbst, erst wenn die Nadel am
 Die Teilstriche des Tachos sind unverändert (gleiche Winkel), die Skala liegt mittig um 12 Uhr: 0 bei -116°, 100 bei +116°.
 Anordnung der Leuchten unten: links arrk und TT, in der Mitte Tempomat, rechts Labor, NR und Jira Defect.
 
-**ESP32 (echtes Kombi):** Die Seite schickt die Nadelstellungen: Defects 0 bis 50 als Drehzahl 0 bis 7000, Testresults als Geschwindigkeit 30 bis 230 km/h, der Nightrun-Füllstand als
+**ESP32 (echtes Kombi), die Schaltfläche ist vorerst aus der Seite entfernt (Code in `serial.js` und `app.js` bleibt, die Karte lässt sich in `index.html` wieder einsetzen):** Die Seite schickt die Nadelstellungen: Defects 0 bis 50 als Drehzahl 0 bis 7000, Testresults als Geschwindigkeit 30 bis 230 km/h, der Nightrun-Füllstand als
 Kühlmitteltemperatur (jeweils gleiche Nadelstellung wie hier), NR als Überhitzungsleuchte. Das echte Kombi hat dann noch das Original-Zifferblatt.
 Nicht an echter Hardware getestet.
 

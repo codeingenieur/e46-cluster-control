@@ -62,6 +62,8 @@
     door_test: '<path d="M-9 -19L-27.4 -34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     door_stage: '<path d="M20 19L1.6 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     door_prod: '<path d="M-9 19L-27.4 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    // Weihnachtsmodus: Tannenbaum statt TT-Logo (Stern gelb, Baum in der Leuchtfarbe)
+    tree: '<g transform="scale(.88)"><path d="M0 -15L8 -5H4L11 4H5L13 13H-13L-5 4H-11L-4 -5H-8Z" fill="currentColor"/><rect x="-2.6" y="12.5" width="5.2" height="6" fill="currentColor"/><path d="M0 -23.5L1.7 -19.4L6 -19.2L2.7 -16.4L3.8 -12.2L0 -14.6L-3.8 -12.2L-2.7 -16.4L-6 -19.2L-1.7 -19.4Z" fill="#ffd23a"/></g>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
     pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -493,6 +495,8 @@
 
     setLamps(map) {
       for (const k in map) if (this.lamps[k]) this.lamps[k].classList.toggle('on', !!map[k]);
+      // Weihnachtsbaum leuchtet, solange die Zündung an ist
+      if (this._xmas && this.lamps.tt) this.lamps.tt.classList.toggle('on', !this.svg.classList.contains('off'));
     }
 
     /** Mittendisplay: odo ('148213'), trip ('0.3'), clock ('20:44') */
@@ -508,6 +512,99 @@
     }
 
     setPower(on) { this.svg.classList.toggle('off', !on); }
+
+    /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt TT-Logo, Schneefall */
+    setXmas(on) {
+      on = !!on;
+      if (on === !!this._xmas) return;
+      this._xmas = on;
+      if (on && !this.xmasLayer) this._buildXmas();
+      this.xmasLayer.setAttribute('display', on ? 'inline' : 'none');
+      const g = this.lamps.tt;
+      if (g) {
+        if (on) { this._ttHtml = g.innerHTML; g.innerHTML = '<title>Weihnachtsbaum</title>' + ICONS.tree; g.classList.remove('orange'); g.classList.add('green'); }
+        else if (this._ttHtml != null) { g.innerHTML = this._ttHtml; g.classList.remove('green'); g.classList.add('orange'); }
+      }
+    }
+
+    _buildXmas() {
+      const layer = this.xmasLayer = el('g', { class: 'xmas', 'pointer-events': 'none', display: 'none' }, this.svg);
+      const colors = ['#ff3b30', '#ffd23a', '#37d65a', '#3d8bff'];
+      colors.forEach((c, i) => {
+        const g = el('radialGradient', { id: 'xGlow' + i }, this.defs);
+        el('stop', { offset: 0, 'stop-color': c, 'stop-opacity': 0.75 }, g);
+        el('stop', { offset: 1, 'stop-color': c, 'stop-opacity': 0 }, g);
+      });
+
+      // Ankerpunkte entlang der oberen Außenkante (rechte Hälfte abgreifen, links spiegeln), dazwischen hängt die Kette durch
+      const probe = el('path', { d: SILHOUETTE }, this.defs);
+      const total = probe.getTotalLength();
+      let end = 0;
+      for (let s = 0; s < total / 2; s += 6) { if (probe.getPointAtLength(s).y > 520) break; end = s; }
+      const right = [];
+      for (let s = 115; s < end - 60; s += 230) right.push(probe.getPointAtLength(s));
+      right.push(probe.getPointAtLength(end));
+      probe.remove();
+      const inward = (p, k) => {
+        const dx = 800 - p.x, dy = 330 - p.y, l = Math.hypot(dx, dy) || 1;
+        return { x: p.x + (dx / l) * k, y: p.y + (dy / l) * k };
+      };
+      const pts = right.slice().reverse().map((p) => ({ x: 1600 - p.x, y: p.y })).concat(right).map((p) => inward(p, 7));
+
+      this._bulbs = [];
+      const wire = el('g', null, layer), bulbs = el('g', null, layer);
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i], b = pts[i + 1], m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        const c = inward(m, 40);   // Kontrollpunkt: die Kette hängt etwa 20 nach innen durch
+        el('path', { d: 'M' + a.x.toFixed(1) + ' ' + a.y.toFixed(1) + 'Q' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + ' ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1),
+          fill: 'none', stroke: '#17381f', 'stroke-width': 2.6, 'stroke-linecap': 'round' }, wire);
+        [0.14, 0.38, 0.62, 0.86].forEach((u) => {
+          const x = (1 - u) * (1 - u) * a.x + 2 * (1 - u) * u * c.x + u * u * b.x;
+          const y = (1 - u) * (1 - u) * a.y + 2 * (1 - u) * u * c.y + u * u * b.y;
+          const n = this._bulbs.length, k = n % colors.length;
+          const g = el('g', { transform: 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')' }, bulbs);
+          el('circle', { cy: 8, r: 18, fill: 'url(#xGlow' + k + ')' }, g);
+          el('rect', { x: -2.6, y: 0, width: 5.2, height: 4, rx: 1, fill: '#1b1d20' }, g);
+          el('ellipse', { cy: 9, rx: 4.6, ry: 6.4, fill: colors[k], stroke: '#0006', 'stroke-width': 0.8 }, g);
+          el('ellipse', { cx: -1.4, cy: 6.6, rx: 1.3, ry: 2.2, fill: '#fff', opacity: 0.55 }, g);
+          this._bulbs.push({ g, op: 1 });
+        });
+      }
+
+      // Schneefall: kleine Punkte und größere Sechsstrahler, die schräg nach unten treiben
+      this._flakes = [];
+      const snow = el('g', { fill: 'none' }, layer);
+      for (let i = 0; i < 70; i++) {
+        const r = 1.3 + Math.random() * 3.6, big = r > 3.2;
+        const g = el('g', null, snow);
+        if (big) {
+          const q = r * 1.7;
+          el('path', { d: 'M0 ' + -q + 'V' + q + 'M' + (-0.87 * q) + ' ' + (-0.5 * q) + 'L' + (0.87 * q) + ' ' + (0.5 * q) + 'M' + (-0.87 * q) + ' ' + (0.5 * q) + 'L' + (0.87 * q) + ' ' + (-0.5 * q),
+            stroke: '#fff', 'stroke-width': 1.3, 'stroke-linecap': 'round', opacity: 0.9 }, g);
+        } else {
+          el('circle', { r, fill: '#fff', opacity: 0.55 + Math.random() * 0.4 }, g);
+        }
+        this._flakes.push({ g, x: Math.random() * 1680 - 40, y: Math.random() * 800 - 90, vy: 28 + r * 14 + Math.random() * 20, sw: 8 + Math.random() * 16,
+          ph: Math.random() * 6.28, rot: Math.random() * 360, vr: (Math.random() - 0.5) * 60 });
+      }
+      this._xt = 0;
+    }
+
+    _xmasFrame(dt) {
+      this._xt += dt;
+      const t = this._xt;
+      this._bulbs.forEach((b, i) => {
+        const op = 0.28 + 0.72 * Math.max(0, Math.sin(t * 2.4 + i * 0.95));
+        if (Math.abs(op - b.op) > 0.03) { b.op = op; b.g.setAttribute('opacity', op.toFixed(2)); }
+      });
+      this._flakes.forEach((f) => {
+        f.y += f.vy * dt;
+        f.rot += f.vr * dt;
+        if (f.y > 710) { f.y = -100; f.x = Math.random() * 1680 - 40; }
+        const x = f.x + Math.sin(t * 0.9 + f.ph) * f.sw + t * 6 % 1680;
+        f.g.setAttribute('transform', 'translate(' + (x > 1640 ? x - 1680 : x).toFixed(1) + ' ' + f.y.toFixed(1) + ') rotate(' + f.rot.toFixed(0) + ')');
+      });
+    }
 
     setLight(o) {
       if (o.night != null && !!o.night !== !!this._night) {
@@ -549,6 +646,7 @@
         }
         this._draw(n);
       }
+      if (this._xmas) this._xmasFrame(dt);
     }
   }
 

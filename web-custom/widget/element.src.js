@@ -13,7 +13,7 @@ const NUMBERS = {          // Property: [min, max, Standard]
   success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
-  ignition: true, night: false, demo: false, chaos: false,
+  ignition: true, night: false, demo: false, chaos: false, xmas: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
   door_dev: false, door_test: false, door_stage: false, door_prod: false,   // Auto: vier Türen
@@ -31,7 +31,7 @@ const KEYS = {
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
   door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod',
-  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos',
+  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos', xmas: 'xmas',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
 const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
@@ -120,7 +120,7 @@ class E46JiraClusterElement extends HTMLElement {
   }
 
   _applyLook() {
-    if (this._cluster) this._cluster.setLight({ night: this._s.night, dim: this._s.dim });
+    if (this._cluster) { this._cluster.setLight({ night: this._s.night, dim: this._s.dim }); this._cluster.setXmas(this._s.xmas); }
   }
 
   // ---------- Fahrsimulation ----------
@@ -262,7 +262,7 @@ Object.keys(BOOLS).forEach((k) => {
       v = toBool(v);
       const was = this._s[k];
       this._s[k] = v;
-      if (k === 'night') this._applyLook();
+      if (k === 'night' || k === 'xmas') this._applyLook();
       if (k === 'demo') { if (v && !this._sim) this._startSim(); if (!v && was) this._sim = null; }
       if (k === 'ignition' && this._cluster) {
         this._cluster.setPower(v);

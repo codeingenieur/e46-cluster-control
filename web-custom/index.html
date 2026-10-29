@@ -32,6 +32,7 @@
         <button class="chip" type="button" id="b-ign" aria-pressed="true">Zündung</button>
         <button class="chip" type="button" id="b-night" aria-pressed="false">Nachtlicht</button>
         <button class="chip" type="button" id="b-chaos" aria-pressed="false">Chaosmodus</button>
+        <button class="chip" type="button" id="b-xmas" aria-pressed="false">Weihnachtsmodus</button>
       </div>
       <div class="row">
         <label for="s-dim">Helligkeit</label>
@@ -73,15 +74,6 @@
       </div>
     </div>
 
-    <div class="card">
-      <h2>Echtes Cluster (ESP32)</h2>
-      <div class="chips">
-        <button class="btn primary" type="button" id="b-connect">Verbinden</button>
-        <button class="btn" type="button" id="b-disconnect" disabled>Trennen</button>
-      </div>
-      <p class="link-status" id="link-status" role="status" aria-live="polite">Nicht verbunden.</p>
-      <p class="hint">Sendet die Nadelstellungen per USB an den ESP32 (Protokoll: docs/protocol.md): Defects 0 bis 50 als Drehzahl 0 bis 7000, Testresults als Geschwindigkeit (gleiche Nadelstellung), Nightrun-Füllstand als Kühlmitteltemperatur, NR als Überhitzungsleuchte. Geht nur in Chrome oder Edge. Noch nicht an echter Hardware getestet.</p>
-    </div>
   </section>
 </main>
 
