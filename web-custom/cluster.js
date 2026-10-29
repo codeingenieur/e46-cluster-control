@@ -62,7 +62,7 @@
     door_test: '<path d="M-9 -19L-27.4 -34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     door_stage: '<path d="M20 19L1.6 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     door_prod: '<path d="M-9 19L-27.4 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
-    // Weihnachtsmodus: Tannenbaum statt TT-Logo (Stern gelb, Baum in der Leuchtfarbe)
+    // Weihnachtsmodus: Tannenbaum statt Batterieleuchte (Stern gelb, Baum in der Leuchtfarbe)
     tree: '<g transform="scale(.88)"><path d="M0 -15L8 -5H4L11 4H5L13 13H-13L-5 4H-11L-4 -5H-8Z" fill="currentColor"/><rect x="-2.6" y="12.5" width="5.2" height="6" fill="currentColor"/><path d="M0 -23.5L1.7 -19.4L6 -19.2L2.7 -16.4L3.8 -12.2L0 -14.6L-3.8 -12.2L-2.7 -16.4L-6 -19.2L-1.7 -19.4Z" fill="#ffd23a"/></g>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
@@ -496,7 +496,7 @@
     setLamps(map) {
       for (const k in map) if (this.lamps[k]) this.lamps[k].classList.toggle('on', !!map[k]);
       // Weihnachtsbaum leuchtet, solange die Zündung an ist
-      if (this._xmas && this.lamps.tt) this.lamps.tt.classList.toggle('on', !this.svg.classList.contains('off'));
+      if (this._xmas && this.lamps.battery) this.lamps.battery.classList.toggle('on', !this.svg.classList.contains('off'));
     }
 
     /** Mittendisplay: odo ('148213'), trip ('0.3'), clock ('20:44') */
@@ -513,17 +513,17 @@
 
     setPower(on) { this.svg.classList.toggle('off', !on); }
 
-    /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt TT-Logo, Schneefall */
+    /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall */
     setXmas(on) {
       on = !!on;
       if (on === !!this._xmas) return;
       this._xmas = on;
       if (on && !this.xmasLayer) this._buildXmas();
       this.xmasLayer.setAttribute('display', on ? 'inline' : 'none');
-      const g = this.lamps.tt;
+      const g = this.lamps.battery;
       if (g) {
-        if (on) { this._ttHtml = g.innerHTML; g.innerHTML = '<title>Weihnachtsbaum</title>' + ICONS.tree; g.classList.remove('orange'); g.classList.add('green'); }
-        else if (this._ttHtml != null) { g.innerHTML = this._ttHtml; g.classList.remove('green'); g.classList.add('orange'); }
+        if (on) { this._batHtml = g.innerHTML; g.innerHTML = '<title>Weihnachtsbaum</title>' + ICONS.tree; g.classList.remove('red'); g.classList.add('green'); }
+        else if (this._batHtml != null) { g.innerHTML = this._batHtml; g.classList.remove('green'); g.classList.add('red'); }
       }
     }
 

@@ -90,7 +90,7 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `ignition` | bool | aus: Nadeln auf 0, Lampen aus. an: Selbsttest |
 | `night`, `dim` | bool, 0 bis 1 | Nachtmodus, Helligkeit |
 | `chaos` | bool | Chaosmodus: Zeiger fahren wild umher, alle Leuchten und Blinker flackern zufällig (nur bei Zündung an) |
-| `xmas` | bool | Weihnachtsmodus: blinkende Lichterkette an der Außenkante, Tannenbaum statt TT-Logo, Schneefall |
+| `xmas` | bool | Weihnachtsmodus: blinkende Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall |
 | `demo` | bool | Demo: überschreibt defects, nightrun, sprint, success, closed |
 | `odometer`, `trip`, `clock` | Zahl, Zahl, `HH:MM` oder `auto` | Mittendisplay |
 | `selftest="false"` | | kein Selbsttest beim Start |

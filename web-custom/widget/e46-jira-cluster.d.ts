@@ -27,7 +27,7 @@ export declare class E46JiraClusterElement extends HTMLElement {
   /** false: Nadeln auf 0, Lampen aus. true löst den Selbsttest aus. */ ignition: boolean;
   night: boolean;
   /** Chaosmodus: Zeiger springen wild, alle Leuchten und Blinker flackern zufällig (nur bei eingeschalteter Zündung) */ chaos: boolean;
-  /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt TT-Logo, Schneefall */ xmas: boolean;
+  /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall */ xmas: boolean;
   /** Demo: überschreibt defects, nightrun, sprint, success, closed */ demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   /** arrk-Logo (blau) und TT-Logo (orange), nur Anzeige */ arrk: boolean; tt: boolean;
