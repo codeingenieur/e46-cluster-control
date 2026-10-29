@@ -46,7 +46,8 @@
     lab: '<path d="M-6 -16H6M-4.5 -16V-4L-15 12.5Q-17.5 16 -13.5 16H13.5Q17.5 16 15 12.5L4.5 -4V-16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M-9.5 5H9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
     cruise: '<path d="M-15 8A18 18 0 1 1 15 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M0 4L9 -9" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle r="3.5" cy="4" fill="currentColor"/>',
     overheat: '<path d="M-3.5 -15a3.5 3.5 0 0 1 7 0V2.5a8 8 0 1 1 -7 0Z" fill="none" stroke="currentColor" stroke-width="3" transform="translate(-6 2)"/><path d="M5 -4h10M5 3h10M5 10h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
-    oilwarn: '<path d="M-17 -2H-6L-2 -9H6V-5H11L19 -11L21 -9L15 -1V8Q15 11 12 11H-12Q-17 11 -17 6Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M-12 16q3 2 6 0t6 0t6 0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>',
+    // Variante Jira: der Ölstand-Platz zeigt das BMW-Logo (Quadranten aus BMW_logo.svg, blau fest, weiß = Leuchtfarbe)
+    oilwarn: '<g transform="scale(1.12) translate(-26.5 -26.5)"><path d="M26.5,10.8v15.7h-15.7c0-8.6,7-15.7,15.7-15.7Z" fill="#1f78d1"/><path d="M42.2,26.5c0,8.7-7,15.7-15.7,15.7v-15.7h15.7Z" fill="#1f78d1"/><path d="M42.2,26.5h-15.7v-15.7c8.7,0,15.7,7.1,15.7,15.7Z" fill="currentColor"/><path d="M26.5,42.2c-8.7,0-15.7-7-15.7-15.7h15.7v15.7Z" fill="currentColor"/></g>',
     battery: '<rect x="-17" y="-7" width="34" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-11 -7v-5h6v5M5 -7v-5h6v5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M-11 2.5h7M7.5 -1v7M4 2.5h7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
     oilpress: '<path d="M-17 -4H-6L-2 -11H6V-7H11L19 -13L21 -11L15 -3V6Q15 9 12 9H-12Q-17 9 -17 4Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="-1" cy="15" r="2.6" fill="currentColor"/><path d="M-1 0v8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
     // eigene Leuchten: arrk- und TT-Logo (aus arrk.svg / tt.svg) und das Jira-Defect-Symbol (rotes Quadrat mit ausgestanztem, durchsichtigem Kreis)
@@ -67,7 +68,7 @@
     lab: ['red', 'Labor'],
     cruise: ['green', 'Tempomat'],
     nr: ['red', 'NR: Nightrun-Überlauf'],
-    oilwarn: ['amber', 'Ölstand'],
+    oilwarn: ['bmw', 'BMW'],
     battery: ['red', 'Ladekontrolle'],
     oilpress: ['red', 'Öldruck'],
     arrk: ['blue', 'arrk'],
