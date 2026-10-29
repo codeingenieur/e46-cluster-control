@@ -1026,12 +1026,13 @@ class E46JiraClusterElement extends HTMLElement {
     if (!c) return;
 
     if (s.demo && this._sim) {
-      this._sim.drive.update(dt); this._sim.tickets.update(dt);
+      if (s.ignition) this._sim.drive.update(dt);   // Wegstrecke läuft nur bei eingeschalteter Zündung
+      this._sim.tickets.update(dt);
       s.success = this._sim.tickets.success; s.closed = this._sim.tickets.closed;
       s.defects = this._sim.tickets.defects; s.nightrun = this._sim.tickets.nightrun; s.sprint = this._sim.tickets.sprint;
     }
     // Wegstrecke läuft nur in der Demo (mit der Fahrsimulation im Hintergrund), sonst steht das Mittendisplay still
-    const v = s.demo && this._sim ? this._sim.drive.speed : 0;
+    const v = s.demo && s.ignition && this._sim ? this._sim.drive.speed : 0;
     s.trip += (v / 3600) * dt;
     s.odometer += (v / 3600) * dt;
 

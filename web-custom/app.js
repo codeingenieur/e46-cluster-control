@@ -145,7 +145,8 @@
     last = now;
 
     if (state.mode === 'demo') {
-      drive.update(dt); tickets.update(dt);
+      if (state.ign) drive.update(dt);   // Wegstrecke läuft nur bei eingeschalteter Zündung
+      tickets.update(dt);
       state.success = tickets.success; state.closed = tickets.closed; state.trip = drive.dist;   // Fahrsimulation läuft nur noch für die Wegstrecke
       state.defects = tickets.defects; state.nightrun = tickets.nightrun; state.sprint = tickets.sprint;
     }
