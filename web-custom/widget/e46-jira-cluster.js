@@ -684,13 +684,47 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     }
   }
 
+  /** Chaosmodus: Zeiger springen zu Zufallswerten (die Federn lassen sie wild nachschwingen), alle Leuchten und Blinker flackern zufällig. */
+  class ChaosSim {
+    constructor() {
+      this.max = { rpm: 50, speed: 100, coolant: 20, fuel: 1, fco: 20 };
+      this.needles = {};
+      for (const k in this.max) this.needles[k] = { v: Math.random() * this.max[k], t: 0 };
+      this.lampIds = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod',
+        'defect', 'nr', 'fuelwarn', 'left', 'right'];
+      this.lamps = {};
+      this.lt = {};
+      this.lampIds.forEach((k) => { this.lamps[k] = Math.random() < 0.5; this.lt[k] = 0; });
+    }
+    update(dt) {
+      for (const k in this.needles) {
+        const n = this.needles[k];
+        n.t -= dt;
+        if (n.t <= 0) {
+          // oft bis an die Anschläge, sonst irgendwo dazwischen
+          const r = Math.random();
+          n.v = (r < 0.22 ? 0 : r < 0.44 ? 1 : Math.random()) * this.max[k];
+          n.t = 0.12 + Math.random() * 0.7;
+        }
+      }
+      this.lampIds.forEach((k) => {
+        this.lt[k] -= dt;
+        if (this.lt[k] <= 0) { this.lamps[k] = Math.random() < 0.5; this.lt[k] = 0.06 + Math.random() * 0.5; }
+      });
+      const tgt = {};
+      for (const k in this.needles) tgt[k] = this.needles[k].v;
+      return { tgt, lamps: this.lamps };
+    }
+  }
+
   global.TicketSim = TicketSim;
+  global.ChaosSim = ChaosSim;
   global.DriveSim = DriveSim;
   global.DriveSim.RATIOS = RATIOS;
   global.DriveSim.RPM_PER_KMH = RPM_PER_KMH;
 })(typeof window !== 'undefined' ? window : globalThis);
 
-const { E46Cluster, DriveSim, TicketSim } = window;
+const { E46Cluster, DriveSim, TicketSim, ChaosSim } = window;
 /* <e46-jira-cluster>: das Kombiinstrument in der Jira-Variante als Web Component. Wird von build.py mit cluster.js, sim.js,
  * grain.js und den Schriften zu e46-jira-cluster.js zusammengesetzt (E46Cluster, DriveSim, TicketSim und E46_GRAIN sind dort im
  * selben Closure sichtbar).
@@ -706,7 +740,7 @@ const NUMBERS = {          // Property: [min, max, Standard]
   success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
-  ignition: true, night: false, demo: false,
+  ignition: true, night: false, demo: false, chaos: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
   door_dev: false, door_test: false, door_stage: false, door_prod: false,   // Auto: vier Türen
@@ -724,7 +758,7 @@ const KEYS = {
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
   door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod',
-  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo',
+  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
 const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
@@ -904,6 +938,10 @@ class E46JiraClusterElement extends HTMLElement {
       else this._test = null;
       all = t < 2.6;
     }
+    // Chaosmodus: Zeiger und Leuchten zufällig, nur bei eingeschalteter Zündung und nicht während des Selbsttests
+    if (s.chaos && !this._chaos) this._chaos = new ChaosSim();
+    const chaos = s.chaos && s.ignition && !this._test ? this._chaos.update(dt) : null;
+    if (chaos) tgt = chaos.tgt;
     c.set(tgt);
     c.frame(dt);
 
@@ -916,6 +954,7 @@ class E46JiraClusterElement extends HTMLElement {
     lit.fuelwarn = s.ignition && (all || (s.sprint <= 0.02 && c.needles.fuel.f <= 0.012));
     lit.left = s.ignition && (s.turnLeft || s.hazard);
     lit.right = s.ignition && (s.turnRight || s.hazard);
+    if (chaos) Object.assign(lit, chaos.lamps);
     c.setLamps(lit);
 
     let clock = s.clock;

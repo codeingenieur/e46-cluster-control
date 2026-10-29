@@ -89,6 +89,7 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `turnLeft`, `turnRight`, `hazard` | bool | Blinker, Warnblinker |
 | `ignition` | bool | aus: Nadeln auf 0, Lampen aus. an: Selbsttest |
 | `night`, `dim` | bool, 0 bis 1 | Nachtmodus, Helligkeit |
+| `chaos` | bool | Chaosmodus: Zeiger fahren wild umher, alle Leuchten und Blinker flackern zufällig (nur bei Zündung an) |
 | `demo` | bool | Demo: überschreibt defects, nightrun, sprint, success, closed |
 | `odometer`, `trip`, `clock` | Zahl, Zahl, `HH:MM` oder `auto` | Mittendisplay |
 | `selftest="false"` | | kein Selbsttest beim Start |
@@ -108,7 +109,7 @@ Zeile wirkt ganz oder gar nicht, die Antworten sind wie beim ESP32.
 | `SELFTEST`, `RESET`, `PING`, `HELP` | Selbsttest, Standardwerte, Lebenszeichen, Schlüsselliste | `OK`, `OK`, `PONG …`, `HELP …` |
 
 Schlüssel: `defects nightrun sprint success closed ign mil cruise oilwarn battery oilpress lab arrk tt door_dev door_test door_stage door_prod defect nr left right hazard night dim
-demo odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
+demo chaos odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
 
 Die Schlüssel `rpm`, `speed`, `coolant`, `oil`, `overheat` und `eml` des Original-Widgets gibt es hier nicht.
 

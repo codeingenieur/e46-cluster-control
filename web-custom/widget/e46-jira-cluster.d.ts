@@ -7,7 +7,7 @@ export interface E46JiraClusterState {
   /** Testresults: BAC30 Success in %, 0 bis 100 */ success: number;
   /** Defects closed/Day, 0 bis 20 */ closed: number;
   dim: number;
-  ignition: boolean; night: boolean; demo: boolean;
+  ignition: boolean; night: boolean; demo: boolean; chaos: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   arrk: boolean; tt: boolean;
   door_dev: boolean; door_test: boolean; door_stage: boolean; door_prod: boolean;
@@ -26,6 +26,7 @@ export declare class E46JiraClusterElement extends HTMLElement {
   /** Helligkeit der Beleuchtung 0 bis 1 */ dim: number;
   /** false: Nadeln auf 0, Lampen aus. true löst den Selbsttest aus. */ ignition: boolean;
   night: boolean;
+  /** Chaosmodus: Zeiger springen wild, alle Leuchten und Blinker flackern zufällig (nur bei eingeschalteter Zündung) */ chaos: boolean;
   /** Demo: überschreibt defects, nightrun, sprint, success, closed */ demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   /** arrk-Logo (blau) und TT-Logo (orange), nur Anzeige */ arrk: boolean; tt: boolean;

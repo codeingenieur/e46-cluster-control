@@ -5,6 +5,7 @@
   const cluster = new E46Cluster($('#cluster'));
   const drive = new DriveSim();       // nur noch für die Wegstrecke im Mittendisplay
   const tickets = new TicketSim();    // Defects, Nightrun, Sprint
+  const chaosSim = new ChaosSim();    // Chaosmodus
 
   // Von Hand schaltbare Leuchten. NR und Jira Defect schalten sich über die Werte.
   const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod'];
@@ -14,6 +15,7 @@
     ign: true,
     defects: 0, nightrun: 0, sprint: 0.65, success: 0, closed: 0,
     mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
+    chaos: false,
     arrk: false, tt: false,
     door_dev: false, door_test: false, door_stage: false, door_prod: false,
     turn: { left: false, right: false, hazard: false },
@@ -56,6 +58,7 @@
     selfTest = on ? { t: 0 } : null;
   });
   toggle($('#b-night'), (on) => cluster.setLight({ night: on }));
+  toggle($('#b-chaos'), (on) => { state.chaos = on; });
   $('#s-dim').addEventListener('input', (e) => cluster.setLight({ dim: Number(e.target.value) }));
   document.querySelectorAll('#lamps [data-lamp]').forEach((b) => toggle(b, (on) => { state[b.dataset.lamp] = on; }));
   document.querySelectorAll('#turn [data-turn]').forEach((b) => toggle(b, (on) => { state.turn[b.dataset.turn] = on; }));
@@ -156,6 +159,9 @@
       else selfTest = null;
       allLamps = t < 2.6;
     }
+    // Chaosmodus: Zeiger und Leuchten zufällig, nur bei eingeschalteter Zündung und nicht während des Selbsttests
+    const chaos = state.chaos && state.ign && !selfTest ? chaosSim.update(dt) : null;
+    if (chaos) tgt = chaos.tgt;
     cluster.set(tgt);
     cluster.frame(dt);
 
@@ -166,10 +172,11 @@
     lamps.nr = allLamps || nrLampOn();
     // Tankleuchte: erst wenn die Sprint-Restzeit leer ist und die Nadel wirklich auf 0 angekommen ist
     lamps.fuelwarn = state.ign && (allLamps || (state.sprint <= 0.02 && cluster.needles.fuel.f <= 0.012));
+    if (chaos) Object.assign(lamps, chaos.lamps);
     cluster.setLamps(lamps);
 
     const blink = state.turn.hazard;
-    cluster.setLamps({ left: state.ign && (state.turn.left || blink), right: state.ign && (state.turn.right || blink) });
+    cluster.setLamps(chaos ? { left: chaos.lamps.left, right: chaos.lamps.right } : { left: state.ign && (state.turn.left || blink), right: state.ign && (state.turn.right || blink) });
 
     const d = new Date();
     cluster.setLcd({

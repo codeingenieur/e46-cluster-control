@@ -13,7 +13,7 @@ const NUMBERS = {          // Property: [min, max, Standard]
   success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
-  ignition: true, night: false, demo: false,
+  ignition: true, night: false, demo: false, chaos: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
   door_dev: false, door_test: false, door_stage: false, door_prod: false,   // Auto: vier Türen
@@ -31,7 +31,7 @@ const KEYS = {
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
   door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod',
-  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo',
+  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
 const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
@@ -211,6 +211,10 @@ class E46JiraClusterElement extends HTMLElement {
       else this._test = null;
       all = t < 2.6;
     }
+    // Chaosmodus: Zeiger und Leuchten zufällig, nur bei eingeschalteter Zündung und nicht während des Selbsttests
+    if (s.chaos && !this._chaos) this._chaos = new ChaosSim();
+    const chaos = s.chaos && s.ignition && !this._test ? this._chaos.update(dt) : null;
+    if (chaos) tgt = chaos.tgt;
     c.set(tgt);
     c.frame(dt);
 
@@ -223,6 +227,7 @@ class E46JiraClusterElement extends HTMLElement {
     lit.fuelwarn = s.ignition && (all || (s.sprint <= 0.02 && c.needles.fuel.f <= 0.012));
     lit.left = s.ignition && (s.turnLeft || s.hazard);
     lit.right = s.ignition && (s.turnRight || s.hazard);
+    if (chaos) Object.assign(lit, chaos.lamps);
     c.setLamps(lit);
 
     let clock = s.clock;

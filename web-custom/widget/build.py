@@ -26,7 +26,7 @@ out = (
     " * Schriften: Oswald und Barlow (SIL Open Font License 1.1), siehe web/fonts.css. */\n"
     "(function () {\n'use strict';\nconst window = {};   // cluster.js, sim.js und grain.js hängen ihre Klassen an dieses lokale Objekt\n"
     + read('grain.js') + '\n' + strip_module(read('cluster.js')) + '\n' + strip_module(read('sim.js')) + '\n'
-    + "const { E46Cluster, DriveSim, TicketSim } = window;\n" + element + "\n})();\n"
+    + "const { E46Cluster, DriveSim, TicketSim, ChaosSim } = window;\n" + element + "\n})();\n"
 )
 (here / 'e46-jira-cluster.js').write_text(out, encoding='utf-8')
 print('e46-jira-cluster.js', len(out) // 1024, 'KB')

@@ -119,7 +119,41 @@
     }
   }
 
+  /** Chaosmodus: Zeiger springen zu Zufallswerten (die Federn lassen sie wild nachschwingen), alle Leuchten und Blinker flackern zufällig. */
+  class ChaosSim {
+    constructor() {
+      this.max = { rpm: 50, speed: 100, coolant: 20, fuel: 1, fco: 20 };
+      this.needles = {};
+      for (const k in this.max) this.needles[k] = { v: Math.random() * this.max[k], t: 0 };
+      this.lampIds = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod',
+        'defect', 'nr', 'fuelwarn', 'left', 'right'];
+      this.lamps = {};
+      this.lt = {};
+      this.lampIds.forEach((k) => { this.lamps[k] = Math.random() < 0.5; this.lt[k] = 0; });
+    }
+    update(dt) {
+      for (const k in this.needles) {
+        const n = this.needles[k];
+        n.t -= dt;
+        if (n.t <= 0) {
+          // oft bis an die Anschläge, sonst irgendwo dazwischen
+          const r = Math.random();
+          n.v = (r < 0.22 ? 0 : r < 0.44 ? 1 : Math.random()) * this.max[k];
+          n.t = 0.12 + Math.random() * 0.7;
+        }
+      }
+      this.lampIds.forEach((k) => {
+        this.lt[k] -= dt;
+        if (this.lt[k] <= 0) { this.lamps[k] = Math.random() < 0.5; this.lt[k] = 0.06 + Math.random() * 0.5; }
+      });
+      const tgt = {};
+      for (const k in this.needles) tgt[k] = this.needles[k].v;
+      return { tgt, lamps: this.lamps };
+    }
+  }
+
   global.TicketSim = TicketSim;
+  global.ChaosSim = ChaosSim;
   global.DriveSim = DriveSim;
   global.DriveSim.RATIOS = RATIOS;
   global.DriveSim.RPM_PER_KMH = RPM_PER_KMH;
