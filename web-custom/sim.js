@@ -103,7 +103,7 @@
   /** Demo-Daten der Jira-Variante: Defects (0 bis 50 und darüber), Nightrun-Tickets (0 bis 20 und darüber), Sprint-Restzeit. */
   class TicketSim {
     constructor() { this.reset(); }
-    reset() { this.t = 0; this.defects = 18; this.nightrun = 8; this.sprint = 1; this.success = 80; this.closed = 6; }
+    reset() { this.t = 0; this.defects = 18; this.nightrun = 8; this.sprint = 1; this.success = 80; this.closed = 6; this.doors = {}; }
     update(dt) {
       this.t += dt;
       // Ganze Tickets, langsam auf und ab; erreicht zeitweise 50 Defects und mehr als 20 Nightrun-Tickets
@@ -112,6 +112,9 @@
       this.success = Math.min(100, Math.max(0, Math.round(78 + 24 * Math.sin(this.t / 11 + 1))));   // BAC30 Success %, geht zeitweise bis 100
       this.closed = Math.max(0, Math.min(20, Math.round((8 + 7 * Math.sin(this.t / 7 + 2)) * 2) / 2));   // abgearbeitete Defects pro Tag, in halben Schritten
       this.sprint = 1 - ((this.t % 150) / 150);   // Sprint-Restzeit: voll am Anfang, leer am Ende, dann neuer Sprint
+      // Auto: Türen (Dev, Test, Staging, Prod), Kofferraum (Release) und Haube (Hotfix) gehen reihum für einige Sekunden auf
+      const P = [[23, 0.2], [31, 1.7], [37, 3.1], [53, 4.4], [47, 5.5], [67, 0.9]];
+      ['door_dev', 'door_test', 'door_stage', 'door_prod', 'trunk', 'hood'].forEach((k, i) => { this.doors[k] = Math.sin(this.t * 6.2832 / P[i][0] + P[i][1]) > 0.8; });
       return this;
     }
   }

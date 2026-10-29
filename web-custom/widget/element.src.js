@@ -16,10 +16,11 @@ const BOOLS = {            // Property: Standard
   ignition: true, night: false, demo: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
+  door_dev: false, door_test: false, door_stage: false, door_prod: false, trunk: false, hood: false,   // Auto: Türen, Kofferraum, Haube
   defect: false, nr: false,     // schalten sich über die Werte; true erzwingt die Leuchte
   turnLeft: false, turnRight: false, hazard: false,
 };
-const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt'];   // von Hand schaltbar
+const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod', 'trunk', 'hood'];   // von Hand schaltbar
 
 // Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): ign, mil, cruise, oilwarn,
 // battery, oilpress. Neu in dieser Variante: defects, nightrun, sprint, success (Testresults statt speed), closed (Defects closed/Day statt fco).
@@ -29,6 +30,7 @@ const KEYS = {
   ign: 'ignition', mil: 'mil', cruise: 'cruise', oilwarn: 'oilwarn',
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
+  door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod', trunk: 'trunk', hood: 'hood',
   left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
@@ -213,7 +215,7 @@ class E46JiraClusterElement extends HTMLElement {
     c.frame(dt);
 
     const lit = {};
-    LAMPS.forEach((k) => { lit[k] = s.ignition && (all || s[k]); });
+    LAMPS.forEach((k) => { lit[k] = s.ignition && (all || s[k] || (s.demo && !!(this._sim && this._sim.tickets.doors[k]))); });
     // Defect-Leuchte bei 50 Defects, NR bei mehr als 20 Nightrun-Tickets: erst wenn die Nadel am Anschlag angekommen ist
     lit.defect = s.ignition && (all || s.defect || (s.defects >= MAX_DEFECTS && c.needles.rpm.f >= 0.985));
     lit.nr = s.ignition && (all || s.nr || (s.nightrun > MAX_NIGHTRUN && c.needles.coolant.f >= 0.985));

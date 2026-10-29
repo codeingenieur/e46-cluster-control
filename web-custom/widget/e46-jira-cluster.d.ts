@@ -10,6 +10,7 @@ export interface E46JiraClusterState {
   ignition: boolean; night: boolean; demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   arrk: boolean; tt: boolean;
+  door_dev: boolean; door_test: boolean; door_stage: boolean; door_prod: boolean; trunk: boolean; hood: boolean;
   /** true erzwingt die Leuchte; sonst schaltet sie sich bei 50 Defects selbst */ defect: boolean;
   /** true erzwingt die Leuchte; sonst schaltet sie sich bei mehr als 20 Nightrun-Tickets selbst */ nr: boolean;
   turnLeft: boolean; turnRight: boolean; hazard: boolean;
@@ -28,6 +29,8 @@ export declare class E46JiraClusterElement extends HTMLElement {
   /** Demo: überschreibt defects, nightrun, sprint, success, closed */ demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   /** arrk-Logo (blau) und TT-Logo (orange), nur Anzeige */ arrk: boolean; tt: boolean;
+  /** Auto links vom Display: offene Türen Dev, Test, Staging, Prod (rot), Kofferraum = Release, Haube = Hotfix; in der Demo gehen sie von selbst auf */
+  door_dev: boolean; door_test: boolean; door_stage: boolean; door_prod: boolean; trunk: boolean; hood: boolean;
   defect: boolean; nr: boolean;
   turnLeft: boolean; turnRight: boolean; hazard: boolean;
   odometer: number; trip: number;
