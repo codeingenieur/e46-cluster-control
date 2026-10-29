@@ -89,7 +89,7 @@
     mil: [800, 95, 0.95],
     arrk: [205, 542, 1.15], tt: [280, 542, 1.0], oilwarn: [355, 542, 1.0],   // eine Reihe, spiegelbildlich zu lab / nr / defect rechts
     battery: [1026, 542, 1.0], cruise: [1101, 547, 1.0],   // zwei Leuchten im Feld rechts neben dem Display, Abstand wie bei den anderen Gruppen
-    lab: [1245, 546, 1.0], nr: [1320, 546, 1.0], defect: [1395, 546, 1.0],
+    lab: [1245, 542, 1.0], nr: [1320, 542, 1.0], defect: [1395, 542, 1.0],
     door_dev: [537, 546, 1.0], door_test: [537, 546, 1.0], door_stage: [537, 546, 1.0], door_prod: [537, 546, 1.0],
   };
 
