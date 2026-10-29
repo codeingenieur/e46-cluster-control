@@ -6,8 +6,11 @@ Sprint-Restzeit.** Das Element hat einen eigenen Namen, beide Versionen laufen a
 
 | Datei | Zweck |
 |---|---|
-| `e46-jira-cluster.js` | das fertige Skript (92 KB, Schriften und Körnung eingebettet). **Nur diese Datei wird gebraucht** |
-| `e46-jira-cluster.d.ts` | TypeScript-Typen (optional) |
+| `e46-jira-cluster.js` | das fertige Skript (105 KB, Schriften und Körnung eingebettet, keine Abhängigkeiten). **Nur diese Datei wird für HTML gebraucht** |
+| `e46-jira-cluster.d.ts` | TypeScript-Typen |
+| `package.json` | macht den Ordner zu einem npm-Paket (`npm pack` oder `npm install <ordner>`) |
+| `angular/e46-jira-kombi.component.ts` | fertige Angular-Komponente mit typisierten Inputs und Outputs |
+| `angular/app.component.example.ts` | Beispiel: Kombi in einer Seite, gespeist von einem Observable |
 | `demo.html` | Beispielseite mit Befehlskonsole, öffnen per Doppelklick |
 | `element.src.js`, `build.py` | Quelle des Elements und Build-Skript (`py build.py` setzt `e46-jira-cluster.js` neu zusammen) |
 
@@ -23,7 +26,9 @@ Sprint-Restzeit.** Das Element hat einen eigenen Namen, beide Versionen laufen a
 Die beiden Leuchten schalten sich erst, wenn die Nadel am Anschlag angekommen ist. Mittendisplay und die übrigen Leuchten sind
 unverändert vom Original (die Wegstrecke läuft nur in der Demo). Mit `defect` und `nr` lassen sich die beiden Leuchten zusätzlich von Hand erzwingen.
 
-## HTML
+## Einbinden
+
+### Reines HTML
 
 ```html
 <script src="e46-jira-cluster.js"></script>
@@ -41,34 +46,78 @@ unverändert vom Original (die Wegstrecke läuft nur in der Demo). Mit `defect` 
 
 Die Breite bestimmt der Container (`width: 100%`), die Höhe folgt dem Seitenverhältnis, z. B. `e46-jira-cluster { width: 900px; }`.
 
-## Angular
+### Als npm-Paket (Angular, React, Vue, jeder Bundler)
 
-1. `e46-jira-cluster.js` nach `src/assets/` kopieren und in `angular.json` unter `projects.<name>.architect.build.options.scripts`
-   eintragen: `"scripts": ["src/assets/e46-jira-cluster.js"]`. (Alternativ in `main.ts`: `import './assets/e46-jira-cluster.js';`)
-2. In der Komponente `CUSTOM_ELEMENTS_SCHEMA` erlauben:
+```
+cd widget && npm pack                       # erzeugt e46-jira-cluster-1.1.0.tgz
+cd <dein-projekt> && npm install ../widget/e46-jira-cluster-1.1.0.tgz
+```
 
 ```ts
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
+import 'e46-jira-cluster';                  // registriert <e46-jira-cluster>, die Typen kommen mit
+```
+
+Oder ohne Paket: `e46-jira-cluster.js` ins Projekt kopieren und mit `import './e46-jira-cluster.js'` oder in der Build-Konfiguration als Skript einbinden.
+
+### Angular (empfohlen: die fertige Komponente)
+
+1. Paket installieren (siehe oben).
+2. `angular/e46-jira-kombi.component.ts` nach `src/app/` kopieren.
+3. Verwenden (Standalone-Komponente, Angular 16 oder neuer):
+
+```ts
+import { E46JiraKombiComponent } from './e46-jira-kombi.component';
 
 @Component({
-  selector: 'app-kombi',
   standalone: true,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [E46JiraKombiComponent],
   template: `
-    <e46-jira-cluster #kombi
-      [defects]="aktiveDefects" [nightrun]="nightrunOffen" [sprint]="sprintRest"
-      (clusterready)="bereit()">
-    </e46-jira-cluster>`,
+    <app-e46-jira-kombi #kombi style="width: 900px"
+      [defects]="defects" [nightrun]="nightrun" [sprint]="sprint" [success]="success" [closed]="closed"
+      [night]="false" (kombiReady)="bereit($event)" (kombiChange)="zustand = $event">
+    </app-e46-jira-kombi>`,
 })
-export class KombiComponent {
-  @ViewChild('kombi', { static: true }) kombi!: ElementRef<HTMLElement & { command(l: string): string }>;
-  aktiveDefects = 0; nightrunOffen = 0; sprintRest = 1;
-  bereit() { this.kombi.nativeElement.command('SET night 1'); }
+export class SeiteComponent {
+  @ViewChild('kombi') kombi!: E46JiraKombiComponent;
+  defects = 12; nightrun = 6; sprint = 0.8; success = 87; closed = 8;
+  zustand?: E46JiraClusterState;
+
+  bereit(z: E46JiraClusterState) {}
+  chaos() { this.kombi.command('SET chaos 1'); }        // oder this.kombi.element.xmas = true
 }
 ```
 
-`[defects]="…"` setzt die Property des Elements, die Bindung ist also dynamisch. Typen: `e46-jira-cluster.d.ts` ins Projekt legen.
-*Nicht in einem Angular-Projekt getestet, nur im Browser mit reinem HTML.*
+- **Inputs:** `defects`, `nightrun`, `sprint`, `success`, `closed`, `dim`, `ignition`, `night`, `chaos`, `xmas`, `demo`, alle Leuchten, `clock`,
+  `odometer`, `trip`, und `[values]="{ … }"` für mehrere Werte auf einmal. Nicht gesetzte Inputs behalten die Standardwerte.
+- **Outputs:** `kombiReady`, `kombiChange` (Wert: Zustand des Kombis).
+- **Methoden:** `command(zeile)`, `commands(text)`, `selftest()`, `element` (das Element selbst).
+- Ohne die Komponente geht es auch direkt: `schemas: [CUSTOM_ELEMENTS_SCHEMA]` und `<e46-jira-cluster [defects]="…">`.
+- Die Bildschleife läuft an zone.js vorbei, es gibt keine Change Detection je Bild.
+- Geprüft: die Komponente übersetzt mit dem Angular-Compiler (Angular 18, `strictTemplates`), und mit geladenem zone.js löst das animierte
+  Element keine Zone-Aufgaben aus. *In einer laufenden Angular-Anwendung nicht ausprobiert.*
+
+### React und Vue
+
+React 19 und Vue setzen Properties von Custom Elements direkt: `<e46-jira-cluster defects={31} />` bzw. `<e46-jira-cluster :defects="31" />`
+(in Vue `compilerOptions.isCustomElement: (t) => t.startsWith('e46-')`). Für Methoden eine Referenz auf das Element holen (`ref`).
+
+## Von außen ansteuern
+
+| Weg | Beispiel |
+|---|---|
+| Attribut | `<e46-jira-cluster defects="31">` |
+| Property | `kombi.defects = 31` |
+| mehrere Werte | `kombi.set({ defects: 31, nightrun: 9 })` |
+| Befehl (wie am ESP32) | `kombi.command('SET defects 31 nightrun 9')`, Antwort `OK` oder `ERR …` |
+| Zustand lesen | `kombi.state` oder `kombi.command('GET')` |
+| Änderungen hören | `kombi.addEventListener('clusterchange', e => e.detail)` |
+
+Lebende Daten einspeisen, z. B. aus einem Server (Server-Sent Events, WebSocket oder Polling), immer nach demselben Muster:
+
+```ts
+const quelle = new EventSource('/api/jira-zahlen');          // liefert z. B. {"defects":31,"nightrun":9,"sprint":0.5}
+quelle.onmessage = (e) => kombi.set(JSON.parse(e.data));     // unbekannte Schlüssel werfen einen Fehler
+```
 
 ## Properties und Attribute
 

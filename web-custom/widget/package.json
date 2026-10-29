@@ -1,0 +1,18 @@
+{
+  "name": "e46-jira-cluster",
+  "version": "1.1.0",
+  "description": "BMW E46 Kombiinstrument in der Jira-Variante als Web Component <e46-jira-cluster> (HTML, Angular, React, Vue)",
+  "main": "e46-jira-cluster.js",
+  "types": "e46-jira-cluster.d.ts",
+  "sideEffects": true,
+  "files": [
+    "e46-jira-cluster.js",
+    "e46-jira-cluster.d.ts",
+    "README.md",
+    "demo.html",
+    "angular"
+  ],
+  "keywords": ["web-component", "custom-element", "cluster", "bmw", "e46", "jira", "angular"],
+  "license": "UNLICENSED",
+  "private": true
+}

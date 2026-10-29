@@ -1,4 +1,5 @@
-/** Typen für das <e46-jira-cluster>-Element (Web Component, Jira-Variante). Kopiere diese Datei neben e46-jira-cluster.js. */
+/** Typen für das <e46-jira-cluster>-Element (Web Component, Jira-Variante). Im npm-Paket (package.json "types") sind sie automatisch dabei,
+ * sonst diese Datei neben e46-jira-cluster.js legen. `import 'e46-jira-cluster'` registriert das Element. */
 
 export interface E46JiraClusterState {
   /** aktive Defects, Nadel 0 bis 50 */ defects: number;

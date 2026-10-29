@@ -842,7 +842,12 @@ const { E46Cluster, DriveSim, TicketSim, ChaosSim } = window;
  * Drehzahlmesser = aktive Defects (0 bis 50), Kühlmittel = offene Nightrun-Tickets (intern 0 bis 20), Tank = Sprint-Restzeit.
  * Steuerung: Attribute, Properties, Methoden oder Befehle im Stil des ESP32-Protokolls ("SET defects 23 nightrun 7").
  */
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
+
+// Die Bildschleife läuft an Angular (zone.js) vorbei: zone.js merkt sich die echten Funktionen unter __zone_symbol__…, sonst würde
+// jedes Bild eine Change Detection der ganzen Anwendung auslösen. Ohne zone.js sind es einfach die normalen Funktionen.
+const RAF = (globalThis.__zone_symbol__requestAnimationFrame || globalThis.requestAnimationFrame).bind(globalThis);
+const CAF = (globalThis.__zone_symbol__cancelAnimationFrame || globalThis.cancelAnimationFrame).bind(globalThis);
 
 const MAX_DEFECTS = 50, MAX_NIGHTRUN = 20;   // Anschlag der Nadeln; bei 50 Defects leuchtet die Defect-Leuchte, über 20 Tickets NR
 const NUMBERS = {          // Property: [min, max, Standard]
@@ -917,12 +922,12 @@ class E46JiraClusterElement extends HTMLElement {
       else if (!this._s.ignition) this._cluster.setPower(false);
     }
     this._last = performance.now();
-    const loop = (now) => { this._raf = requestAnimationFrame(loop); this._frame(now); };
-    this._raf = requestAnimationFrame(loop);
+    const loop = (now) => { this._raf = RAF(loop); this._frame(now); };
+    this._raf = RAF(loop);
     this.dispatchEvent(new CustomEvent('clusterready', { detail: this.state }));
   }
 
-  disconnectedCallback() { cancelAnimationFrame(this._raf); this._raf = 0; }
+  disconnectedCallback() { CAF(this._raf); this._raf = 0; }
 
   attributeChangedCallback(name, _old, val) {
     if (name === 'clock') { this.clock = val == null ? 'auto' : val; return; }
