@@ -85,7 +85,6 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `mil`, `lab`, `cruise`, `oilwarn`, `battery`, `oilpress` | bool | Leuchten wie im Original (`lab` = Labor-Kolben) |
 | `arrk`, `tt` | bool | Logo-Leuchten (blau, orange) |
 | `door_dev`, `door_test`, `door_stage`, `door_prod` | bool | Auto links vom Display: Tür offen für Dev, Test, Staging, Prod (rot) |
-| `trunk`, `hood` | bool | Kofferraum offen = Release, Haube offen = Hotfix |
 | `defect`, `nr` | bool | erzwingen die Leuchten, sonst schalten sie sich über die Werte |
 | `turnLeft`, `turnRight`, `hazard` | bool | Blinker, Warnblinker |
 | `ignition` | bool | aus: Nadeln auf 0, Lampen aus. an: Selbsttest |
@@ -108,7 +107,7 @@ Zeile wirkt ganz oder gar nicht, die Antworten sind wie beim ESP32.
 | `ZERO` | defects, success, closed auf 0 | `OK` |
 | `SELFTEST`, `RESET`, `PING`, `HELP` | Selbsttest, Standardwerte, Lebenszeichen, Schlüsselliste | `OK`, `OK`, `PONG …`, `HELP …` |
 
-Schlüssel: `defects nightrun sprint success closed ign mil cruise oilwarn battery oilpress lab arrk tt door_dev door_test door_stage door_prod trunk hood defect nr left right hazard night dim
+Schlüssel: `defects nightrun sprint success closed ign mil cruise oilwarn battery oilpress lab arrk tt door_dev door_test door_stage door_prod defect nr left right hazard night dim
 demo odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
 
 Die Schlüssel `rpm`, `speed`, `coolant`, `oil`, `overheat` und `eml` des Original-Widgets gibt es hier nicht.

@@ -65,13 +65,11 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     // Variante Jira: NR (Nightrun-Überlauf) als roter Schriftzug, Mond für Nightrun, Sanduhr für die Sprint-Restzeit
     nr: '<text y="12.6" text-anchor="middle" font-size="31" font-weight="700" fill="currentColor">NR</text>',
     hourglass: '<path d="M-9 -14H9M-9 14H9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M-7 -14C-7 -4 -1 -1.5 0 0C-1 1.5 -7 4 -7 14M7 -14C7 -4 1 -1.5 0 0C1 1.5 7 4 7 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M-4.2 13L0 6L4.2 13Z" fill="currentColor"/>',
-    // Variante Jira: Auto von oben im Feld links vom Display. Vier Türen = Pipeline-Stufen, Kofferraum = Release, Haube = Hotfix
-    door_dev: '<path d="M8 -19L-8.4 -30.5" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/>',
-    door_test: '<path d="M-10 -19L-24.7 -29.3" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/>',
-    door_stage: '<path d="M8 19L-8.4 30.5" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/>',
-    door_prod: '<path d="M-10 19L-24.7 29.3" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/>',
-    trunk: '<path d="M-57 -11Q-66 0 -57 11" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/>',
-    hood: '<path d="M57 -11Q66 0 57 11" fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round"/>',
+    // Variante Jira: Auto von oben im Feld links vom Display. Die vier Türen stehen für die Pipeline-Stufen Dev, Test, Staging, Prod
+    door_dev: '<path d="M20 -19L9.9 -40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_test: '<path d="M-4 -19L-14.1 -40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_stage: '<path d="M20 19L9.9 40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_prod: '<path d="M-4 19L-14.1 40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
     pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -93,8 +91,6 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     door_test: ['red', 'Test: Tür offen'],
     door_stage: ['red', 'Staging: Tür offen'],
     door_prod: ['red', 'Prod: Tür offen'],
-    trunk: ['red', 'Release: Kofferraum offen'],
-    hood: ['red', 'Hotfix: Haube offen'],
   };
   // Lage in der Leuchtenleiste: [x, y, Skalierung]
   const LAMP_POS = {
@@ -102,7 +98,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     arrk: [205, 546, 1.15], tt: [280, 546, 1.0], oilwarn: [355, 546, 1.0],   // eine Reihe, spiegelbildlich zu lab / nr / defect rechts
     battery: [1026, 542, 1.0], cruise: [1101, 547, 1.0],   // zwei Leuchten im Feld rechts neben dem Display, Abstand wie bei den anderen Gruppen
     lab: [1245, 546, 1.0], nr: [1320, 546, 1.0], defect: [1395, 546, 1.0],
-    door_dev: [537, 546, 1.0], door_test: [537, 546, 1.0], door_stage: [537, 546, 1.0], door_prod: [537, 546, 1.0], trunk: [537, 546, 1.0], hood: [537, 546, 1.0],
+    door_dev: [537, 546, 1.0], door_test: [537, 546, 1.0], door_stage: [537, 546, 1.0], door_prod: [537, 546, 1.0],
   };
 
   // 5x7-Punktmatrix für das Mittendisplay (Zeilen von oben, 1 = Punkt an)
@@ -427,7 +423,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       });
       // dezente Symbole der unbelegten Leuchten (wie am echten Kombi sichtbar, wenn aus)
       const deco = el('g', { class: 'deco' }, base);
-      el('path', { d: 'M-52 -10Q-52 -19 -43 -19H30Q46 -19 52 -8V8Q46 19 30 19H-43Q-52 19 -52 10ZM10 -17V17M-26 -17V17', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5, transform: 'translate(537 546)' }, deco);
+      el('path', { d: 'M-52 -10Q-52 -19 -43 -19H30Q46 -19 52 -8V8Q46 19 30 19H-43Q-52 19 -52 10ZM20 -17V17M-32 -17V17', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5, transform: 'translate(537 546)' }, deco);
       // kleines Fenster zwischen den Zifferblättern
       el('rect', { x: 776, y: 424, width: 48, height: 48, rx: 8, fill: '#24272c', stroke: '#101114', 'stroke-width': 2 }, base);
 
@@ -681,9 +677,9 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       this.success = Math.min(100, Math.max(0, Math.round(78 + 24 * Math.sin(this.t / 11 + 1))));   // BAC30 Success %, geht zeitweise bis 100
       this.closed = Math.max(0, Math.min(20, Math.round((8 + 7 * Math.sin(this.t / 7 + 2)) * 2) / 2));   // abgearbeitete Defects pro Tag, in halben Schritten
       this.sprint = 1 - ((this.t % 150) / 150);   // Sprint-Restzeit: voll am Anfang, leer am Ende, dann neuer Sprint
-      // Auto: Türen (Dev, Test, Staging, Prod), Kofferraum (Release) und Haube (Hotfix) gehen reihum für einige Sekunden auf
-      const P = [[23, 0.2], [31, 1.7], [37, 3.1], [53, 4.4], [47, 5.5], [67, 0.9]];
-      ['door_dev', 'door_test', 'door_stage', 'door_prod', 'trunk', 'hood'].forEach((k, i) => { this.doors[k] = Math.sin(this.t * 6.2832 / P[i][0] + P[i][1]) > 0.8; });
+      // Auto: die vier Türen (Dev, Test, Staging, Prod) gehen reihum für einige Sekunden auf
+      const P = [[23, 0.2], [31, 1.7], [37, 3.1], [53, 4.4]];
+      ['door_dev', 'door_test', 'door_stage', 'door_prod'].forEach((k, i) => { this.doors[k] = Math.sin(this.t * 6.2832 / P[i][0] + P[i][1]) > 0.8; });
       return this;
     }
   }
@@ -713,11 +709,11 @@ const BOOLS = {            // Property: Standard
   ignition: true, night: false, demo: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
-  door_dev: false, door_test: false, door_stage: false, door_prod: false, trunk: false, hood: false,   // Auto: Türen, Kofferraum, Haube
+  door_dev: false, door_test: false, door_stage: false, door_prod: false,   // Auto: vier Türen
   defect: false, nr: false,     // schalten sich über die Werte; true erzwingt die Leuchte
   turnLeft: false, turnRight: false, hazard: false,
 };
-const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod', 'trunk', 'hood'];   // von Hand schaltbar
+const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod'];   // von Hand schaltbar
 
 // Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): ign, mil, cruise, oilwarn,
 // battery, oilpress. Neu in dieser Variante: defects, nightrun, sprint, success (Testresults statt speed), closed (Defects closed/Day statt fco).
@@ -727,7 +723,7 @@ const KEYS = {
   ign: 'ignition', mil: 'mil', cruise: 'cruise', oilwarn: 'oilwarn',
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
-  door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod', trunk: 'trunk', hood: 'hood',
+  door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod',
   left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };

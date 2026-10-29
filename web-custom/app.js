@@ -7,7 +7,7 @@
   const tickets = new TicketSim();    // Defects, Nightrun, Sprint
 
   // Von Hand schaltbare Leuchten. NR und Jira Defect schalten sich über die Werte.
-  const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod', 'trunk', 'hood'];
+  const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod'];
   const MAX_DEFECTS = 50, MAX_NIGHTRUN = 20;
   const state = {
     mode: 'demo',
@@ -15,7 +15,7 @@
     defects: 0, nightrun: 0, sprint: 0.65, success: 0, closed: 0,
     mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
     arrk: false, tt: false,
-    door_dev: false, door_test: false, door_stage: false, door_prod: false, trunk: false, hood: false,
+    door_dev: false, door_test: false, door_stage: false, door_prod: false,
     turn: { left: false, right: false, hazard: false },
     odo: 148213, trip: 0,
   };
