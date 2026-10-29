@@ -86,7 +86,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
   // Lage in der Leuchtenleiste: [x, y, Skalierung]
   const LAMP_POS = {
     mil: [800, 95, 0.95],
-    arrk: [170, 522, 1.15], tt: [250, 522, 1.0], oilwarn: [330, 522, 0.95], battery: [250, 563, 0.95], oilpress: [330, 563, 0.95],
+    arrk: [205, 546, 1.15], tt: [280, 546, 1.0], oilwarn: [355, 546, 1.0],   // eine Reihe, spiegelbildlich zu lab / nr / defect rechts
     cruise: [1063, 547, 1.0],
     lab: [1245, 546, 1.0], nr: [1320, 546, 1.0], defect: [1395, 546, 1.0],
   };
