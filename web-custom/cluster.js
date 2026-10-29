@@ -529,46 +529,57 @@
 
     _buildXmas() {
       const layer = this.xmasLayer = el('g', { class: 'xmas', 'pointer-events': 'none', display: 'none' }, this.svg);
-      const colors = ['#ff3b30', '#ffd23a', '#37d65a', '#3d8bff'];
+      const colors = ['#ff3b30', '#ffd23a', '#37d65a', '#3d8bff', '#ffe6b0'];
       colors.forEach((c, i) => {
         const g = el('radialGradient', { id: 'xGlow' + i }, this.defs);
         el('stop', { offset: 0, 'stop-color': c, 'stop-opacity': 0.75 }, g);
         el('stop', { offset: 1, 'stop-color': c, 'stop-opacity': 0 }, g);
       });
+      // fester Startwert: die Kette sieht bei jedem Laden gleich "zufällig" aus
+      let seed = 20241224;
+      const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 
-      // Ankerpunkte entlang der oberen Außenkante (rechte Hälfte abgreifen, links spiegeln), dazwischen hängt die Kette durch
+      // Ankerpunkte entlang der oberen Außenkante: links und rechts getrennt, mit unregelmäßigem Abstand
       const probe = el('path', { d: SILHOUETTE }, this.defs);
       const total = probe.getTotalLength();
       let end = 0;
       for (let s = 0; s < total / 2; s += 6) { if (probe.getPointAtLength(s).y > 520) break; end = s; }
-      const right = [];
-      for (let s = 115; s < end - 60; s += 230) right.push(probe.getPointAtLength(s));
-      right.push(probe.getPointAtLength(end));
-      probe.remove();
       const inward = (p, k) => {
         const dx = 800 - p.x, dy = 330 - p.y, l = Math.hypot(dx, dy) || 1;
         return { x: p.x + (dx / l) * k, y: p.y + (dy / l) * k };
       };
-      const pts = right.slice().reverse().map((p) => ({ x: 1600 - p.x, y: p.y })).concat(right).map((p) => inward(p, 7));
+      const side = (mirror) => {
+        const out = [];
+        for (let s = 40 + rnd() * 120; s < end - 70; s += 150 + rnd() * 150) out.push(s);
+        out.push(end);
+        return out.map((s) => { const q = probe.getPointAtLength(s); return inward(mirror ? { x: 1600 - q.x, y: q.y } : q, 5 + rnd() * 5); });
+      };
+      const left = side(true).reverse(), right = side(false);
+      probe.remove();
+      const pts = left.concat(right);
 
       this._bulbs = [];
       const wire = el('g', null, layer), bulbs = el('g', null, layer);
       for (let i = 0; i < pts.length - 1; i++) {
-        const a = pts[i], b = pts[i + 1], m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-        const c = inward(m, 40);   // Kontrollpunkt: die Kette hängt etwa 20 nach innen durch
+        const a = pts[i], b = pts[i + 1], len = Math.hypot(b.x - a.x, b.y - a.y);
+        const m = { x: (a.x + b.x) / 2 + (b.x - a.x) * (rnd() - 0.5) * 0.3, y: (a.y + b.y) / 2 + (b.y - a.y) * (rnd() - 0.5) * 0.3 };
+        const c = inward(m, 2 * len * (0.07 + rnd() * 0.1));   // längere Stücke hängen mehr durch, jedes anders
         el('path', { d: 'M' + a.x.toFixed(1) + ' ' + a.y.toFixed(1) + 'Q' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + ' ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1),
-          fill: 'none', stroke: '#17381f', 'stroke-width': 2.6, 'stroke-linecap': 'round' }, wire);
-        [0.14, 0.38, 0.62, 0.86].forEach((u) => {
+          fill: 'none', stroke: '#17381f', 'stroke-width': 2.2 + rnd() * 0.8, 'stroke-linecap': 'round' }, wire);
+        const n = Math.max(2, Math.round(len / 48));
+        for (let j = 0; j < n; j++) {
+          const u = Math.min(0.94, Math.max(0.06, (j + 0.5 + (rnd() - 0.5) * 0.7) / n));
           const x = (1 - u) * (1 - u) * a.x + 2 * (1 - u) * u * c.x + u * u * b.x;
           const y = (1 - u) * (1 - u) * a.y + 2 * (1 - u) * u * c.y + u * u * b.y;
-          const n = this._bulbs.length, k = n % colors.length;
-          const g = el('g', { transform: 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')' }, bulbs);
+          const r = rnd(), k = r < 0.27 ? 0 : r < 0.5 ? 1 : r < 0.74 ? 2 : r < 0.94 ? 3 : 4;   // Rot, Gelb, Grün, Blau, selten Warmweiß
+          const sc = 0.82 + rnd() * 0.36, tilt = (rnd() - 0.5) * 26;
+          const g = el('g', { transform: 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + tilt.toFixed(1) + ') scale(' + sc.toFixed(2) + ')' }, bulbs);
           el('circle', { cy: 8, r: 18, fill: 'url(#xGlow' + k + ')' }, g);
           el('rect', { x: -2.6, y: 0, width: 5.2, height: 4, rx: 1, fill: '#1b1d20' }, g);
           el('ellipse', { cy: 9, rx: 4.6, ry: 6.4, fill: colors[k], stroke: '#0006', 'stroke-width': 0.8 }, g);
           el('ellipse', { cx: -1.4, cy: 6.6, rx: 1.3, ry: 2.2, fill: '#fff', opacity: 0.55 }, g);
-          this._bulbs.push({ g, op: 1 });
-        });
+          this._bulbs.push({ g, x, y, sc, tilt, op: 1, sp: 1.3 + rnd() * 2.4, ph: rnd() * 6.28, steady: rnd() < 0.15, sw: 0.8 + rnd() * 1.4, swph: rnd() * 6.28 });
+        }
       }
 
       // Schneefall: kleine Punkte und größere Sechsstrahler, die schräg nach unten treiben
@@ -593,9 +604,10 @@
     _xmasFrame(dt) {
       this._xt += dt;
       const t = this._xt;
-      this._bulbs.forEach((b, i) => {
-        const op = 0.28 + 0.72 * Math.max(0, Math.sin(t * 2.4 + i * 0.95));
-        if (Math.abs(op - b.op) > 0.03) { b.op = op; b.g.setAttribute('opacity', op.toFixed(2)); }
+      this._bulbs.forEach((b) => {
+        const op = b.steady ? 0.8 + 0.2 * Math.sin(t * 0.9 + b.ph) : 0.22 + 0.78 * Math.max(0, Math.sin(t * b.sp + b.ph) + 0.15 * Math.sin(t * 7.3 + b.ph * 3));
+        if (Math.abs(op - b.op) > 0.03) { b.op = op; b.g.setAttribute('opacity', Math.min(1, op).toFixed(2)); }
+        b.g.setAttribute('transform', 'translate(' + b.x.toFixed(1) + ' ' + b.y.toFixed(1) + ') rotate(' + (b.tilt + 3.5 * Math.sin(t * b.sw + b.swph)).toFixed(1) + ') scale(' + b.sc.toFixed(2) + ')');
       });
       this._flakes.forEach((f) => {
         f.y += f.vy * dt;
