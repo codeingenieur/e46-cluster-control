@@ -66,10 +66,10 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     nr: '<text y="12.6" text-anchor="middle" font-size="31" font-weight="700" fill="currentColor">NR</text>',
     hourglass: '<path d="M-9 -14H9M-9 14H9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M-7 -14C-7 -4 -1 -1.5 0 0C-1 1.5 -7 4 -7 14M7 -14C7 -4 1 -1.5 0 0C1 1.5 7 4 7 14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M-4.2 13L0 6L4.2 13Z" fill="currentColor"/>',
     // Variante Jira: Auto von oben im Feld links vom Display. Die vier Türen stehen für die Pipeline-Stufen Dev, Test, Staging, Prod
-    door_dev: '<path d="M20 -19L9.9 -40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
-    door_test: '<path d="M-4 -19L-14.1 -40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
-    door_stage: '<path d="M20 19L9.9 40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
-    door_prod: '<path d="M-4 19L-14.1 40.8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_dev: '<path d="M20 -19L1.6 -34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_test: '<path d="M-4 -19L-22.4 -34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_stage: '<path d="M20 19L1.6 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
+    door_prod: '<path d="M-4 19L-22.4 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
     pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
