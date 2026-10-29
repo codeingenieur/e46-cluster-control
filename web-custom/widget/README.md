@@ -20,7 +20,7 @@ Sprint-Restzeit.** Das Element hat einen eigenen Namen, beide Versionen laufen a
 | Tank | `sprint`, Sprint-Restzeit | 0 bis 1 (1/1 = Sprintstart, 0 = Sprintende) | bei leer leuchtet die Reserveleuchte |
 | Tacho | `success`, Testresults: BAC30 Success in % | 0 bis 100, Zahlen alle 10 | keine |
 
-Die beiden Leuchten schalten sich erst, wenn die Nadel am Anschlag angekommen ist. Verbrauchsanzeige und Mittendisplay sind
+Die beiden Leuchten schalten sich erst, wenn die Nadel am Anschlag angekommen ist. Mittendisplay und die übrigen Leuchten sind
 unverändert vom Original (die Wegstrecke läuft nur in der Demo). Mit `defect` und `nr` lassen sich die beiden Leuchten zusätzlich von Hand erzwingen.
 
 ## HTML
@@ -81,14 +81,14 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `nightrun` | 0 bis 40 | offene Nightrun-Tickets (Nadel stoppt bei 20, darüber NR) |
 | `sprint` | 0 bis 1 | Sprint-Restzeit |
 | `success` | 0 bis 100 | Tacho: Testresults, BAC30 Success in % |
-| `fco` | 0 bis 20 | Verbrauchsanzeige (L/100 km), unverändert |
+| `closed` | 0 bis 20 | kleine Anzeige im Drehzahlmesser: Defects closed/Day, also pro Tag abgearbeitete Defects |
 | `mil`, `lab`, `cruise`, `oilwarn`, `battery`, `oilpress` | bool | Leuchten wie im Original (`lab` = Labor-Kolben) |
 | `arrk`, `tt` | bool | Logo-Leuchten (blau, orange) |
 | `defect`, `nr` | bool | erzwingen die Leuchten, sonst schalten sie sich über die Werte |
 | `turnLeft`, `turnRight`, `hazard` | bool | Blinker, Warnblinker |
 | `ignition` | bool | aus: Nadeln auf 0, Lampen aus. an: Selbsttest |
 | `night`, `dim` | bool, 0 bis 1 | Nachtmodus, Helligkeit |
-| `demo` | bool | Demo: überschreibt defects, nightrun, sprint, success, fco |
+| `demo` | bool | Demo: überschreibt defects, nightrun, sprint, success, closed |
 | `odometer`, `trip`, `clock` | Zahl, Zahl, `HH:MM` oder `auto` | Mittendisplay |
 | `selftest="false"` | | kein Selbsttest beim Start |
 
@@ -103,10 +103,10 @@ Zeile wirkt ganz oder gar nicht, die Antworten sind wie beim ESP32.
 |---|---|---|
 | `SET k v [k v …]` | Werte setzen | `OK`, `ERR usage`, `ERR unknown_key`, `ERR bad_value` |
 | `GET` | Zustand lesen | `STATE defects=… nightrun=… …` |
-| `ZERO` | defects, success, fco auf 0 | `OK` |
+| `ZERO` | defects, success, closed auf 0 | `OK` |
 | `SELFTEST`, `RESET`, `PING`, `HELP` | Selbsttest, Standardwerte, Lebenszeichen, Schlüsselliste | `OK`, `OK`, `PONG …`, `HELP …` |
 
-Schlüssel: `defects nightrun sprint success fco ign mil cruise oilwarn battery oilpress lab arrk tt defect nr left right hazard night dim
+Schlüssel: `defects nightrun sprint success closed ign mil cruise oilwarn battery oilpress lab arrk tt defect nr left right hazard night dim
 demo odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
 
 Die Schlüssel `rpm`, `speed`, `coolant`, `oil`, `overheat` und `eml` des Original-Widgets gibt es hier nicht.

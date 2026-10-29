@@ -103,13 +103,14 @@
   /** Demo-Daten der Jira-Variante: Defects (0 bis 50 und darüber), Nightrun-Tickets (0 bis 20 und darüber), Sprint-Restzeit. */
   class TicketSim {
     constructor() { this.reset(); }
-    reset() { this.t = 0; this.defects = 18; this.nightrun = 8; this.sprint = 1; this.success = 80; }
+    reset() { this.t = 0; this.defects = 18; this.nightrun = 8; this.sprint = 1; this.success = 80; this.closed = 6; }
     update(dt) {
       this.t += dt;
       // Ganze Tickets, langsam auf und ab; erreicht zeitweise 50 Defects und mehr als 20 Nightrun-Tickets
       this.defects = Math.max(0, Math.round(27 + 29 * Math.sin(this.t / 13 - 1.1)));
       this.nightrun = Math.max(0, Math.round(10 + 12 * Math.sin(this.t / 8.5)));
       this.success = Math.min(100, Math.max(0, Math.round(78 + 24 * Math.sin(this.t / 11 + 1))));   // BAC30 Success %, geht zeitweise bis 100
+      this.closed = Math.max(0, Math.min(20, Math.round((8 + 7 * Math.sin(this.t / 7 + 2)) * 2) / 2));   // abgearbeitete Defects pro Tag, in halben Schritten
       this.sprint = 1 - ((this.t % 150) / 150);   // Sprint-Restzeit: voll am Anfang, leer am Ende, dann neuer Sprint
       return this;
     }

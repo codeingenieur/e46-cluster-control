@@ -10,7 +10,7 @@ const VERSION = '1.0.0';
 const MAX_DEFECTS = 50, MAX_NIGHTRUN = 20;   // Anschlag der Nadeln; bei 50 Defects leuchtet die Defect-Leuchte, über 20 Tickets NR
 const NUMBERS = {          // Property: [min, max, Standard]
   defects: [0, 100, 0], nightrun: [0, 40, 0], sprint: [0, 1, 1],
-  success: [0, 100, 0], fco: [0, 20, 0], dim: [0, 1, 0.85],
+  success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
   ignition: true, night: false, demo: false,
@@ -21,11 +21,11 @@ const BOOLS = {            // Property: Standard
 };
 const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt'];   // von Hand schaltbar
 
-// Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): fco, ign, mil, cruise, oilwarn,
-// battery, oilpress. Neu in dieser Variante: defects, nightrun, sprint, success (Testresults statt speed).
+// Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): ign, mil, cruise, oilwarn,
+// battery, oilpress. Neu in dieser Variante: defects, nightrun, sprint, success (Testresults statt speed), closed (Defects closed/Day statt fco).
 const KEYS = {
   defects: 'defects', nightrun: 'nightrun', sprint: 'sprint',
-  success: 'success', fco: 'fco',
+  success: 'success', closed: 'closed',
   ign: 'ignition', mil: 'mil', cruise: 'cruise', oilwarn: 'oilwarn',
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
@@ -147,7 +147,7 @@ class E46JiraClusterElement extends HTMLElement {
       for (const k in KEYS) { const v = s[KEYS[k]]; p.push(k + '=' + (typeof v === 'boolean' ? (v ? 1 : 0) : (typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(2) : v))); }
       return 'STATE ' + p.join(' ');
     }
-    if (cmd === 'ZERO') { this.defects = 0; this.success = 0; this.fco = 0; return 'OK'; }
+    if (cmd === 'ZERO') { this.defects = 0; this.success = 0; this.closed = 0; return 'OK'; }
     if (cmd === 'SELFTEST') { this.selftest(); return 'OK'; }
     if (cmd === 'RESET') { this._reset(); return 'OK'; }
     if (cmd === 'SET') {
@@ -188,7 +188,7 @@ class E46JiraClusterElement extends HTMLElement {
 
     if (s.demo && this._sim) {
       this._sim.drive.update(dt); this._sim.tickets.update(dt);
-      s.success = this._sim.tickets.success; s.fco = this._sim.drive.fco;
+      s.success = this._sim.tickets.success; s.closed = this._sim.tickets.closed;
       s.defects = this._sim.tickets.defects; s.nightrun = this._sim.tickets.nightrun; s.sprint = this._sim.tickets.sprint;
     }
     // Wegstrecke läuft nur in der Demo (mit der Fahrsimulation im Hintergrund), sonst steht das Mittendisplay still
@@ -198,7 +198,7 @@ class E46JiraClusterElement extends HTMLElement {
 
     // Nadelnamen im Zifferblatt: rpm = Defects, coolant = Nightrun, fuel = Sprint-Restzeit, speed = Testresults
     let tgt = s.ignition
-      ? { rpm: s.defects, speed: s.success, coolant: s.nightrun, fuel: s.sprint, fco: s.fco }
+      ? { rpm: s.defects, speed: s.success, coolant: s.nightrun, fuel: s.sprint, fco: s.closed }
       : { rpm: 0, speed: 0, coolant: 0, fuel: 0, fco: 0 };
     let all = false;
     if (this._test && s.ignition) {

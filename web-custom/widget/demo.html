@@ -34,6 +34,7 @@
     <button data-c="SET nightrun 21">21 Nightrun (NR)</button>
     <button data-c="SET sprint 0">Sprint leer</button>
     <button data-c="SET sprint 1">Sprint voll</button>
+    <button data-c="SET closed 12">12 closed/Day</button>
     <button data-c="ZERO">ZERO</button>
     <button data-c="SET night 1">Nacht</button>
     <button data-c="SET night 0">Tag</button>
@@ -47,7 +48,7 @@
   </div>
   <pre id="log" aria-live="polite"></pre>
   <p><small>Befehle im Stil des ESP32-Protokolls. Drehzahlmesser = Defects (0 bis 50), Kühlmittel = Nightrun-Tickets (0 bis 20, darüber NR),
-  Tank = Sprint-Restzeit (0 bis 1). Per Skript: <code>document.getElementById('c').command('SET defects 23')</code> oder <code>el.defects = 23</code>.</small></p>
+  Tank = Sprint-Restzeit (0 bis 1), kleine Anzeige = Defects closed/Day (0 bis 20). Per Skript: <code>document.getElementById('c').command('SET defects 23')</code> oder <code>el.defects = 23</code>.</small></p>
 </main>
 
 <script src="e46-jira-cluster.js"></script>

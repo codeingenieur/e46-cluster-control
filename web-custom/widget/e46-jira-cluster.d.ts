@@ -5,7 +5,8 @@ export interface E46JiraClusterState {
   /** offene Nightrun-Tickets, Nadel 0 bis 20 */ nightrun: number;
   /** Sprint-Restzeit 0 bis 1 */ sprint: number;
   /** Testresults: BAC30 Success in %, 0 bis 100 */ success: number;
-  fco: number; dim: number;
+  /** Defects closed/Day, 0 bis 20 */ closed: number;
+  dim: number;
   ignition: boolean; night: boolean; demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   arrk: boolean; tt: boolean;
@@ -20,11 +21,11 @@ export declare class E46JiraClusterElement extends HTMLElement {
   /** Offene Nightrun-Tickets (Füllstandsanzeige ohne Skala), 0 bis 40; ab mehr als 20 leuchtet NR */ nightrun: number;
   /** Sprint-Restzeit 0 bis 1 (Tank). Bei 0 leuchtet die Reserveleuchte, sobald die Nadel dort angekommen ist */ sprint: number;
   /** Testresults: BAC30 Success in %, 0 bis 100 (Tacho) */ success: number;
-  /** Momentanverbrauch L/100 km, 0 bis 20 */ fco: number;
+  /** Defects closed/Day: pro Tag abgearbeitete Defects (kleine Anzeige im Drehzahlmesser), 0 bis 20 */ closed: number;
   /** Helligkeit der Beleuchtung 0 bis 1 */ dim: number;
   /** false: Nadeln auf 0, Lampen aus. true löst den Selbsttest aus. */ ignition: boolean;
   night: boolean;
-  /** Demo: überschreibt defects, nightrun, sprint, success, fco */ demo: boolean;
+  /** Demo: überschreibt defects, nightrun, sprint, success, closed */ demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   /** arrk-Logo (blau) und TT-Logo (orange), nur Anzeige */ arrk: boolean; tt: boolean;
   defect: boolean; nr: boolean;

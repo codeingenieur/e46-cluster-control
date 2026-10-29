@@ -368,7 +368,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       });
     }
 
-    /** Momentanverbrauch unten im Drehzahlmesser (L/100 km), elliptische Skala */
+    /** Defects closed/Day unten im Drehzahlmesser (Skala 0 bis 20, elliptisch; intern heißt die Nadel 'fco') */
     _consumption(cx, cy) {
       const g = el('g', { class: 'mini mini-fco' }, this.litLayer);
       const lit = el('g', { class: 'lit' }, g);
@@ -387,7 +387,9 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       [['0', -77, -35], ['10', -3, -67], ['20', 68, -33]].forEach((l) => {
         el('text', { x: cx + l[1], y: cy + l[2], dy: '.41em', 'text-anchor': 'middle' }, nums, l[0]);
       });
-      el('text', { class: 'unit', x: cx, y: cy - 40, 'text-anchor': 'middle', 'font-size': 13 }, lit, 'L/100km');
+      // Defects closed/Day: zweizeilig, damit die Beschriftung zwischen der 10 und der Nabe Platz hat
+      el('text', { class: 'unit', x: cx, y: cy - 46, 'text-anchor': 'middle', 'font-size': 12 }, lit, 'Defects');
+      el('text', { class: 'unit', x: cx, y: cy - 33, 'text-anchor': 'middle', 'font-size': 12 }, lit, 'closed/Day');
       const angFn = (f) => { const t = ((-T + f * 2 * T) * Math.PI) / 180; return (Math.atan2(RX * Math.sin(t), RY * Math.cos(t)) * 180) / Math.PI; };
       this._needle(g, cx, cy, { len: 92, wb: 6.5, wt: 3, hub: 24, tail0: 12 }, 'fco',
         { min: 0, max: 20, a0: -T, a1: T, spring: [14, 1.1], angFn });
@@ -469,7 +471,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
 
     // ---------- Bedienung ----------
 
-    /** Nadelziele setzen: { rpm (Defects 0..50), speed (Testresults 0..100 %), coolant (Nightrun 0..20), fuel (0..1), fco (L/100km) } */
+    /** Nadelziele setzen: { rpm (Defects 0..50), speed (Testresults 0..100 %), coolant (Nightrun 0..20), fuel (0..1), fco (Defects closed/Day 0..20) } */
     set(values) {
       for (const k in values) {
         const n = this.needles[k];
@@ -655,13 +657,14 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
   /** Demo-Daten der Jira-Variante: Defects (0 bis 50 und darüber), Nightrun-Tickets (0 bis 20 und darüber), Sprint-Restzeit. */
   class TicketSim {
     constructor() { this.reset(); }
-    reset() { this.t = 0; this.defects = 18; this.nightrun = 8; this.sprint = 1; this.success = 80; }
+    reset() { this.t = 0; this.defects = 18; this.nightrun = 8; this.sprint = 1; this.success = 80; this.closed = 6; }
     update(dt) {
       this.t += dt;
       // Ganze Tickets, langsam auf und ab; erreicht zeitweise 50 Defects und mehr als 20 Nightrun-Tickets
       this.defects = Math.max(0, Math.round(27 + 29 * Math.sin(this.t / 13 - 1.1)));
       this.nightrun = Math.max(0, Math.round(10 + 12 * Math.sin(this.t / 8.5)));
       this.success = Math.min(100, Math.max(0, Math.round(78 + 24 * Math.sin(this.t / 11 + 1))));   // BAC30 Success %, geht zeitweise bis 100
+      this.closed = Math.max(0, Math.min(20, Math.round((8 + 7 * Math.sin(this.t / 7 + 2)) * 2) / 2));   // abgearbeitete Defects pro Tag, in halben Schritten
       this.sprint = 1 - ((this.t % 150) / 150);   // Sprint-Restzeit: voll am Anfang, leer am Ende, dann neuer Sprint
       return this;
     }
@@ -686,7 +689,7 @@ const VERSION = '1.0.0';
 const MAX_DEFECTS = 50, MAX_NIGHTRUN = 20;   // Anschlag der Nadeln; bei 50 Defects leuchtet die Defect-Leuchte, über 20 Tickets NR
 const NUMBERS = {          // Property: [min, max, Standard]
   defects: [0, 100, 0], nightrun: [0, 40, 0], sprint: [0, 1, 1],
-  success: [0, 100, 0], fco: [0, 20, 0], dim: [0, 1, 0.85],
+  success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
   ignition: true, night: false, demo: false,
@@ -697,11 +700,11 @@ const BOOLS = {            // Property: Standard
 };
 const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt'];   // von Hand schaltbar
 
-// Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): fco, ign, mil, cruise, oilwarn,
-// battery, oilpress. Neu in dieser Variante: defects, nightrun, sprint, success (Testresults statt speed).
+// Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): ign, mil, cruise, oilwarn,
+// battery, oilpress. Neu in dieser Variante: defects, nightrun, sprint, success (Testresults statt speed), closed (Defects closed/Day statt fco).
 const KEYS = {
   defects: 'defects', nightrun: 'nightrun', sprint: 'sprint',
-  success: 'success', fco: 'fco',
+  success: 'success', closed: 'closed',
   ign: 'ignition', mil: 'mil', cruise: 'cruise', oilwarn: 'oilwarn',
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
@@ -823,7 +826,7 @@ class E46JiraClusterElement extends HTMLElement {
       for (const k in KEYS) { const v = s[KEYS[k]]; p.push(k + '=' + (typeof v === 'boolean' ? (v ? 1 : 0) : (typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(2) : v))); }
       return 'STATE ' + p.join(' ');
     }
-    if (cmd === 'ZERO') { this.defects = 0; this.success = 0; this.fco = 0; return 'OK'; }
+    if (cmd === 'ZERO') { this.defects = 0; this.success = 0; this.closed = 0; return 'OK'; }
     if (cmd === 'SELFTEST') { this.selftest(); return 'OK'; }
     if (cmd === 'RESET') { this._reset(); return 'OK'; }
     if (cmd === 'SET') {
@@ -864,7 +867,7 @@ class E46JiraClusterElement extends HTMLElement {
 
     if (s.demo && this._sim) {
       this._sim.drive.update(dt); this._sim.tickets.update(dt);
-      s.success = this._sim.tickets.success; s.fco = this._sim.drive.fco;
+      s.success = this._sim.tickets.success; s.closed = this._sim.tickets.closed;
       s.defects = this._sim.tickets.defects; s.nightrun = this._sim.tickets.nightrun; s.sprint = this._sim.tickets.sprint;
     }
     // Wegstrecke läuft nur in der Demo (mit der Fahrsimulation im Hintergrund), sonst steht das Mittendisplay still
@@ -874,7 +877,7 @@ class E46JiraClusterElement extends HTMLElement {
 
     // Nadelnamen im Zifferblatt: rpm = Defects, coolant = Nightrun, fuel = Sprint-Restzeit, speed = Testresults
     let tgt = s.ignition
-      ? { rpm: s.defects, speed: s.success, coolant: s.nightrun, fuel: s.sprint, fco: s.fco }
+      ? { rpm: s.defects, speed: s.success, coolant: s.nightrun, fuel: s.sprint, fco: s.closed }
       : { rpm: 0, speed: 0, coolant: 0, fuel: 0, fco: 0 };
     let all = false;
     if (this._test && s.ignition) {

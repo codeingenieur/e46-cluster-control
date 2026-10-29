@@ -9,7 +9,8 @@ Widget und ESP32-Anbindung sind wie beim Original, die Anzeigen und Beschriftung
 | Kühlmittel | Temperatur mit Skala | **offene Nightrun-Tickets**, Füllstandsanzeige mit den Teilstrichen, aber **ohne Zahlen**, Beschriftung „NR Defects", intern 0 bis 20. Darüber leuchtet **NR** (roter Schriftzug, rechts im Leuchtenfeld neben dem Defect-Symbol), die Nadel bleibt am Anschlag |
 | Tank | Tankinhalt, Zapfsäule | **Sprint-Restzeit**, Sanduhr, 1/1 = Sprintstart, 0 = Sprintende (Reserveleuchte bei leer) |
 | Tacho | km/h 20 bis 240 | **Testresults: BAC30 Success %**, Skala **0 bis 100** auf denselben Strichen (gleiche Winkel und Abstände), Zahlen alle 10, ohne die zwei Randstriche vor 0 und hinter 100 |
-| Verbrauchsanzeige, Mittendisplay, übrige Leuchten | | unverändert |
+| Kleine Anzeige im Drehzahlmesser | Momentanverbrauch L/100 km | **Defects closed/Day**: pro Tag abgearbeitete Defects, Skala 0 bis 20 unverändert, nur die Beschriftung ist neu |
+| Mittendisplay, übrige Leuchten | | unverändert |
 
 Die Leuchten für 50 Defects und NR schalten sich selbst, erst wenn die Nadel am Anschlag angekommen ist (wie die Tankleuchte).
 Die Teilstriche des Tachos sind unverändert (gleiche Winkel), die Skala liegt mittig um 12 Uhr: 0 bei -116°, 100 bei +116°.
@@ -29,7 +30,7 @@ Die folgenden Abschnitte gelten unverändert auch für diese Variante (Maße, Au
 | Datei | Inhalt |
 |---|---|
 | `cluster.js` | Das Kombi als SVG: Zifferblätter, Nadeln mit Federphysik, Leuchten, Punktmatrix-Display |
-| `sim.js` | Demo: Fahrsimulation für Tempo und Verbrauch, `TicketSim` für Defects, Nightrun und Sprint |
+| `sim.js` | Demo: `TicketSim` für Defects, Nightrun, Sprint, Testresults und Defects closed/Day (die Fahrsimulation läuft nur noch für die Wegstrecke) |
 | `serial.js` | Anbindung an den ESP32 über Web Serial, Protokoll aus `docs/usb-interface.md` |
 | `app.js`, `index.html`, `style.css` | Bedienung |
 | `widget/` | **Web Component `<e46-jira-cluster>`** für HTML/Angular, ein einziges Skript, steuerbar per Befehl (siehe `widget/README.md`) |
@@ -44,7 +45,7 @@ echten E46 (Vorfacelift, Normalausführung) abgenommen, nicht geschätzt:
   liegen dieselben Striche unter der Skala 0 bis 100 (Zahlen alle 10)
 - Drehzahlmesser: 0 bei -118,8°, 7000 bei +118,8°. Roter Bereich 6 bis 7 in drei kleinen Segmenten,
   weißem Strich bei 6,5 und einem großen Block
-- Verbrauchsanzeige (L/100 km): ±68,4°, elliptische Skala, Striche alle 2
+- Kleine Anzeige im Drehzahlmesser (Original: L/100 km, Jira-Variante: Defects closed/Day): ±68,4°, elliptische Skala 0 bis 20, Striche alle 2
 - Außenform und Platte: je eine kubische B-Spline pro Hälfte (von der Scheitelmitte bis zum Beginn des flachen Bodens, dort
   Krümmung 0), gespiegelt und als Bézier-Stücke ausgegeben. Die Krümmung ist überall stetig (Sprung unter 0,03 bei Werten von
   0,2 bis 6, jeweils x1000), es gibt also keinen Übergang vom großen Bogen oben zu den Rundungen, der als Ecke wirkt. Angepasst

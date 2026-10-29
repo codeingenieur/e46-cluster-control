@@ -360,7 +360,7 @@
       });
     }
 
-    /** Momentanverbrauch unten im Drehzahlmesser (L/100 km), elliptische Skala */
+    /** Defects closed/Day unten im Drehzahlmesser (Skala 0 bis 20, elliptisch; intern heißt die Nadel 'fco') */
     _consumption(cx, cy) {
       const g = el('g', { class: 'mini mini-fco' }, this.litLayer);
       const lit = el('g', { class: 'lit' }, g);
@@ -379,7 +379,9 @@
       [['0', -77, -35], ['10', -3, -67], ['20', 68, -33]].forEach((l) => {
         el('text', { x: cx + l[1], y: cy + l[2], dy: '.41em', 'text-anchor': 'middle' }, nums, l[0]);
       });
-      el('text', { class: 'unit', x: cx, y: cy - 40, 'text-anchor': 'middle', 'font-size': 13 }, lit, 'L/100km');
+      // Defects closed/Day: zweizeilig, damit die Beschriftung zwischen der 10 und der Nabe Platz hat
+      el('text', { class: 'unit', x: cx, y: cy - 46, 'text-anchor': 'middle', 'font-size': 12 }, lit, 'Defects');
+      el('text', { class: 'unit', x: cx, y: cy - 33, 'text-anchor': 'middle', 'font-size': 12 }, lit, 'closed/Day');
       const angFn = (f) => { const t = ((-T + f * 2 * T) * Math.PI) / 180; return (Math.atan2(RX * Math.sin(t), RY * Math.cos(t)) * 180) / Math.PI; };
       this._needle(g, cx, cy, { len: 92, wb: 6.5, wt: 3, hub: 24, tail0: 12 }, 'fco',
         { min: 0, max: 20, a0: -T, a1: T, spring: [14, 1.1], angFn });
@@ -461,7 +463,7 @@
 
     // ---------- Bedienung ----------
 
-    /** Nadelziele setzen: { rpm (Defects 0..50), speed (Testresults 0..100 %), coolant (Nightrun 0..20), fuel (0..1), fco (L/100km) } */
+    /** Nadelziele setzen: { rpm (Defects 0..50), speed (Testresults 0..100 %), coolant (Nightrun 0..20), fuel (0..1), fco (Defects closed/Day 0..20) } */
     set(values) {
       for (const k in values) {
         const n = this.needles[k];

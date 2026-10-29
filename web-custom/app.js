@@ -3,7 +3,7 @@
 
   const $ = (s) => document.querySelector(s);
   const cluster = new E46Cluster($('#cluster'));
-  const drive = new DriveSim();       // nur Tempo und Verbrauch
+  const drive = new DriveSim();       // nur noch für die Wegstrecke im Mittendisplay
   const tickets = new TicketSim();    // Defects, Nightrun, Sprint
 
   // Von Hand schaltbare Leuchten. NR und Jira Defect schalten sich über die Werte.
@@ -12,7 +12,7 @@
   const state = {
     mode: 'demo',
     ign: true,
-    defects: 0, nightrun: 0, sprint: 0.65, success: 0, fco: 0,
+    defects: 0, nightrun: 0, sprint: 0.65, success: 0, closed: 0,
     mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
     arrk: false, tt: false,
     turn: { left: false, right: false, hazard: false },
@@ -25,7 +25,7 @@
     defects: ['#s-defects', '#o-defects', (v) => Math.round(v) + ' Defects'],
     success: ['#s-success', '#o-success', (v) => Math.round(v) + ' %'],
     nightrun: ['#s-nightrun', '#o-nightrun', (v) => Math.round(v) + ' Tickets'],
-    fco: ['#s-fco', '#o-fco', (v) => v.toFixed(1) + ' L'],
+    closed: ['#s-closed', '#o-closed', (v) => v.toFixed(1) + ' / Tag'],
     sprint: ['#s-sprint', '#o-sprint', (v) => Math.round(v * 100) + ' %'],
   };
   Object.keys(sliders).forEach((k) => {
@@ -138,13 +138,13 @@
 
     if (state.mode === 'demo') {
       drive.update(dt); tickets.update(dt);
-      state.success = tickets.success; state.fco = drive.fco; state.trip = drive.dist;   // Fahrsimulation läuft nur noch für Verbrauch und Wegstrecke
+      state.success = tickets.success; state.closed = tickets.closed; state.trip = drive.dist;   // Fahrsimulation läuft nur noch für die Wegstrecke
       state.defects = tickets.defects; state.nightrun = tickets.nightrun; state.sprint = tickets.sprint;
     }
 
     // Anzeigeziele (Zündung aus: Nadeln auf 0; Sweep wie beim echten Kombi). Needle-Namen im Zifferblatt: rpm = Defects, coolant = Nightrun, fuel = Sprint, speed = Testresults
     let tgt = state.ign
-      ? { rpm: state.defects, speed: state.success, coolant: state.nightrun, fuel: state.sprint, fco: state.fco }
+      ? { rpm: state.defects, speed: state.success, coolant: state.nightrun, fuel: state.sprint, fco: state.closed }
       : { rpm: 0, speed: 0, coolant: 0, fuel: 0, fco: 0 };
     let allLamps = false;
     if (selfTest && state.ign) {
