@@ -640,84 +640,224 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       });
     }
 
-    /** Ostern: bunte Eier an Schnüren am oberen Rand, Blütenblätter fallen */
+    /** Osterei um (0,0), r liefert Zufallszahlen: Farbe und Muster (Zickzack, Punkte, Streifen) */
+    _egg(g, r) {
+      const base = ['#ff9ec7', '#ffe27a', '#8fe3b5', '#8ec9ff', '#c9a6ff', '#ffb36b'];
+      const c = base[Math.floor(r() * base.length)], pat = Math.floor(r() * 3);
+      el('path', { d: EGG, fill: c, stroke: '#0005', 'stroke-width': 0.9 }, g);
+      if (pat === 0) el('path', { d: 'M-8 0L-5 -3L-2 0L1 -3L4 0L7 -3', fill: 'none', stroke: '#fff', 'stroke-width': 1.8, 'stroke-linejoin': 'round', opacity: 0.9 }, g);
+      else if (pat === 1) [[-3.5, -5], [3, -2], [-1, 4], [4, 5], [-5, 1]].forEach((d) => el('circle', { cx: d[0], cy: d[1], r: 1.5, fill: '#fff', opacity: 0.9 }, g));
+      else { el('path', { d: 'M-8.2 -2Q0 1 8.2 -2', fill: 'none', stroke: '#fff', 'stroke-width': 2.2, opacity: 0.9 }, g); el('path', { d: 'M-8 4Q0 7 8 4', fill: 'none', stroke: '#fff', 'stroke-width': 2.2, opacity: 0.9 }, g); }
+      el('ellipse', { cx: -3, cy: -5, rx: 1.6, ry: 2.8, fill: '#fff', opacity: 0.45 }, g);
+    }
+
+    /** Ostern: Frühlingswiese am unteren Rand mit Blumen und versteckten Eiern, ein Osterhase hüpft durchs Bild, Schmetterlinge, fallende Blütenblätter */
     _buildEaster() {
       const layer = el('g', { class: 'easter', 'pointer-events': 'none' }, this.svg);
       const rnd = this._rnd(20270405);
-      const base = ['#ff9ec7', '#ffe27a', '#8fe3b5', '#8ec9ff', '#c9a6ff', '#ffb36b'];
-      const eggs = this._hang(layer, rnd, { wire: '#b08a5a', gap: 64 }, (g, r) => {
-        const c = base[Math.floor(r() * base.length)], pat = Math.floor(r() * 3);
-        el('line', { x1: 0, y1: 0, x2: 0, y2: 3, stroke: '#b08a5a', 'stroke-width': 1.6 }, g);
-        el('path', { d: EGG, transform: 'translate(0 13)', fill: c, stroke: '#0005', 'stroke-width': 0.9 }, g);
-        if (pat === 0) el('path', { d: 'M-8 13L-5 10L-2 13L1 10L4 13L7 10', fill: 'none', stroke: '#fff', 'stroke-width': 1.8, 'stroke-linejoin': 'round', opacity: 0.9 }, g);
-        else if (pat === 1) [[-3.5, 8], [3, 11], [-1, 17], [4, 18], [-5, 14]].forEach((d) => el('circle', { cx: d[0], cy: d[1], r: 1.5, fill: '#fff', opacity: 0.9 }, g));
-        else { el('path', { d: 'M-8.2 11Q0 14 8.2 11', fill: 'none', stroke: '#fff', 'stroke-width': 2.2, opacity: 0.9 }, g); el('path', { d: 'M-8 17Q0 20 8 17', fill: 'none', stroke: '#fff', 'stroke-width': 2.2, opacity: 0.9 }, g); }
-        el('ellipse', { cx: -3, cy: 8, rx: 1.6, ry: 2.8, fill: '#fff', opacity: 0.45 }, g);
+      const lg = el('linearGradient', { id: 'gMeadow', x1: 0, y1: 0, x2: 0, y2: 1 }, this.defs);
+      el('stop', { offset: 0, 'stop-color': '#6fcf52' }, lg); el('stop', { offset: 1, 'stop-color': '#2c7a2c' }, lg);
+
+      // Wiese: leicht welliger Boden über die ganze Breite
+      const gy = (x) => 694 + 5 * Math.sin(x / 90) + 3 * Math.sin(x / 37 + 1);
+      let d = 'M-40 720V' + gy(-40).toFixed(1);
+      for (let x = -12; x <= 1640; x += 28) d += 'L' + x + ' ' + gy(x).toFixed(1);
+      el('path', { d: d + 'V720Z', fill: 'url(#gMeadow)' }, layer);
+
+      const greens = ['#3f9a3a', '#4fb04a', '#2f7f33', '#6cc24f', '#58b844'];
+      const blade = (x, hMin, hMax) => {
+        const h = hMin + rnd() * (hMax - hMin), bend = (rnd() - 0.5) * 12;
+        const g = el('g', null, null);
+        el('path', { d: 'M-1.7 0Q0 ' + (-h * 0.6).toFixed(1) + ' ' + bend.toFixed(1) + ' ' + (-h).toFixed(1) + 'Q1.2 ' + (-h * 0.55).toFixed(1) + ' 1.7 0Z', fill: greens[Math.floor(rnd() * greens.length)] }, g);
+        return { g, x, y: gy(x) + 3, amp: 3 + rnd() * 4, sp: 0.8 + rnd() * 1.2, ph: rnd() * 6.28 };
+      };
+      const sway = [];
+      const grassBack = el('g', null, layer), mid = el('g', null, layer), grassFront = el('g', null, layer);
+      for (let i = 0; i < 70; i++) { const b = blade(-30 + rnd() * 1700, 18, 36); grassBack.appendChild(b.g); sway.push(b); }
+
+      // versteckte Eier im Gras
+      for (let i = 0; i < 9; i++) {
+        const x = 60 + (i + rnd() * 0.8) * 180, sc = 1.1 + rnd() * 0.5;
+        const g = el('g', { transform: 'translate(' + x.toFixed(1) + ' ' + (gy(x) - 8 * sc).toFixed(1) + ') rotate(' + ((rnd() - 0.5) * 40).toFixed(0) + ') scale(' + sc.toFixed(2) + ')' }, mid);
+        this._egg(g, rnd);
+      }
+      // Blumen: Gänseblümchen und Tulpen, wiegen sich im Wind
+      const tulip = ['#ff6f91', '#ffb3c7', '#ffd23a', '#ff9a4d'];
+      for (let i = 0; i < 22; i++) {
+        const x = -10 + rnd() * 1660, h = 22 + rnd() * 20;
+        const g = el('g', null, null);
+        el('path', { d: 'M0 0Q' + ((rnd() - 0.5) * 8).toFixed(1) + ' ' + (-h / 2).toFixed(1) + ' 0 ' + (-h).toFixed(1), fill: 'none', stroke: '#2f8a34', 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
+        const head = el('g', { transform: 'translate(0 ' + (-h).toFixed(1) + ')' }, g);
+        if (rnd() < 0.5) {
+          for (let k = 0; k < 7; k++) el('ellipse', { cy: -5.5, rx: 2.5, ry: 5.5, fill: '#fff', transform: 'rotate(' + (k * 360 / 7).toFixed(0) + ')' }, head);
+          el('circle', { r: 3.3, fill: '#ffd23a' }, head);
+        } else {
+          el('path', { d: 'M-6 0C-7 -8 -3 -13 0 -15C3 -13 7 -8 6 0Q0 4 -6 0Z', fill: tulip[Math.floor(rnd() * tulip.length)], stroke: '#0004', 'stroke-width': 0.7 }, head);
+          el('path', { d: 'M-2 -14L0 -8L2 -14', fill: 'none', stroke: '#fff', 'stroke-width': 1, opacity: 0.45 }, head);
+        }
+        mid.appendChild(g);
+        sway.push({ g, x, y: gy(x) + 2, amp: 2.5 + rnd() * 2.5, sp: 0.7 + rnd() * 0.8, ph: rnd() * 6.28 });
+      }
+      for (let i = 0; i < 70; i++) { const b = blade(-30 + rnd() * 1700, 9, 20); grassFront.appendChild(b.g); sway.push(b); }
+
+      // Osterhase von der Seite, hüpft von links nach rechts und macht dann eine Pause
+      const bun = el('g', null, layer);
+      const body = el('g', { fill: '#f7f2ea', stroke: '#6a5a4a', 'stroke-width': 1.2 }, bun);
+      el('ellipse', { cx: -8, cy: 9, rx: 10, ry: 5.5 }, body);
+      el('ellipse', { cx: 0, cy: 0, rx: 17, ry: 11 }, body);
+      el('circle', { cx: -17, cy: -3, r: 5.5, fill: '#fff' }, body);
+      el('ellipse', { cx: 17, cy: -23, rx: 3.2, ry: 10, transform: 'rotate(8 17 -23)' }, body);
+      el('ellipse', { cx: 23, cy: -22, rx: 3.2, ry: 10, transform: 'rotate(22 23 -22)' }, body);
+      el('circle', { cx: 19, cy: -9, r: 8 }, body);
+      el('ellipse', { cx: 18, cy: -22, rx: 1.4, ry: 6, fill: '#ffb3c7', stroke: 'none', transform: 'rotate(8 18 -22)' }, bun);
+      el('circle', { cx: 22, cy: -11, r: 1.5, fill: '#2a2a2a' }, bun);
+      el('circle', { cx: 26.5, cy: -8, r: 1.6, fill: '#ff8fb0' }, bun);
+
+      // Schmetterlinge
+      const flies = [];
+      const wing = (g, c) => {
+        el('ellipse', { cx: 6, cy: -3, rx: 7, ry: 5, fill: c, transform: 'rotate(-25 6 -3)' }, g);
+        el('ellipse', { cx: 5, cy: 4, rx: 5, ry: 4, fill: c, opacity: 0.85 }, g);
+      };
+      ['#ff9a4d', '#ffd23a', '#7fb8ff', '#ff8fc4', '#fff'].forEach((c, i) => {
+        const g = el('g', null, layer), w = el('g', null, g);
+        const wl = el('g', null, w), wr = el('g', { transform: 'scale(-1 1)' }, w);
+        wing(wl, c); wing(wr, c);
+        el('ellipse', { rx: 1.3, ry: 5, fill: '#333' }, g);
+        flies.push({ g, w, x: Math.random() * 1600, vx: 18 + Math.random() * 26, by: 380 + Math.random() * 260, ph: Math.random() * 6.28, fl: 10 + Math.random() * 6 });
       });
+
       const pc = ['#ffb7d5', '#ffffff', '#ffe27a', '#d9b8ff'];
-      const petals = this._fall(layer, 46, (g, r) => {
+      const petals = this._fall(layer, 40, (g, r) => {
         const s = 0.7 + r() * 0.9;
         el('path', { d: 'M0 0C-6 -5 -6 -12 0 -15C6 -12 6 -5 0 0Z', fill: pc[Math.floor(r() * pc.length)], opacity: 0.85, transform: 'scale(' + s.toFixed(2) + ')' }, g);
         return { vy: 22 + s * 18 + r() * 14, sw: 14 + r() * 26, flip: 1 + r() * 2 };
       });
+
       let t = 0;
-      return { layer, update: (dt) => { t += dt; this._sway(eggs, t, 5); this._fallStep(petals, dt, t); } };
+      return { layer, update: (dt) => {
+        t += dt;
+        sway.forEach((b) => b.g.setAttribute('transform', 'translate(' + b.x.toFixed(1) + ' ' + b.y.toFixed(1) + ') rotate(' + (b.amp * Math.sin(t * b.sp + b.ph)).toFixed(1) + ')'));
+        // Hase: 20 s hüpfen (alle 0,9 s ein Sprung), dann 10 s Pause außerhalb des Bildes
+        const c = t % 30;
+        if (c > 20) bun.setAttribute('display', 'none');
+        else {
+          const ph = (c / 0.9) % 1, hop = Math.sin(ph * Math.PI);
+          bun.setAttribute('display', 'inline');
+          bun.setAttribute('transform', 'translate(' + (-90 + 1780 * (c / 20)).toFixed(1) + ' ' + (676 - 44 * hop).toFixed(1) + ') rotate(' + (-14 * Math.cos(ph * Math.PI)).toFixed(1) + ') scale(1.5 ' + (1 + 0.1 * (1 - hop)).toFixed(2) + ')');
+        }
+        flies.forEach((f) => {
+          f.x += f.vx * dt; if (f.x > 1680) f.x = -40;
+          const y = f.by + 30 * Math.sin(t * 0.8 + f.ph) + 12 * Math.sin(t * 2.3 + f.ph * 2);
+          f.g.setAttribute('transform', 'translate(' + f.x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (12 * Math.sin(t * 1.6 + f.ph)).toFixed(0) + ') scale(1.3)');
+          f.w.setAttribute('transform', 'scale(' + (0.2 + 0.8 * Math.abs(Math.sin(t * f.fl + f.ph))).toFixed(2) + ' 1)');
+        });
+        this._fallStep(petals, dt, t);
+      } };
     }
 
-    /** Silvester: funkelnde Sterne an der Schnur, Konfetti, Raketen mit Feuerwerk */
+    /** Silvester: funkelnde Sterne an der Schnur, Konfetti und ein kräftiges Feuerwerk (Kugeln, Ringe, Trauerweiden, Knistern, Finale) */
     _buildNye() {
       const layer = el('g', { class: 'nye', 'pointer-events': 'none' }, this.svg);
       const rnd = this._rnd(20261231);
-      const cols = ['#ffd24a', '#f2f4f8', '#ff5fa8', '#4fd8ff', '#b78cff'];
+      const cols = ['#ffd24a', '#f2f4f8', '#ff5fa8', '#4fd8ff', '#b78cff', '#ff7a3d', '#6dff8a'];
       const stars = this._hang(layer, rnd, { wire: '#8d939e', gap: 46 }, (g, r) => {
-        const c = cols[Math.floor(r() * cols.length)];
+        const c = cols[Math.floor(r() * 5)];
         el('circle', { cy: 8, r: 15, fill: this._glow(c) }, g);
         el('path', { d: STAR, transform: 'translate(0 8)', fill: c, stroke: '#0004', 'stroke-width': 0.7 }, g);
         return { sp: 1.8 + r() * 3 };
       });
-      const conf = this._fall(layer, 60, (g, r) => {
+      const conf = this._fall(layer, 70, (g, r) => {
         const w = 3 + r() * 4;
         el('rect', { x: -w / 2, y: -w * 0.8, width: w, height: w * 1.6, fill: cols[Math.floor(r() * cols.length)], opacity: 0.9 }, g);
         return { vy: 40 + r() * 50, sw: 12 + r() * 24, flip: 2 + r() * 4, vr: (r() - 0.5) * 240 };
       });
 
-      // Feuerwerk: ein fester Vorrat an Funken, Raketen steigen auf, platzen und die Funken fallen mit Luftwiderstand und Schwerkraft
-      const fx = el('g', null, layer), sparks = [];
-      for (let i = 0; i < 280; i++) sparks.push({ c: el('circle', { r: 2, display: 'none' }, fx), on: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, max: 1, r: 2 });
-      const spawn = (x, y, vx, vy, life, color, r) => {
-        const s = sparks.find((p) => !p.on);
-        if (!s) return;
-        Object.assign(s, { on: true, x, y, vx, vy, life, max: life, r });
-        s.c.setAttribute('fill', color); s.c.setAttribute('display', 'inline');
-      };
-      const burst = (x, y) => {
-        const pal = [cols[Math.floor(Math.random() * cols.length)], cols[Math.floor(Math.random() * cols.length)]];
-        const n = 34 + Math.floor(Math.random() * 18), sp = 90 + Math.random() * 110, ring = Math.random() < 0.4;
-        for (let i = 0; i < n; i++) {
-          const a = (i / n) * 6.2832 + Math.random() * 0.2, v = ring ? sp : sp * (0.35 + Math.random() * 0.65);
-          spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 0.9 + Math.random() * 0.7, pal[i % 2], 2.4);
+      // Aufblitzen beim Platzen: weiche Lichtflecken, die schnell verblassen
+      const flashes = [];
+      const flashG = el('g', null, layer);
+      for (let i = 0; i < 8; i++) flashes.push({ c: el('circle', { r: 150, fill: this._glow('#ffffff'), display: 'none' }, flashG), on: false, life: 0 });
+
+      // Funken: fester Vorrat, wiederverwendet
+      const POOL = 1200, fx = el('g', null, layer), sparks = [];
+      for (let i = 0; i < POOL; i++) sparks.push({ c: el('circle', { r: 2, display: 'none' }, fx), on: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, max: 1, g: 150, drag: 1.4, trail: false });
+      let cursor = 0;
+      const spawn = (x, y, vx, vy, life, color, r, o) => {
+        for (let k = 0; k < POOL; k++) {
+          const s = sparks[(cursor + k) % POOL];
+          if (s.on) continue;
+          cursor = (cursor + k + 1) % POOL;
+          Object.assign(s, { on: true, x, y, vx, vy, life, max: life, g: 150, drag: 1.4, trail: false }, o || null);
+          s.c.setAttribute('fill', color); s.c.setAttribute('r', r); s.c.setAttribute('display', 'inline');
+          return;
         }
       };
-      let rockets = [], next = 0.4, t = 0;
+      const flash = (x, y) => {
+        const f = flashes.find((q) => !q.on);
+        if (!f) return;
+        f.on = true; f.life = 0.35; f.c.setAttribute('cx', x.toFixed(0)); f.c.setAttribute('cy', y.toFixed(0)); f.c.setAttribute('display', 'inline');
+      };
+      const pick = () => cols[Math.floor(Math.random() * cols.length)];
+      const later = [];   // zeitversetzte Sekundärexplosionen
+      const burst = (x, y) => {
+        flash(x, y);
+        const kind = Math.random(), a0 = Math.random() * 6.28, A = (i, n) => a0 + (i / n) * 6.2832 + Math.random() * 0.06;
+        if (kind < 0.34) {   // Kugel
+          const pal = [pick(), pick()], n = 80 + Math.floor(Math.random() * 40), sp = 150 + Math.random() * 130;
+          for (let i = 0; i < n; i++) { const a = A(i, n), v = sp * (0.3 + Math.random() * 0.7); spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 1.1 + Math.random() * 0.8, pal[i % 2], 2.8); }
+        } else if (kind < 0.55) {   // zwei Ringe
+          const c1 = pick(), c2 = pick(), sp = 200 + Math.random() * 90;
+          for (let i = 0; i < 60; i++) { const a = A(i, 60); spawn(x, y, Math.cos(a) * sp, Math.sin(a) * sp, 1.3, c1, 3); }
+          for (let i = 0; i < 36; i++) { const a = A(i, 36); spawn(x, y, Math.cos(a) * sp * 0.55, Math.sin(a) * sp * 0.55, 1.1, c2, 2.6); }
+        } else if (kind < 0.78) {   // Trauerweide: langsame, goldene Funken mit Schweif
+          const n = 70;
+          for (let i = 0; i < n; i++) { const a = A(i, n), v = 90 + Math.random() * 120; spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 2.4 + Math.random() * 0.8, '#ffcf6a', 2.4, { g: 190, drag: 1.9, trail: true }); }
+        } else {   // Knistern: Kugel, aus der nach kurzer Zeit kleine weiße Explosionen kommen
+          const c = pick(), n = 60;
+          for (let i = 0; i < n; i++) { const a = A(i, n), v = 110 + Math.random() * 130; spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 1.5, c, 2.8); }
+          for (let k = 0; k < 14; k++) { const a = Math.random() * 6.28, r = 40 + Math.random() * 110; later.push({ t: 0.5 + Math.random() * 0.7, x: x + Math.cos(a) * r, y: y + Math.sin(a) * r }); }
+        }
+      };
+      let rockets = [], next = 0.3, finale = 7, queue = [], t = 0;
+      const launch = () => rockets.push({ x: -20 + Math.random() * 1640, y: 720, vx: (Math.random() - 0.5) * 60, vy: -(460 + Math.random() * 200), ty: -50 + Math.random() * 320, col: pick() });
       return { layer, update: (dt) => {
         t += dt;
         this._sway(stars, t, 4, (it, tt) => 0.9 + 0.2 * Math.sin(tt * it.sp + it.ph));
         stars.forEach((it) => { it.g.setAttribute('opacity', (0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * it.sp + it.ph))).toFixed(2)); });
         this._fallStep(conf, dt, t);
-        next -= dt;
-        if (next <= 0) { rockets.push({ x: -20 + Math.random() * 1640, y: 720, vx: (Math.random() - 0.5) * 40, vy: -(420 + Math.random() * 150), ty: -40 + Math.random() * 260 }); next = 0.5 + Math.random() * 1.3; }
+
+        // Starts: dichte Folge, manchmal Doppelstart, alle ~9 s ein Finale mit einer ganzen Salve
+        next -= dt; finale -= dt;
+        if (next <= 0) { launch(); if (Math.random() < 0.35) launch(); next = 0.18 + Math.random() * 0.5; }
+        if (finale <= 0) { for (let i = 0; i < 10; i++) queue.push(i * 0.14); finale = 9 + Math.random() * 3; }
+        queue = queue.map((q) => q - dt).filter((q) => { if (q <= 0) { launch(); return false; } return true; });
         rockets = rockets.filter((r) => {
           r.x += r.vx * dt; r.y += r.vy * dt;
-          spawn(r.x, r.y, (Math.random() - 0.5) * 20, 30, 0.35, '#ffd9a0', 1.6);
+          spawn(r.x, r.y, (Math.random() - 0.5) * 24, 40, 0.4, '#ffe3b0', 1.8);
+          if (Math.random() < 0.4) spawn(r.x, r.y, (Math.random() - 0.5) * 24, 40, 0.3, r.col, 1.4);
           if (r.y <= r.ty) { burst(r.x, r.y); return false; }
           return true;
+        });
+        for (let i = later.length - 1; i >= 0; i--) {
+          later[i].t -= dt;
+          if (later[i].t > 0) continue;
+          const q = later.splice(i, 1)[0];
+          flash(q.x, q.y);
+          for (let k = 0; k < 12; k++) { const a = Math.random() * 6.28, v = 40 + Math.random() * 70; spawn(q.x, q.y, Math.cos(a) * v, Math.sin(a) * v, 0.5 + Math.random() * 0.3, '#ffffff', 2); }
+        }
+        flashes.forEach((f) => {
+          if (!f.on) return;
+          f.life -= dt;
+          if (f.life <= 0) { f.on = false; f.c.setAttribute('display', 'none'); return; }
+          f.c.setAttribute('opacity', (f.life / 0.35).toFixed(2));
         });
         sparks.forEach((s) => {
           if (!s.on) return;
           s.life -= dt;
           if (s.life <= 0) { s.on = false; s.c.setAttribute('display', 'none'); return; }
-          s.vy += 150 * dt; s.vx *= 1 - 1.4 * dt; s.vy *= 1 - 0.8 * dt;
+          s.vy += s.g * dt; s.vx *= 1 - s.drag * dt; s.vy *= 1 - 0.8 * dt;
           s.x += s.vx * dt; s.y += s.vy * dt;
+          if (s.trail && Math.random() < 0.5) spawn(s.x, s.y, 0, 10, 0.5, '#ffcf6a', 1.4);
           s.c.setAttribute('cx', s.x.toFixed(1)); s.c.setAttribute('cy', s.y.toFixed(1));
           s.c.setAttribute('opacity', Math.min(1, s.life / s.max * 1.4).toFixed(2));
         });

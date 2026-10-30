@@ -29,7 +29,7 @@ export declare class E46JiraClusterElement extends HTMLElement {
   night: boolean;
   /** Chaosmodus: Zeiger springen wild, alle Leuchten und Blinker flackern zufällig (nur bei eingeschalteter Zündung) */ chaos: boolean;
   /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall */ xmas: boolean;
-  /** Ostermodus: bunte Eier an der Außenkante, fallende Blütenblätter, Osterhase statt Batterieleuchte. Schaltet xmas und nye aus */ easter: boolean;
+  /** Ostermodus: Frühlingswiese unten mit Blumen und versteckten Eiern, hüpfender Osterhase, Schmetterlinge, fallende Blütenblätter, Osterhase-Symbol statt Batterieleuchte. Schaltet xmas und nye aus */ easter: boolean;
   /** Silvestermodus: funkelnde Sterne, Konfetti, Feuerwerk, Sektglas statt Batterieleuchte. Schaltet xmas und easter aus */ nye: boolean;
   /** Demo: überschreibt defects, nightrun, sprint, success, closed */ demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
