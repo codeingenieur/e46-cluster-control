@@ -49,8 +49,8 @@ Die Breite bestimmt der Container (`width: 100%`), die Höhe folgt dem Seitenver
 ### Als npm-Paket (Angular, React, Vue, jeder Bundler)
 
 ```
-cd widget && npm pack                       # erzeugt e46-jira-cluster-1.1.0.tgz
-cd <dein-projekt> && npm install ../widget/e46-jira-cluster-1.1.0.tgz
+cd widget && npm pack                       # erzeugt e46-jira-cluster-1.2.0.tgz
+cd <dein-projekt> && npm install ../widget/e46-jira-cluster-1.2.0.tgz
 ```
 
 ```ts
@@ -140,6 +140,8 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `night`, `dim` | bool, 0 bis 1 | Nachtmodus, Helligkeit |
 | `chaos` | bool | Chaosmodus: Zeiger fahren wild umher, alle Leuchten und Blinker flackern zufällig (nur bei Zündung an) |
 | `xmas` | bool | Weihnachtsmodus: blinkende Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall |
+| `easter` | bool | Ostermodus: bunte Eier an Schnüren an der Außenkante, fallende Blütenblätter, Osterhase statt Batterieleuchte |
+| `nye` | bool | Silvestermodus: funkelnde Sterne an der Schnur, Konfetti, Raketen mit Feuerwerk, Sektglas statt Batterieleuchte |
 | `demo` | bool | Demo: überschreibt defects, nightrun, sprint, success, closed |
 | `odometer`, `trip`, `clock` | Zahl, Zahl, `HH:MM` oder `auto` | Mittendisplay |
 | `selftest="false"` | | kein Selbsttest beim Start |
@@ -159,7 +161,7 @@ Zeile wirkt ganz oder gar nicht, die Antworten sind wie beim ESP32.
 | `SELFTEST`, `RESET`, `PING`, `HELP` | Selbsttest, Standardwerte, Lebenszeichen, Schlüsselliste | `OK`, `OK`, `PONG …`, `HELP …` |
 
 Schlüssel: `defects nightrun sprint success closed ign mil cruise oilwarn battery oilpress lab arrk tt door_dev door_test door_stage door_prod defect nr left right hazard night dim
-demo chaos xmas odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
+demo chaos xmas easter nye odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
 
 Die Schlüssel `rpm`, `speed`, `coolant`, `oil`, `overheat` und `eml` des Original-Widgets gibt es hier nicht.
 

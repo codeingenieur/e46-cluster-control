@@ -1,6 +1,6 @@
 {
   "name": "e46-jira-cluster",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "BMW E46 Kombiinstrument in der Jira-Variante als Web Component <e46-jira-cluster> (HTML, Angular, React, Vue)",
   "main": "e46-jira-cluster.js",
   "types": "e46-jira-cluster.d.ts",

@@ -64,6 +64,9 @@
     door_prod: '<path d="M-9 19L-27.4 34.4" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>',
     // Weihnachtsmodus: Tannenbaum statt Batterieleuchte (Stern gelb, Baum in der Leuchtfarbe)
     tree: '<g transform="scale(.88)"><path d="M0 -15L8 -5H4L11 4H5L13 13H-13L-5 4H-11L-4 -5H-8Z" fill="currentColor"/><rect x="-2.6" y="12.5" width="5.2" height="6" fill="currentColor"/><path d="M0 -23.5L1.7 -19.4L6 -19.2L2.7 -16.4L3.8 -12.2L0 -14.6L-3.8 -12.2L-2.7 -16.4L-6 -19.2L-1.7 -19.4Z" fill="#ffd23a"/></g>',
+    // Osterhase (Umriss wie die übrigen Leuchten) und Sektglas für Ostern und Silvester
+    bunny: '<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M-8 -3C-12 -12 -10 -19 -6 -19C-2 -19 -2 -10 -3 -3"/><path d="M8 -3C12 -12 10 -19 6 -19C2 -19 2 -10 3 -3"/><ellipse cy="5" rx="11" ry="9.5"/><path d="M-6 10L-15 9M-6 12L-14 14M6 10L15 9M6 12L14 14" stroke-width="1.6"/></g><circle cx="-4" cy="3" r="1.9" fill="currentColor"/><circle cx="4" cy="3" r="1.9" fill="currentColor"/><circle cy="8" r="1.7" fill="currentColor"/>',
+    flute: '<path d="M-5.4 -8H5.4L4.5 3Q4.5 8 0 8Q-4.5 8 -4.5 3Z" fill="currentColor" opacity=".35"/><path d="M-6 -16H6L4.5 3Q4.5 8 0 8Q-4.5 8 -4.5 3Z" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><path d="M0 8V16M-6.5 16.5H6.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><circle cx="-1" cy="-2" r="1.4" fill="currentColor"/><circle cx="1.6" cy="-6" r="1.2" fill="currentColor"/><circle cx="-1.2" cy="2.6" r="1.1" fill="currentColor"/><path d="M10 -14L12 -17M13 -10L16 -11M9 -18L9 -21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
     pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -94,6 +97,11 @@
     lab: [1245, 542, 1.0], nr: [1320, 542, 1.0], defect: [1395, 542, 1.0],
     door_dev: [537, 546, 1.0], door_test: [537, 546, 1.0], door_stage: [537, 546, 1.0], door_prod: [537, 546, 1.0],
   };
+
+  // Jahreszeiten-Modi: welches Symbol die Batterieleuchte ersetzt, [Symbol, Leuchtfarbe, Titel]
+  const SEASON_LAMP = { xmas: ['tree', 'green', 'Weihnachtsbaum'], easter: ['bunny', 'pink', 'Osterhase'], nye: ['flute', 'gold', 'Sektglas'] };
+  const EGG = 'M0 -10.5C6 -10.5 8.6 -1 8.6 3.5C8.6 8 5 11 0 11C-5 11 -8.6 8 -8.6 3.5C-8.6 -1 -6 -10.5 0 -10.5Z';
+  const STAR = 'M0 -8L2 -2.75L7.6 -2.47L3.23 1.05L4.7 6.47L0 3.4L-4.7 6.47L-3.23 1.05L-7.6 -2.47L-2 -2.75Z';
 
   // 5x7-Punktmatrix für das Mittendisplay (Zeilen von oben, 1 = Punkt an)
   const GLYPH = {
@@ -495,8 +503,8 @@
 
     setLamps(map) {
       for (const k in map) if (this.lamps[k]) this.lamps[k].classList.toggle('on', !!map[k]);
-      // Weihnachtsbaum leuchtet, solange die Zündung an ist
-      if (this._xmas && this.lamps.battery) this.lamps.battery.classList.toggle('on', !this.svg.classList.contains('off'));
+      // Das Symbol des Jahreszeiten-Modus leuchtet, solange die Zündung an ist
+      if (this._season && this.lamps.battery) this.lamps.battery.classList.toggle('on', !this.svg.classList.contains('off'));
     }
 
     /** Mittendisplay: odo ('148213'), trip ('0.3'), clock ('20:44') */
@@ -513,18 +521,199 @@
 
     setPower(on) { this.svg.classList.toggle('off', !on); }
 
-    /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall */
-    setXmas(on) {
-      on = !!on;
-      if (on === !!this._xmas) return;
-      this._xmas = on;
-      if (on && !this.xmasLayer) this._buildXmas();
-      this.xmasLayer.setAttribute('display', on ? 'inline' : 'none');
+    // ---------- Jahreszeiten-Modi: Weihnachten, Ostern, Silvester ----------
+    // Jeder Modus legt eine eigene Ebene über das Kombi (Schmuck an der Außenkante, fallende Teilchen), ersetzt die Batterieleuchte
+    // durch ein eigenes Symbol und läuft in frame(). Es ist immer nur einer aktiv.
+
+    setXmas(on) { if (on) this.setSeason('xmas'); else if (this._season === 'xmas') this.setSeason(''); }
+
+    /** '' (aus), 'xmas', 'easter' oder 'nye' */
+    setSeason(name) {
+      name = name === 'xmas' || name === 'easter' || name === 'nye' ? name : '';
+      const old = this._season || '';
+      if (name === old) return;
+      this._season = name;
+      this._seasons = this._seasons || {};
+      if (old) this._seasons[old].layer.setAttribute('display', 'none');
       const g = this.lamps.battery;
-      if (g) {
-        if (on) { this._batHtml = g.innerHTML; g.innerHTML = '<title>Weihnachtsbaum</title>' + ICONS.tree; g.classList.remove('red'); g.classList.add('green'); }
-        else if (this._batHtml != null) { g.innerHTML = this._batHtml; g.classList.remove('green'); g.classList.add('red'); }
+      if (g && this._batHtml == null) this._batHtml = g.innerHTML;
+      if (g) g.classList.remove('red', 'green', 'pink', 'gold');
+      if (!name) { if (g && this._batHtml != null) { g.innerHTML = this._batHtml; g.classList.add('red'); } return; }
+      if (!this._seasons[name]) {
+        this._seasons[name] = name === 'xmas' ? (this._buildXmas(), { layer: this.xmasLayer, update: (dt) => this._xmasFrame(dt) })
+          : name === 'easter' ? this._buildEaster() : this._buildNye();
       }
+      this._seasons[name].layer.setAttribute('display', 'inline');
+      if (g) { const L = SEASON_LAMP[name]; g.innerHTML = '<title>' + L[2] + '</title>' + ICONS[L[0]]; g.classList.add(L[1]); }
+    }
+
+    /** Zufallszahlen mit festem Startwert: der Schmuck sieht bei jedem Laden gleich aus */
+    _rnd(seed) {
+      return () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    }
+
+    /** Weicher Leuchtfleck in einer Farbe (Verlauf wird nur einmal je Farbe angelegt) */
+    _glow(c) {
+      const id = 'gl' + c.slice(1);
+      if (!this.defs.querySelector('#' + id)) {
+        const g = el('radialGradient', { id }, this.defs);
+        el('stop', { offset: 0, 'stop-color': c, 'stop-opacity': 0.7 }, g);
+        el('stop', { offset: 1, 'stop-color': c, 'stop-opacity': 0 }, g);
+      }
+      return 'url(#' + id + ')';
+    }
+
+    /** Schmuck an der oberen Außenkante: eine Schnur zwischen unregelmäßigen Ankerpunkten, daran hängen Teile.
+     *  make(g, rnd) zeichnet ein Teil um (0,0), nach unten hängend, und liefert zusätzliche Felder für den Eintrag. */
+    _hang(layer, rnd, o, make) {
+      const probe = el('path', { d: SILHOUETTE }, this.defs);
+      const total = probe.getTotalLength();
+      let end = 0;
+      for (let s = 0; s < total / 2; s += 6) { if (probe.getPointAtLength(s).y > 520) break; end = s; }
+      const inward = (p, k) => {
+        const dx = 800 - p.x, dy = 330 - p.y, l = Math.hypot(dx, dy) || 1;
+        return { x: p.x + (dx / l) * k, y: p.y + (dy / l) * k };
+      };
+      const side = (mirror) => {
+        const out = [];
+        for (let s = 40 + rnd() * 120; s < end - 70; s += 150 + rnd() * 150) out.push(s);
+        out.push(end);
+        return out.map((s) => { const q = probe.getPointAtLength(s); return inward(mirror ? { x: 1600 - q.x, y: q.y } : q, 5 + rnd() * 5); });
+      };
+      const left = side(true).reverse(), right = side(false);
+      probe.remove();
+      const pts = left.concat(right), items = [];
+      const wire = el('g', null, layer), hung = el('g', null, layer);
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i], b = pts[i + 1], len = Math.hypot(b.x - a.x, b.y - a.y);
+        const m = { x: (a.x + b.x) / 2 + (b.x - a.x) * (rnd() - 0.5) * 0.3, y: (a.y + b.y) / 2 + (b.y - a.y) * (rnd() - 0.5) * 0.3 };
+        const c = inward(m, 2 * len * (0.07 + rnd() * 0.1));
+        el('path', { d: 'M' + a.x.toFixed(1) + ' ' + a.y.toFixed(1) + 'Q' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + ' ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1),
+          fill: 'none', stroke: o.wire, 'stroke-width': 2.2 + rnd() * 0.8, 'stroke-linecap': 'round' }, wire);
+        const n = Math.max(2, Math.round(len / o.gap));
+        for (let j = 0; j < n; j++) {
+          const u = Math.min(0.94, Math.max(0.06, (j + 0.5 + (rnd() - 0.5) * 0.7) / n));
+          const x = (1 - u) * (1 - u) * a.x + 2 * (1 - u) * u * c.x + u * u * b.x;
+          const y = (1 - u) * (1 - u) * a.y + 2 * (1 - u) * u * c.y + u * u * b.y;
+          const g = el('g', null, hung);
+          const extra = make(g, rnd) || {};
+          items.push(Object.assign({ g, x, y, sc: 0.82 + rnd() * 0.36, tilt: (rnd() - 0.5) * 26, sw: 0.8 + rnd() * 1.4, swph: rnd() * 6.28, ph: rnd() * 6.28 }, extra));
+        }
+      }
+      return items;
+    }
+
+    /** Hängende Teile leicht pendeln lassen; pulse(it, t) skaliert zusätzlich (optional) */
+    _sway(items, t, amp, pulse) {
+      items.forEach((it) => {
+        const k = it.sc * (pulse ? pulse(it, t) : 1);
+        it.g.setAttribute('transform', 'translate(' + it.x.toFixed(1) + ' ' + it.y.toFixed(1) + ') rotate(' + (it.tilt + amp * Math.sin(t * it.sw + it.swph)).toFixed(1) + ') scale(' + k.toFixed(2) + ')');
+      });
+    }
+
+    /** Fallende Teilchen über das ganze Kombi; make(g, rnd) zeichnet eines um (0,0) und liefert vy, sw (Pendelweite), flip (Kipptempo) */
+    _fall(layer, n, make) {
+      const list = [], grp = el('g', null, layer);
+      for (let i = 0; i < n; i++) {
+        const g = el('g', null, grp);
+        const p = make(g, Math.random);
+        list.push(Object.assign({ g, x: Math.random() * 1680 - 40, y: Math.random() * 800 - 90, ph: Math.random() * 6.28, rot: Math.random() * 360, vr: (Math.random() - 0.5) * 80, flip: 0 }, p));
+      }
+      return list;
+    }
+
+    _fallStep(list, dt, t) {
+      list.forEach((f) => {
+        f.y += f.vy * dt;
+        f.rot += f.vr * dt;
+        if (f.y > 710) { f.y = -100; f.x = Math.random() * 1680 - 40; }
+        const x = f.x + Math.sin(t * 0.9 + f.ph) * f.sw, fl = f.flip ? Math.cos(t * f.flip + f.ph) : 1;
+        f.g.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + f.y.toFixed(1) + ') rotate(' + f.rot.toFixed(0) + ') scale(' + fl.toFixed(2) + ' 1)');
+      });
+    }
+
+    /** Ostern: bunte Eier an Schnüren am oberen Rand, Blütenblätter fallen */
+    _buildEaster() {
+      const layer = el('g', { class: 'easter', 'pointer-events': 'none' }, this.svg);
+      const rnd = this._rnd(20270405);
+      const base = ['#ff9ec7', '#ffe27a', '#8fe3b5', '#8ec9ff', '#c9a6ff', '#ffb36b'];
+      const eggs = this._hang(layer, rnd, { wire: '#b08a5a', gap: 64 }, (g, r) => {
+        const c = base[Math.floor(r() * base.length)], pat = Math.floor(r() * 3);
+        el('line', { x1: 0, y1: 0, x2: 0, y2: 3, stroke: '#b08a5a', 'stroke-width': 1.6 }, g);
+        el('path', { d: EGG, transform: 'translate(0 13)', fill: c, stroke: '#0005', 'stroke-width': 0.9 }, g);
+        if (pat === 0) el('path', { d: 'M-8 13L-5 10L-2 13L1 10L4 13L7 10', fill: 'none', stroke: '#fff', 'stroke-width': 1.8, 'stroke-linejoin': 'round', opacity: 0.9 }, g);
+        else if (pat === 1) [[-3.5, 8], [3, 11], [-1, 17], [4, 18], [-5, 14]].forEach((d) => el('circle', { cx: d[0], cy: d[1], r: 1.5, fill: '#fff', opacity: 0.9 }, g));
+        else { el('path', { d: 'M-8.2 11Q0 14 8.2 11', fill: 'none', stroke: '#fff', 'stroke-width': 2.2, opacity: 0.9 }, g); el('path', { d: 'M-8 17Q0 20 8 17', fill: 'none', stroke: '#fff', 'stroke-width': 2.2, opacity: 0.9 }, g); }
+        el('ellipse', { cx: -3, cy: 8, rx: 1.6, ry: 2.8, fill: '#fff', opacity: 0.45 }, g);
+      });
+      const pc = ['#ffb7d5', '#ffffff', '#ffe27a', '#d9b8ff'];
+      const petals = this._fall(layer, 46, (g, r) => {
+        const s = 0.7 + r() * 0.9;
+        el('path', { d: 'M0 0C-6 -5 -6 -12 0 -15C6 -12 6 -5 0 0Z', fill: pc[Math.floor(r() * pc.length)], opacity: 0.85, transform: 'scale(' + s.toFixed(2) + ')' }, g);
+        return { vy: 22 + s * 18 + r() * 14, sw: 14 + r() * 26, flip: 1 + r() * 2 };
+      });
+      let t = 0;
+      return { layer, update: (dt) => { t += dt; this._sway(eggs, t, 5); this._fallStep(petals, dt, t); } };
+    }
+
+    /** Silvester: funkelnde Sterne an der Schnur, Konfetti, Raketen mit Feuerwerk */
+    _buildNye() {
+      const layer = el('g', { class: 'nye', 'pointer-events': 'none' }, this.svg);
+      const rnd = this._rnd(20261231);
+      const cols = ['#ffd24a', '#f2f4f8', '#ff5fa8', '#4fd8ff', '#b78cff'];
+      const stars = this._hang(layer, rnd, { wire: '#8d939e', gap: 46 }, (g, r) => {
+        const c = cols[Math.floor(r() * cols.length)];
+        el('circle', { cy: 8, r: 15, fill: this._glow(c) }, g);
+        el('path', { d: STAR, transform: 'translate(0 8)', fill: c, stroke: '#0004', 'stroke-width': 0.7 }, g);
+        return { sp: 1.8 + r() * 3 };
+      });
+      const conf = this._fall(layer, 60, (g, r) => {
+        const w = 3 + r() * 4;
+        el('rect', { x: -w / 2, y: -w * 0.8, width: w, height: w * 1.6, fill: cols[Math.floor(r() * cols.length)], opacity: 0.9 }, g);
+        return { vy: 40 + r() * 50, sw: 12 + r() * 24, flip: 2 + r() * 4, vr: (r() - 0.5) * 240 };
+      });
+
+      // Feuerwerk: ein fester Vorrat an Funken, Raketen steigen auf, platzen und die Funken fallen mit Luftwiderstand und Schwerkraft
+      const fx = el('g', null, layer), sparks = [];
+      for (let i = 0; i < 280; i++) sparks.push({ c: el('circle', { r: 2, display: 'none' }, fx), on: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, max: 1, r: 2 });
+      const spawn = (x, y, vx, vy, life, color, r) => {
+        const s = sparks.find((p) => !p.on);
+        if (!s) return;
+        Object.assign(s, { on: true, x, y, vx, vy, life, max: life, r });
+        s.c.setAttribute('fill', color); s.c.setAttribute('display', 'inline');
+      };
+      const burst = (x, y) => {
+        const pal = [cols[Math.floor(Math.random() * cols.length)], cols[Math.floor(Math.random() * cols.length)]];
+        const n = 34 + Math.floor(Math.random() * 18), sp = 90 + Math.random() * 110, ring = Math.random() < 0.4;
+        for (let i = 0; i < n; i++) {
+          const a = (i / n) * 6.2832 + Math.random() * 0.2, v = ring ? sp : sp * (0.35 + Math.random() * 0.65);
+          spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 0.9 + Math.random() * 0.7, pal[i % 2], 2.4);
+        }
+      };
+      let rockets = [], next = 0.4, t = 0;
+      return { layer, update: (dt) => {
+        t += dt;
+        this._sway(stars, t, 4, (it, tt) => 0.9 + 0.2 * Math.sin(tt * it.sp + it.ph));
+        stars.forEach((it) => { it.g.setAttribute('opacity', (0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * it.sp + it.ph))).toFixed(2)); });
+        this._fallStep(conf, dt, t);
+        next -= dt;
+        if (next <= 0) { rockets.push({ x: -20 + Math.random() * 1640, y: 720, vx: (Math.random() - 0.5) * 40, vy: -(420 + Math.random() * 150), ty: -40 + Math.random() * 260 }); next = 0.5 + Math.random() * 1.3; }
+        rockets = rockets.filter((r) => {
+          r.x += r.vx * dt; r.y += r.vy * dt;
+          spawn(r.x, r.y, (Math.random() - 0.5) * 20, 30, 0.35, '#ffd9a0', 1.6);
+          if (r.y <= r.ty) { burst(r.x, r.y); return false; }
+          return true;
+        });
+        sparks.forEach((s) => {
+          if (!s.on) return;
+          s.life -= dt;
+          if (s.life <= 0) { s.on = false; s.c.setAttribute('display', 'none'); return; }
+          s.vy += 150 * dt; s.vx *= 1 - 1.4 * dt; s.vy *= 1 - 0.8 * dt;
+          s.x += s.vx * dt; s.y += s.vy * dt;
+          s.c.setAttribute('cx', s.x.toFixed(1)); s.c.setAttribute('cy', s.y.toFixed(1));
+          s.c.setAttribute('opacity', Math.min(1, s.life / s.max * 1.4).toFixed(2));
+        });
+      } };
     }
 
     _buildXmas() {
@@ -658,7 +847,7 @@
         }
         this._draw(n);
       }
-      if (this._xmas) this._xmasFrame(dt);
+      if (this._season) this._seasons[this._season].update(dt);
     }
   }
 

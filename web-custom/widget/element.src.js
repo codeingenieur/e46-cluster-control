@@ -5,7 +5,7 @@
  * Drehzahlmesser = aktive Defects (0 bis 50), Kühlmittel = offene Nightrun-Tickets (intern 0 bis 20), Tank = Sprint-Restzeit.
  * Steuerung: Attribute, Properties, Methoden oder Befehle im Stil des ESP32-Protokolls ("SET defects 23 nightrun 7").
  */
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 
 // Die Bildschleife läuft an Angular (zone.js) vorbei: zone.js merkt sich die echten Funktionen unter __zone_symbol__…, sonst würde
 // jedes Bild eine Change Detection der ganzen Anwendung auslösen. Ohne zone.js sind es einfach die normalen Funktionen.
@@ -18,13 +18,14 @@ const NUMBERS = {          // Property: [min, max, Standard]
   success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
-  ignition: true, night: false, demo: false, chaos: false, xmas: false,
+  ignition: true, night: false, demo: false, chaos: false, xmas: false, easter: false, nye: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
   door_dev: false, door_test: false, door_stage: false, door_prod: false,   // Auto: vier Türen
   defect: false, nr: false,     // schalten sich über die Werte; true erzwingt die Leuchte
   turnLeft: false, turnRight: false, hazard: false,
 };
+const SEASONS = ['xmas', 'easter', 'nye'];   // Weihnachten, Ostern, Silvester: immer nur einer
 const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod'];   // von Hand schaltbar
 
 // Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): ign, mil, cruise, oilwarn,
@@ -36,7 +37,7 @@ const KEYS = {
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
   door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod',
-  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos', xmas: 'xmas',
+  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos', xmas: 'xmas', easter: 'easter', nye: 'nye',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
 const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
@@ -125,7 +126,7 @@ class E46JiraClusterElement extends HTMLElement {
   }
 
   _applyLook() {
-    if (this._cluster) { this._cluster.setLight({ night: this._s.night, dim: this._s.dim }); this._cluster.setXmas(this._s.xmas); }
+    if (this._cluster) { this._cluster.setLight({ night: this._s.night, dim: this._s.dim }); this._cluster.setSeason(this._s.xmas ? 'xmas' : this._s.easter ? 'easter' : this._s.nye ? 'nye' : ''); }
   }
 
   // ---------- Fahrsimulation ----------
@@ -268,7 +269,9 @@ Object.keys(BOOLS).forEach((k) => {
       v = toBool(v);
       const was = this._s[k];
       this._s[k] = v;
-      if (k === 'night' || k === 'xmas') this._applyLook();
+      // Jahreszeiten-Modi schließen sich aus: wer einen einschaltet, schaltet die anderen aus
+      if (v && SEASONS.includes(k)) SEASONS.forEach((o) => { if (o !== k) this._s[o] = false; });
+      if (k === 'night' || SEASONS.includes(k)) this._applyLook();
       if (k === 'demo') { if (v && !this._sim) this._startSim(); if (!v && was) this._sim = null; }
       if (k === 'ignition' && this._cluster) {
         this._cluster.setPower(v);

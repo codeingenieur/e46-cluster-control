@@ -59,7 +59,13 @@
   });
   toggle($('#b-night'), (on) => cluster.setLight({ night: on }));
   toggle($('#b-chaos'), (on) => { state.chaos = on; });
-  toggle($('#b-xmas'), (on) => cluster.setXmas(on));
+  // Weihnachten, Ostern, Silvester: immer nur einer, ein zweiter Klick auf denselben schaltet ihn aus
+  const SEASON_BTNS = { 'b-xmas': 'xmas', 'b-easter': 'easter', 'b-nye': 'nye' };
+  Object.keys(SEASON_BTNS).forEach((id) => $('#' + id).addEventListener('click', () => {
+    const on = $('#' + id).getAttribute('aria-pressed') !== 'true';
+    Object.keys(SEASON_BTNS).forEach((o) => $('#' + o).setAttribute('aria-pressed', String(on && o === id)));
+    cluster.setSeason(on ? SEASON_BTNS[id] : '');
+  }));
   $('#s-dim').addEventListener('input', (e) => cluster.setLight({ dim: Number(e.target.value) }));
   document.querySelectorAll('#lamps [data-lamp]').forEach((b) => toggle(b, (on) => { state[b.dataset.lamp] = on; }));
   document.querySelectorAll('#turn [data-turn]').forEach((b) => toggle(b, (on) => { state.turn[b.dataset.turn] = on; }));

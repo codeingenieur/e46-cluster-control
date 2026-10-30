@@ -1,7 +1,7 @@
 /*
  * Angular-Hülle um <e46-jira-cluster>: Standalone-Komponente mit typisierten Inputs und Outputs.
  *
- * Einbinden: Paket installieren (npm install ./e46-jira-cluster-1.1.0.tgz), diese Datei nach src/app/ kopieren und
+ * Einbinden: Paket installieren (npm install ./e46-jira-cluster-1.2.0.tgz), diese Datei nach src/app/ kopieren und
  * <app-e46-jira-kombi [defects]="12" [nightrun]="6" [sprint]="0.8"></app-e46-jira-kombi> verwenden.
  * Die Komponente setzt die Properties des Elements, die Bildschleife des Elements läuft an zone.js vorbei (keine Change Detection je Bild).
  */
@@ -15,7 +15,7 @@ import type { E46JiraClusterElement, E46JiraClusterState } from 'e46-jira-cluste
 /** Alle Werte, die als Input durchgereicht werden (gleiche Namen wie die Properties des Elements). */
 const KEYS: (keyof E46JiraClusterState)[] = [
   'defects', 'nightrun', 'sprint', 'success', 'closed', 'dim',
-  'ignition', 'night', 'chaos', 'xmas', 'demo',
+  'ignition', 'night', 'chaos', 'xmas', 'easter', 'nye', 'demo',
   'mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt',
   'door_dev', 'door_test', 'door_stage', 'door_prod', 'defect', 'nr',
   'turnLeft', 'turnRight', 'hazard', 'odometer', 'trip', 'clock',
@@ -44,6 +44,8 @@ export class E46JiraKombiComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() night?: boolean;
   /** Chaosmodus */ @Input() chaos?: boolean;
   /** Weihnachtsmodus */ @Input() xmas?: boolean;
+  /** Ostermodus */ @Input() easter?: boolean;
+  /** Silvestermodus */ @Input() nye?: boolean;
   /** Demo-Daten */ @Input() demo?: boolean;
   @Input() mil?: boolean; @Input() lab?: boolean; @Input() cruise?: boolean; @Input() oilwarn?: boolean;
   @Input() battery?: boolean; @Input() oilpress?: boolean; @Input() arrk?: boolean; @Input() tt?: boolean;

@@ -98,6 +98,8 @@ svg.cluster.sw, svg.cluster.sw * { transition: none !important; }   /* Tag/Nacht
 .lamp.blue { color: #4a7fe0; }
 .lamp.orange { color: #ff7a01; }
 .lamp.bmw { color: #f2f6ff; }
+.lamp.pink { color: #ff8fc4; }
+.lamp.gold { color: #ffcf40; }
 .lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }
 
 .turn { color: #4a3f43; }
