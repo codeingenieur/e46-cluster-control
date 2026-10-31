@@ -18,14 +18,14 @@ const NUMBERS = {          // Property: [min, max, Standard]
   success: [0, 100, 0], closed: [0, 20, 0], dim: [0, 1, 0.85],
 };
 const BOOLS = {            // Property: Standard
-  ignition: true, night: false, demo: false, chaos: false, xmas: false, easter: false, nye: false,
+  ignition: true, night: false, demo: false, chaos: false, xmas: false, easter: false, nye: false, karneval: false, aprilscherz: false, maibaum: false, oktoberfest: false, halloween: false,
   mil: false, lab: false, cruise: false, oilwarn: false, battery: false, oilpress: false,
   arrk: false, tt: false,
   door_dev: false, door_test: false, door_stage: false, door_prod: false,   // Auto: vier Türen
   defect: false, nr: false,     // schalten sich über die Werte; true erzwingt die Leuchte
   turnLeft: false, turnRight: false, hazard: false,
 };
-const SEASONS = ['xmas', 'easter', 'nye'];   // Weihnachten, Ostern, Silvester: immer nur einer
+const SEASONS = ['xmas', 'easter', 'nye', 'karneval', 'aprilscherz', 'maibaum', 'oktoberfest', 'halloween'];   // Anlässe: immer nur einer
 const LAMPS = ['mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt', 'door_dev', 'door_test', 'door_stage', 'door_prod'];   // von Hand schaltbar
 
 // Befehlsschlüssel -> Property. Wo es sie am ESP32 gibt, heißen sie gleich (docs/protocol.md): ign, mil, cruise, oilwarn,
@@ -37,10 +37,10 @@ const KEYS = {
   battery: 'battery', oilpress: 'oilpress',
   lab: 'lab', arrk: 'arrk', tt: 'tt', defect: 'defect', nr: 'nr',
   door_dev: 'door_dev', door_test: 'door_test', door_stage: 'door_stage', door_prod: 'door_prod',
-  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos', xmas: 'xmas', easter: 'easter', nye: 'nye',
+  left: 'turnLeft', right: 'turnRight', hazard: 'hazard', night: 'night', dim: 'dim', demo: 'demo', chaos: 'chaos', xmas: 'xmas', easter: 'easter', nye: 'nye', karneval: 'karneval', aprilscherz: 'aprilscherz', maibaum: 'maibaum', oktoberfest: 'oktoberfest', halloween: 'halloween', season: 'season',
   odo: 'odometer', trip: 'trip', clock: 'clock',
 };
-const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest']);
+const ATTRS = Object.keys(NUMBERS).concat(Object.keys(BOOLS), ['odometer', 'trip', 'clock', 'selftest', 'season']);
 
 const CSS = '__CSS__';
 
@@ -96,6 +96,7 @@ class E46JiraClusterElement extends HTMLElement {
   attributeChangedCallback(name, _old, val) {
     if (name === 'clock') { this.clock = val == null ? 'auto' : val; return; }
     if (name === 'selftest') { this._s.selftest = toBool(val); return; }
+    if (name === 'season') { this.season = val; return; }
     if (name in NUMBERS) { if (val != null && val !== '') this[name] = Number(val); return; }
     if (name === 'odometer' || name === 'trip') { if (val != null && val !== '') this[name] = Number(val); return; }
     if (name in BOOLS) this[name] = val === null ? BOOLS[name] : toBool(val);
@@ -108,13 +109,13 @@ class E46JiraClusterElement extends HTMLElement {
     const o = {};
     for (const k in NUMBERS) o[k] = this._s[k];
     for (const k in BOOLS) o[k] = this._s[k];
-    o.odometer = Math.floor(this._s.odometer); o.trip = this._s.trip; o.clock = this._s.clock;
+    o.odometer = Math.floor(this._s.odometer); o.trip = this._s.trip; o.clock = this._s.clock; o.season = this.season;
     return o;
   }
 
   /** Mehrere Werte auf einmal setzen: el.set({ defects: 23, nightrun: 7, sprint: 0.6 }). Unbekannte Schlüssel werfen. */
   set(values) {
-    for (const k in values) if (!(k in NUMBERS || k in BOOLS || k === 'odometer' || k === 'trip' || k === 'clock')) throw new Error('unknown key ' + k);
+    for (const k in values) if (!(k in NUMBERS || k in BOOLS || k === 'odometer' || k === 'trip' || k === 'clock' || k === 'season')) throw new Error('unknown key ' + k);
     for (const k in values) this[k] = values[k];
     return this;
   }
@@ -126,7 +127,7 @@ class E46JiraClusterElement extends HTMLElement {
   }
 
   _applyLook() {
-    if (this._cluster) { this._cluster.setLight({ night: this._s.night, dim: this._s.dim }); this._cluster.setSeason(this._s.xmas ? 'xmas' : this._s.easter ? 'easter' : this._s.nye ? 'nye' : ''); }
+    if (this._cluster) { this._cluster.setLight({ night: this._s.night, dim: this._s.dim }); this._cluster.setSeason(SEASONS.find((k) => this._s[k]) || ''); }
   }
 
   // ---------- Fahrsimulation ----------
@@ -166,6 +167,7 @@ class E46JiraClusterElement extends HTMLElement {
         if (!prop) return 'ERR unknown_key';
         let v = w[i + 1];
         if (prop === 'clock') { if (v.toLowerCase() === 'auto') v = 'auto'; else if (!/^\d{1,2}:\d{2}$/.test(v)) return 'ERR bad_value'; }
+        else if (prop === 'season') { v = v.toLowerCase(); if (v !== 'auto' && v !== 'off' && !SEASONS.includes(v)) return 'ERR bad_value'; }
         else { v = Number(v); if (!Number.isFinite(v)) return 'ERR bad_value'; if (prop in BOOLS) v = v !== 0; }
         todo.push([prop, v]);
       }
@@ -281,6 +283,17 @@ Object.keys(BOOLS).forEach((k) => {
     },
     enumerable: true,
   });
+});
+// season: Name des aktiven Anlasses ('' = keiner). Setzen mit einem Namen, 'auto' (nach dem heutigen Datum) oder 'off'.
+Object.defineProperty(E46JiraClusterElement.prototype, 'season', {
+  get() { return SEASONS.find((k) => this._s[k]) || ''; },
+  set(v) {
+    v = v == null ? '' : String(v).toLowerCase();
+    if (v === 'auto') v = E46Cluster.seasonForDate(new Date());
+    if (SEASONS.includes(v)) this[v] = true;
+    else SEASONS.forEach((k) => { if (this._s[k]) this[k] = false; });
+  },
+  enumerable: true,
 });
 ['odometer', 'trip'].forEach((k) => {
   Object.defineProperty(E46JiraClusterElement.prototype, k, {

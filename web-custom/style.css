@@ -100,6 +100,8 @@ svg.cluster.sw, svg.cluster.sw * { transition: none !important; }   /* Tag/Nacht
 .lamp.bmw { color: #f2f6ff; }
 .lamp.pink { color: #ff8fc4; }
 .lamp.gold { color: #ffcf40; }
+.lamp.purple { color: #c58cff; }
+.lamp.amber { color: var(--amber, #ffb000); }
 .lamp.on { opacity: 1; filter: drop-shadow(0 0 7px currentColor); }
 
 .turn { color: #4a3f43; }

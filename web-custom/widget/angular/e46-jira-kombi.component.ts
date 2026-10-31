@@ -15,7 +15,7 @@ import type { E46JiraClusterElement, E46JiraClusterState } from 'e46-jira-cluste
 /** Alle Werte, die als Input durchgereicht werden (gleiche Namen wie die Properties des Elements). */
 const KEYS: (keyof E46JiraClusterState)[] = [
   'defects', 'nightrun', 'sprint', 'success', 'closed', 'dim',
-  'ignition', 'night', 'chaos', 'xmas', 'easter', 'nye', 'demo',
+  'ignition', 'night', 'chaos', 'season', 'xmas', 'easter', 'nye', 'karneval', 'aprilscherz', 'maibaum', 'oktoberfest', 'halloween', 'demo',
   'mil', 'lab', 'cruise', 'oilwarn', 'battery', 'oilpress', 'arrk', 'tt',
   'door_dev', 'door_test', 'door_stage', 'door_prod', 'defect', 'nr',
   'turnLeft', 'turnRight', 'hazard', 'odometer', 'trip', 'clock',
@@ -46,6 +46,8 @@ export class E46JiraKombiComponent implements OnInit, OnChanges, AfterViewInit {
   /** Weihnachtsmodus */ @Input() xmas?: boolean;
   /** Ostermodus */ @Input() easter?: boolean;
   /** Silvestermodus */ @Input() nye?: boolean;
+  @Input() karneval?: boolean; @Input() aprilscherz?: boolean; @Input() maibaum?: boolean; @Input() oktoberfest?: boolean; @Input() halloween?: boolean;
+  /** Anlass nach Namen oder 'auto' (nach dem heutigen Datum), '' = keiner */ @Input() season?: string;
   /** Demo-Daten */ @Input() demo?: boolean;
   @Input() mil?: boolean; @Input() lab?: boolean; @Input() cruise?: boolean; @Input() oilwarn?: boolean;
   @Input() battery?: boolean; @Input() oilpress?: boolean; @Input() arrk?: boolean; @Input() tt?: boolean;

@@ -67,6 +67,12 @@
     // Osterhase (Umriss wie die übrigen Leuchten) und Sektglas für Ostern und Silvester
     bunny: '<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M-8 -3C-12 -12 -10 -19 -6 -19C-2 -19 -2 -10 -3 -3"/><path d="M8 -3C12 -12 10 -19 6 -19C2 -19 2 -10 3 -3"/><ellipse cy="5" rx="11" ry="9.5"/><path d="M-6 10L-15 9M-6 12L-14 14M6 10L15 9M6 12L14 14" stroke-width="1.6"/></g><circle cx="-4" cy="3" r="1.9" fill="currentColor"/><circle cx="4" cy="3" r="1.9" fill="currentColor"/><circle cy="8" r="1.7" fill="currentColor"/>',
     flute: '<path d="M-5.4 -8H5.4L4.5 3Q4.5 8 0 8Q-4.5 8 -4.5 3Z" fill="currentColor" opacity=".35"/><path d="M-6 -16H6L4.5 3Q4.5 8 0 8Q-4.5 8 -4.5 3Z" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round"/><path d="M0 8V16M-6.5 16.5H6.5" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><circle cx="-1" cy="-2" r="1.4" fill="currentColor"/><circle cx="1.6" cy="-6" r="1.2" fill="currentColor"/><circle cx="-1.2" cy="2.6" r="1.1" fill="currentColor"/><path d="M10 -14L12 -17M13 -10L16 -11M9 -18L9 -21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+    // Symbole der weiteren Anlässe (Umrisse wie die übrigen Leuchten): Narrenkappe, Clown, Maibaum, Maßkrug, Kürbis
+    jester: '<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M-14 9C-16 -3 -12 -12 -10 -17C-6 -10 -4 -6 0 -4C4 -6 6 -10 10 -17C12 -12 16 -3 14 9Z"/><path d="M0 -4C-1 -11 1 -15 0 -19"/><path d="M-15 9H15"/></g><circle cx="-10" cy="-18.5" r="2.4" fill="currentColor"/><circle cx="10" cy="-18.5" r="2.4" fill="currentColor"/><circle cy="-20.5" r="2.4" fill="currentColor"/><circle cx="-6" cy="3" r="1.5" fill="currentColor"/><circle cx="6" cy="3" r="1.5" fill="currentColor"/><circle cy="-1" r="1.3" fill="currentColor"/>',
+    clown: '<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><circle cy="3" r="12"/><path d="M-6 9Q0 14 6 9"/><circle cx="-14" cy="-6" r="4.5"/><circle cx="14" cy="-6" r="4.5"/></g><circle cy="4" r="3.6" fill="currentColor"/><circle cx="-4.6" cy="-1" r="1.7" fill="currentColor"/><circle cx="4.6" cy="-1" r="1.7" fill="currentColor"/>',
+    maypole: '<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M0 -18V18M-8 18H8"/><ellipse cy="-14" rx="7.5" ry="3"/><path d="M0 -12C-8 -2 -12 6 -14 16M0 -12C8 -2 12 6 14 16M0 -12C-3 -2 -5 8 -6 16M0 -12C3 -2 5 8 6 16" stroke-width="1.8"/></g>',
+    mug: '<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M-8 -10H8V12Q8 15 5 15H-5Q-8 15 -8 12Z"/><path d="M8 -6H13Q16 -6 16 -3V8Q16 11 13 11H8"/><path d="M-9 -10Q-9 -16 -4 -15Q-1 -19 3 -15Q9 -16 9 -10"/></g><path d="M-7 -4H7V12Q7 14 5 14H-5Q-7 14 -7 12Z" fill="currentColor" opacity=".3"/>',
+    pumpkin: '<g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cy="4" rx="14" ry="11"/><path d="M-5 -6Q-8 4 -5 14M5 -6Q8 4 5 14"/><path d="M0 -7V-13L3 -16"/><path d="M-7 9L-4 7L-1 9L2 7L5 9L7 7" stroke-width="2"/></g><path d="M-8 1L-4 1L-6 -3ZM4 1L8 1L6 -3Z" fill="currentColor"/>',
     // nur Zifferblatt-Symbole
     // Zapfsäule: Körper um x=0 zentriert, Schlauch rechts (Maße vom Foto: 30 breit, 30 hoch)
     pump: '<rect x="-9" y="-15" width="18" height="26" rx="2" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="-9" y="-2" width="18" height="13" fill="currentColor"/><rect x="-12" y="11" width="24" height="4" fill="currentColor"/><path d="M9 -8H14Q18 -8 18 -4V9Q18 13 14.5 13Q11.5 13 11.5 9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -99,7 +105,11 @@
   };
 
   // Jahreszeiten-Modi: welches Symbol die Batterieleuchte ersetzt, [Symbol, Leuchtfarbe, Titel]
-  const SEASON_LAMP = { xmas: ['tree', 'green', 'Weihnachtsbaum'], easter: ['bunny', 'pink', 'Osterhase'], nye: ['flute', 'gold', 'Sektglas'] };
+  const SEASON_LAMP = {
+    xmas: ['tree', 'green', 'Weihnachtsbaum'], easter: ['bunny', 'pink', 'Osterhase'], nye: ['flute', 'gold', 'Sektglas'],
+    karneval: ['jester', 'purple', 'Narrenkappe'], aprilscherz: ['clown', 'red', 'Clown'], maibaum: ['maypole', 'green', 'Maibaum'],
+    oktoberfest: ['mug', 'amber', 'Maßkrug'], halloween: ['pumpkin', 'orange', 'Kürbis'],
+  };
   const EGG = 'M0 -10.5C6 -10.5 8.6 -1 8.6 3.5C8.6 8 5 11 0 11C-5 11 -8.6 8 -8.6 3.5C-8.6 -1 -6 -10.5 0 -10.5Z';
   const STAR = 'M0 -8L2 -2.75L7.6 -2.47L3.23 1.05L4.7 6.47L0 3.4L-4.7 6.47L-3.23 1.05L-7.6 -2.47L-2 -2.75Z';
 
@@ -138,6 +148,30 @@
   const SILHOUETTE = 'M800 -33C867.6 -33 937.4 -29.9 1005.5 -22.1C1073.7 -14.4 1140.3 -2.1 1205.8 17.1C1271.4 36.4 1335.9 62.6 1393.4 100C1451 137.5 1501.5 186.3 1535.4 245.1C1569.3 303.9 1586.6 372.9 1576.2 441.4C1565.8 509.8 1527.6 577.9 1468.7 612C1409.7 646 1329.9 646 1271.9 646L328.1 646C270.1 646 190.3 646 131.3 612C72.4 577.9 34.2 509.8 23.8 441.4C13.4 372.9 30.7 303.9 64.6 245.1C98.5 186.3 149 137.5 206.6 100C264.1 62.6 328.6 36.4 394.2 17.1C459.7 -2.1 526.3 -14.4 594.5 -22.1C662.6 -29.9 732.4 -33 800 -33Z';
   const PLATE = 'M800 54.9C839.9 54.9 879.9 56.6 919.8 60.1C959.6 63.6 999.2 69 1038.5 76.4C1077.7 83.9 1116.7 93.4 1154.9 105.1C1193.1 116.8 1230.7 130.6 1267.1 147.1C1303.5 163.7 1338.7 183.1 1371.7 205.6C1404.6 228.2 1435.1 253.9 1460.8 284.9C1486.4 315.9 1507.3 352.2 1516.6 390.6C1526 428.9 1523.9 469.4 1506.4 505.7C1488.9 541.9 1456 574 1419 590C1382.1 606 1341.1 606 1303.9 606L296.1 606C258.9 606 217.9 606 181 590C144 574 111.1 541.9 93.6 505.7C76.1 469.4 74 428.9 83.4 390.6C92.7 352.2 113.6 315.9 139.2 284.9C164.9 253.9 195.4 228.2 228.3 205.6C261.3 183.1 296.5 163.7 332.9 147.1C369.3 130.6 406.9 116.8 445.1 105.1C483.3 93.4 522.3 83.9 561.5 76.4C600.8 69 640.4 63.6 680.2 60.1C720.1 56.6 760.1 54.9 800 54.9Z';
   const PANEL_EDGE = 'M800 68.9C811.5 68.9 823 69 834.6 69.3C846.1 69.6 857.6 70 869.1 70.6C880.6 71.2 892.1 71.9 903.6 72.8C915 73.7 926.5 74.7 938 75.9C949.4 77.1 960.9 78.4 972.3 80C983.7 81.5 995.1 83.1 1006.5 85C1017.8 86.8 1029.2 88.9 1040.5 91.1C1051.8 93.3 1063.1 95.6 1074.3 98.2C1085.5 100.7 1096.7 103.4 1107.9 106.3C1119 109.2 1130.1 112.3 1141.2 115.6C1152.2 118.8 1163.2 122.3 1174.1 125.9C1185.1 129.5 1195.9 133.3 1206.7 137.4C1217.5 141.4 1228.2 145.6 1238.9 150.1C1249.5 154.6 1260 159.2 1270.4 164.1C1280.8 169 1291.2 174.2 1301.3 179.6C1311.5 185 1321.6 190.6 1331.5 196.5C1341.3 202.4 1351.1 208.6 1360.6 215C1370.1 221.5 1379.5 228.2 1388.6 235.3C1397.7 242.3 1406.6 249.7 1415.1 257.5C1423.6 265.2 1431.8 273.3 1439.6 281.8C1447.3 290.4 1454.7 299.3 1461.5 308.5C1468.2 317.8 1474.6 327.5 1480.2 337.5C1485.8 347.6 1491 358 1495.1 368.7C1499.2 379.4 1502.6 390.6 1504.8 401.8C1507 413.1 1508.2 424.7 1508.1 436.2C1508 447.6 1506.7 459.3 1504.1 470.4C1501.4 481.5 1497.3 492.6 1492.2 502.7C1487 512.9 1480.4 522.6 1473.1 531.5C1465.8 540.3 1457.5 548.6 1448.5 555.7C1439.6 562.8 1429.8 569.3 1419.5 574.3C1409.3 579.3 1398.1 583 1387 585.7C1375.9 588.5 1364.3 589.7 1352.8 590.7C1341.4 591.8 1329.8 591.8 1318.3 592C1306.8 592.2 1295.3 592 1283.8 592C1272.2 592 1260.7 592 1249.2 592C1237.7 592 1226.2 592 1214.6 592C1203.1 592 1191.6 592 1180.1 592C1168.6 592 1157.1 592 1145.5 592C1134 592 1122.5 592 1111 592C1099.5 592 1087.9 592 1076.4 592C1064.9 592 1053.4 592 1041.9 592C1030.4 592 1018.8 592 1007.3 592C995.8 592 984.3 592 972.8 592C961.3 592 949.7 592 938.2 592C926.7 592 915.2 592 903.7 592C892.1 592 880.6 592 869.1 592C857.6 592 846.1 592 834.6 592C823 592 811.5 592 800 592C788.5 592 777 592 765.4 592C753.9 592 742.4 592 730.9 592C719.4 592 707.9 592 696.3 592C684.8 592 673.3 592 661.8 592C650.3 592 638.7 592 627.2 592C615.7 592 604.2 592 592.7 592C581.2 592 569.6 592 558.1 592C546.6 592 535.1 592 523.6 592C512.1 592 500.5 592 489 592C477.5 592 466 592 454.5 592C442.9 592 431.4 592 419.9 592C408.4 592 396.9 592 385.4 592C373.8 592 362.3 592 350.8 592C339.3 592 327.8 592 316.2 592C304.7 592 293.2 592.2 281.7 592C270.2 591.8 258.6 591.8 247.2 590.7C235.7 589.7 224.1 588.5 213 585.7C201.9 583 190.7 579.3 180.5 574.3C170.2 569.3 160.4 562.8 151.5 555.7C142.5 548.6 134.2 540.3 126.9 531.5C119.6 522.6 113 512.9 107.8 502.7C102.7 492.6 98.6 481.5 95.9 470.4C93.3 459.3 92 447.6 91.9 436.2C91.8 424.7 93 413.1 95.2 401.8C97.4 390.6 100.8 379.4 104.9 368.7C109 358 114.2 347.6 119.8 337.5C125.4 327.5 131.8 317.8 138.5 308.5C145.3 299.3 152.7 290.4 160.4 281.8C168.2 273.3 176.4 265.2 184.9 257.5C193.4 249.7 202.3 242.3 211.4 235.3C220.5 228.2 229.9 221.5 239.4 215C248.9 208.6 258.7 202.4 268.5 196.5C278.4 190.6 288.5 185 298.7 179.6C308.8 174.2 319.2 169 329.6 164.1C340 159.2 350.5 154.6 361.1 150.1C371.8 145.6 382.5 141.4 393.3 137.4C404.1 133.3 414.9 129.5 425.9 125.9C436.8 122.3 447.8 118.8 458.8 115.6C469.9 112.3 481 109.2 492.1 106.3C503.3 103.4 514.5 100.7 525.7 98.2C536.9 95.6 548.2 93.3 559.5 91.1C570.8 88.9 582.2 86.8 593.5 85C604.9 83.1 616.3 81.5 627.7 80C639.1 78.4 650.6 77.1 662 75.9C673.5 74.7 685 73.7 696.4 72.8C707.9 71.9 719.4 71.2 730.9 70.6C742.4 70 753.9 69.6 765.4 69.3C777 69 788.5 68.9 800 68.9Z';
+
+  /** Ostersonntag (Gauß/Meeus), als Date */
+  function easterSunday(y) {
+    const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(y, month - 1, day);
+  }
+
+  /** Anlass zu einem Datum (für season="auto"), '' wenn heute keiner ist */
+  function seasonForDate(d) {
+    const m = d.getMonth() + 1, day = d.getDate();
+    const dayNo = (x) => Math.floor(Date.UTC(x.getFullYear(), x.getMonth(), x.getDate()) / 864e5);
+    const k = dayNo(d), e = dayNo(easterSunday(d.getFullYear()));
+    if (k >= e - 52 && k <= e - 46) return 'karneval';      // Weiberfastnacht bis Aschermittwoch
+    if (k >= e - 2 && k <= e + 1) return 'easter';          // Karfreitag bis Ostermontag
+    if (m === 4 && day === 1) return 'aprilscherz';
+    if ((m === 4 && day === 30) || (m === 5 && day === 1)) return 'maibaum';
+    if ((m === 9 && day >= 20) || (m === 10 && day <= 4)) return 'oktoberfest';
+    if (m === 10 && day === 31) return 'halloween';
+    if (m === 12 && day <= 26) return 'xmas';
+    if ((m === 12 && day === 31) || (m === 1 && day === 1)) return 'nye';
+    return '';
+  }
 
   class E46Cluster {
     constructor(host) {
@@ -488,7 +522,7 @@
     set(values) {
       for (const k in values) {
         const n = this.needles[k];
-        if (n && isFinite(values[k])) n.target = clamp01(n.toFrac(values[k]));
+        if (n && isFinite(values[k])) n.target = clamp01(this._invert ? 1 - n.toFrac(values[k]) : n.toFrac(values[k]));   // _invert: Aprilscherz
       }
     }
 
@@ -505,6 +539,8 @@
       for (const k in map) if (this.lamps[k]) this.lamps[k].classList.toggle('on', !!map[k]);
       // Das Symbol des Jahreszeiten-Modus leuchtet, solange die Zündung an ist
       if (this._season && this.lamps.battery) this.lamps.battery.classList.toggle('on', !this.svg.classList.contains('off'));
+      const S = this._season && this._seasons[this._season];
+      if (S && S.lamps) S.lamps(this.lamps);
     }
 
     /** Mittendisplay: odo ('148213'), trip ('0.3'), clock ('20:44') */
@@ -529,19 +565,20 @@
 
     /** '' (aus), 'xmas', 'easter' oder 'nye' */
     setSeason(name) {
-      name = name === 'xmas' || name === 'easter' || name === 'nye' ? name : '';
+      name = SEASON_LAMP[name] ? name : '';
       const old = this._season || '';
       if (name === old) return;
       this._season = name;
       this._seasons = this._seasons || {};
-      if (old) this._seasons[old].layer.setAttribute('display', 'none');
+      if (old) { this._seasons[old].layer.setAttribute('display', 'none'); if (this._seasons[old].off) this._seasons[old].off(); }
       const g = this.lamps.battery;
       if (g && this._batHtml == null) this._batHtml = g.innerHTML;
-      if (g) g.classList.remove('red', 'green', 'pink', 'gold');
+      if (g) g.classList.remove('red', 'green', 'pink', 'gold', 'purple', 'amber', 'orange');
       if (!name) { if (g && this._batHtml != null) { g.innerHTML = this._batHtml; g.classList.add('red'); } return; }
       if (!this._seasons[name]) {
         this._seasons[name] = name === 'xmas' ? (this._buildXmas(), { layer: this.xmasLayer, update: (dt) => this._xmasFrame(dt) })
-          : name === 'easter' ? this._buildEaster() : this._buildNye();
+          : name === 'easter' ? this._buildEaster() : name === 'nye' ? this._buildNye() : name === 'karneval' ? this._buildKarneval()
+          : name === 'aprilscherz' ? this._buildAprilscherz() : name === 'maibaum' ? this._buildMaibaum() : name === 'oktoberfest' ? this._buildOktoberfest() : this._buildHalloween();
       }
       this._seasons[name].layer.setAttribute('display', 'inline');
       if (g) { const L = SEASON_LAMP[name]; g.innerHTML = '<title>' + L[2] + '</title>' + ICONS[L[0]]; g.classList.add(L[1]); }
@@ -854,6 +891,326 @@
       } };
     }
 
+    /** Punkte entlang der oberen Außenkante, links und rechts getrennt, für Schmuck, der von der Kante hängt */
+    _rimPoints(rnd, gap) {
+      const probe = el('path', { d: SILHOUETTE }, this.defs);
+      const total = probe.getTotalLength();
+      let end = 0;
+      for (let s = 0; s < total / 2; s += 6) { if (probe.getPointAtLength(s).y > 520) break; end = s; }
+      const out = [];
+      for (let s = 30 + rnd() * gap; s < end; s += gap * (0.7 + rnd() * 0.6)) {
+        const q = probe.getPointAtLength(s);
+        out.push({ x: q.x, y: q.y }, { x: 1600 - q.x, y: q.y });
+      }
+      probe.remove();
+      return out;
+    }
+
+    /** Karneval: Luftschlangen am oberen Rand, Konfetti, aufsteigende Luftballons; die Leuchten blinken im Takt */
+    _buildKarneval() {
+      const layer = el('g', { class: 'karneval', 'pointer-events': 'none' }, this.svg);
+      const rnd = this._rnd(20260211);
+      const cols = ['#ff3b6b', '#ffd23a', '#37d65a', '#3d8bff', '#b36bff', '#ff8a3d', '#2fe0d0'];
+      const sg = el('g', null, layer);
+      const streamers = this._rimPoints(rnd, 70).map((p) => {
+        const c = cols[Math.floor(rnd() * cols.length)];
+        return { p, len: 50 + rnd() * 55, amp: 5 + rnd() * 9, sp: 1.4 + rnd() * 1.6, ph: rnd() * 6.28,
+          e: el('path', { fill: 'none', stroke: c, 'stroke-width': 3.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, sg) };
+      });
+      const balloons = [], bg = el('g', null, layer);
+      for (let i = 0; i < 10; i++) {
+        const g = el('g', null, bg), c = cols[i % cols.length];
+        el('path', { d: 'M0 14Q-4 26 2 38Q-3 48 1 60', fill: 'none', stroke: '#ddd', 'stroke-width': 1, opacity: 0.7 }, g);
+        el('ellipse', { rx: 11, ry: 14, fill: c, stroke: '#0004', 'stroke-width': 0.8 }, g);
+        el('path', { d: 'M0 14L-3 19H3Z', fill: c }, g);
+        el('ellipse', { cx: -4, cy: -5, rx: 2.4, ry: 4, fill: '#fff', opacity: 0.45 }, g);
+        balloons.push({ g, x: Math.random() * 1600, y: Math.random() * 800 - 40, vy: 28 + Math.random() * 30, sw: 10 + Math.random() * 16, ph: Math.random() * 6.28 });
+      }
+      const conf = this._fall(layer, 70, (g, r) => {
+        const w = 3 + r() * 4;
+        if (r() < 0.3) el('circle', { r: w * 0.7, fill: cols[Math.floor(r() * cols.length)], opacity: 0.9 }, g);
+        else el('rect', { x: -w / 2, y: -w * 0.8, width: w, height: w * 1.6, fill: cols[Math.floor(r() * cols.length)], opacity: 0.9 }, g);
+        return { vy: 40 + r() * 50, sw: 12 + r() * 24, flip: 2 + r() * 4, vr: (r() - 0.5) * 240 };
+      });
+      // Die Leuchten blinken im Takt abwechselnd in zwei Gruppen
+      const groupA = ['arrk', 'oilwarn', 'door_dev', 'door_stage', 'lab'], groupB = ['tt', 'cruise', 'door_test', 'door_prod'];
+      let t = 0;
+      return { layer,
+        update: (dt) => {
+          t += dt;
+          streamers.forEach((s) => {
+            let d = 'M' + s.p.x.toFixed(1) + ' ' + s.p.y.toFixed(1);
+            for (let i = 1; i <= 14; i++) d += 'L' + (s.p.x + Math.sin(i * 0.8 + t * s.sp + s.ph) * s.amp * (i / 14)).toFixed(1) + ' ' + (s.p.y + i * s.len / 14).toFixed(1);
+            s.e.setAttribute('d', d);
+          });
+          balloons.forEach((b) => {
+            b.y -= b.vy * dt;
+            if (b.y < -90) { b.y = 780; b.x = Math.random() * 1600; }
+            b.g.setAttribute('transform', 'translate(' + (b.x + Math.sin(t * 0.8 + b.ph) * b.sw).toFixed(1) + ' ' + b.y.toFixed(1) + ')');
+          });
+          this._fallStep(conf, dt, t);
+        },
+        lamps: (L) => {
+          if (this.svg.classList.contains('off')) return;
+          const beat = Math.floor(t * 3) % 2;
+          groupA.forEach((k) => L[k] && L[k].classList.toggle('on', beat === 0));
+          groupB.forEach((k) => L[k] && L[k].classList.toggle('on', beat === 1));
+        } };
+    }
+
+    /** Aprilscherz: die Zeiger fahren zeitweise rückwärts, das Kombi steht kurz auf dem Kopf, Leuchten schlagen Fehlalarm,
+     *  eine Fliege krabbelt über das Glas und ab und zu bekommt es einen Sprung */
+    _buildAprilscherz() {
+      const layer = el('g', { class: 'aprilscherz', 'pointer-events': 'none' }, this.svg);
+      const f = el('g', null, el('g', null, layer));
+      el('ellipse', { rx: 3.4, ry: 5.2, fill: '#15110f' }, f);
+      el('circle', { cy: -6, r: 2.6, fill: '#15110f' }, f);
+      el('circle', { cx: -1.2, cy: -7, r: 0.8, fill: '#e33' }, f); el('circle', { cx: 1.2, cy: -7, r: 0.8, fill: '#e33' }, f);
+      el('ellipse', { cx: -4.5, cy: -1, rx: 2.4, ry: 5.4, fill: '#cfe8ff', opacity: 0.55, transform: 'rotate(25 -4.5 -1)' }, f);
+      el('ellipse', { cx: 4.5, cy: -1, rx: 2.4, ry: 5.4, fill: '#cfe8ff', opacity: 0.55, transform: 'rotate(-25 4.5 -1)' }, f);
+      el('path', { d: 'M-3 -2L-8 -5M-3 1L-9 1M-3 4L-8 8M3 -2L8 -5M3 1L9 1M3 4L8 8', stroke: '#15110f', 'stroke-width': 0.9, fill: 'none' }, f);
+      const fly = { x: 600, y: 300, h: 0.5, sp: 0, timer: 1 };
+      const crackShadow = el('path', { fill: 'none', stroke: '#000', 'stroke-width': 2.6, 'stroke-linecap': 'round', opacity: 0 }, layer);
+      const crack = el('path', { fill: 'none', stroke: '#fff', 'stroke-width': 1.5, 'stroke-linecap': 'round', opacity: 0 }, layer);
+      const alarmLamps = ['mil', 'lab', 'cruise', 'nr', 'defect', 'fuelwarn', 'door_dev', 'door_prod'];
+      let t = 0, rot = false, crackT = -1, nextCrack = 14, alarm = null, nextAlarm = 4;
+      const makeCrack = () => {
+        const cx = 200 + Math.random() * 1200, cy = 100 + Math.random() * 420;
+        let d = '';
+        for (let i = 0; i < 7; i++) {
+          let a = (i / 7) * 6.28 + Math.random() * 0.6, x = cx, y = cy;
+          d += 'M' + cx.toFixed(0) + ' ' + cy.toFixed(0);
+          for (let k = 0; k < 4; k++) { const l = 18 + Math.random() * 45; a += (Math.random() - 0.5) * 0.9; x += Math.cos(a) * l; y += Math.sin(a) * l; d += 'L' + x.toFixed(0) + ' ' + y.toFixed(0); }
+        }
+        crack.setAttribute('d', d); crackShadow.setAttribute('d', d);
+      };
+      return { layer,
+        update: (dt) => {
+          t += dt;
+          // Zeiger rückwärts: 7 s in jeder halben Minute
+          const c = t % 30;
+          this._invert = c > 21 && c < 28;
+          // Kopfstand: 3,5 s alle 45 s
+          const r = (t % 45) > 36 && (t % 45) < 39.5;
+          if (r !== rot) { rot = r; this.svg.style.transition = 'transform .8s ease'; this.svg.style.transform = r ? 'rotate(180deg)' : ''; }
+          // Fliege
+          fly.timer -= dt;
+          if (fly.timer <= 0) {
+            if (Math.random() < 0.4) { fly.sp = 0; fly.timer = 0.6 + Math.random() * 1.6; }
+            else { fly.sp = 30 + Math.random() * 70; fly.h += (Math.random() - 0.5) * 2.2; fly.timer = 0.4 + Math.random() * 1.1; }
+          }
+          fly.x += Math.cos(fly.h) * fly.sp * dt; fly.y += Math.sin(fly.h) * fly.sp * dt;
+          if (fly.x < 40 || fly.x > 1560) { fly.h = Math.PI - fly.h; fly.x = Math.min(1560, Math.max(40, fly.x)); }
+          if (fly.y < 0 || fly.y > 650) { fly.h = -fly.h; fly.y = Math.min(650, Math.max(0, fly.y)); }
+          const jit = fly.sp === 0 ? Math.sin(t * 40) * 2 : 0;
+          f.setAttribute('transform', 'translate(' + fly.x.toFixed(1) + ' ' + fly.y.toFixed(1) + ') rotate(' + (fly.h * 57.3 + 90 + jit).toFixed(0) + ') scale(2.2)');
+          // Sprung im Glas: 3,2 s sichtbar, alle ~50 s
+          nextCrack -= dt;
+          if (nextCrack <= 0) { makeCrack(); crackT = 0; nextCrack = 35 + Math.random() * 30; }
+          if (crackT >= 0) {
+            crackT += dt;
+            const o = crackT < 0.1 ? crackT * 10 : crackT > 2.7 ? Math.max(0, (3.2 - crackT) / 0.5) : 1;
+            crack.setAttribute('opacity', (0.8 * o).toFixed(2)); crackShadow.setAttribute('opacity', (0.5 * o).toFixed(2));
+            if (crackT > 3.2) crackT = -1;
+          }
+          // Fehlalarm
+          nextAlarm -= dt;
+          if (nextAlarm <= 0) { alarm = { k: alarmLamps[Math.floor(Math.random() * alarmLamps.length)], t: 1.3 }; nextAlarm = 4 + Math.random() * 5; }
+          if (alarm) { alarm.t -= dt; if (alarm.t <= 0) alarm = null; }
+        },
+        lamps: (L) => { if (alarm && L[alarm.k] && !this.svg.classList.contains('off')) L[alarm.k].classList.add('on'); },
+        off: () => { this._invert = false; this.svg.style.transform = ''; } };
+    }
+
+    /** Maibaum: je ein Maibaum links und rechts mit flatternden Bändern, Bienen summen umher, Blüten und Blätter fallen */
+    _buildMaibaum() {
+      const layer = el('g', { class: 'maibaum', 'pointer-events': 'none' }, this.svg);
+      const rnd = this._rnd(20260501);
+      const rib = ['#3a8bd6', '#ffffff', '#e8433b', '#ffd23a', '#37b34a', '#ff8fc4', '#ff9a4d'];
+      const ribbons = [];
+      [-12, 1612].forEach((cx) => {
+        const g = el('g', null, layer);
+        el('ellipse', { cx, cy: 706, rx: 34, ry: 9, fill: '#3b8f3a' }, g);
+        el('rect', { x: cx - 4.5, y: 232, width: 9, height: 476, fill: '#f6f6f6', stroke: '#0003', 'stroke-width': 1 }, g);
+        for (let y = 708; y > 244; y -= 26) el('path', { d: 'M' + (cx - 4.5) + ' ' + y + 'L' + (cx + 4.5) + ' ' + (y - 9) + 'L' + (cx + 4.5) + ' ' + (y - 21) + 'L' + (cx - 4.5) + ' ' + (y - 12) + 'Z', fill: '#3a8bd6' }, g);
+        el('circle', { cx, cy: 234, r: 15, fill: 'none', stroke: '#3da04a', 'stroke-width': 7 }, g);
+        for (let k = 0; k < 9; k++) { const a = k * 0.698; el('circle', { cx: cx + Math.cos(a) * 15, cy: 234 + Math.sin(a) * 15, r: 3.2, fill: ['#ff8fc4', '#fff', '#ffd23a'][k % 3] }, g); }
+        rib.forEach((c, i) => ribbons.push({ x0: cx + (i - 3) * 2.5, y0: 242 + i * 2, len: 110 + rnd() * 120, amp: 14 + rnd() * 14, sp: 0.9 + rnd() * 0.9, ph: rnd() * 6.28, side: cx < 800 ? 1 : -1,
+          e: el('path', { fill: 'none', stroke: c, 'stroke-width': 4.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.95 }, g) }));
+      });
+      const bees = [];
+      for (let i = 0; i < 5; i++) {
+        const g = el('g', null, layer), wings = el('g', null, g);
+        el('ellipse', { cx: -2, cy: -5, rx: 3, ry: 5, fill: '#fff', opacity: 0.6 }, wings); el('ellipse', { cx: 2, cy: -5, rx: 3, ry: 5, fill: '#fff', opacity: 0.6 }, wings);
+        el('ellipse', { rx: 4, ry: 6, fill: '#ffcf1a', stroke: '#111', 'stroke-width': 0.6 }, g);
+        el('rect', { x: -4, y: -2.5, width: 8, height: 1.8, fill: '#111' }, g); el('rect', { x: -4, y: 1.2, width: 8, height: 1.8, fill: '#111' }, g);
+        el('circle', { cy: -6.5, r: 2.4, fill: '#111' }, g);
+        bees.push({ g, wings, cx: 150 + rnd() * 1300, cy: 100 + rnd() * 500, ax: 80 + rnd() * 140, ay: 30 + rnd() * 60, w1: 0.5 + rnd() * 0.6, w2: 0.9 + rnd() * 0.8, ph: rnd() * 6.28, px: 0, py: 0 });
+      }
+      const pc = ['#ffd1e3', '#ffffff', '#ffb7d5'];
+      const fall = this._fall(layer, 38, (g, r) => {
+        const s = 0.7 + r() * 0.8, leaf = r() < 0.3;
+        el('path', { d: 'M0 0C-6 -5 -6 -12 0 -15C6 -12 6 -5 0 0Z', fill: leaf ? '#5ec24f' : pc[Math.floor(r() * pc.length)], opacity: 0.88, transform: 'scale(' + s.toFixed(2) + ')' }, g);
+        return { vy: 20 + s * 16 + r() * 12, sw: 14 + r() * 26, flip: 1 + r() * 2 };
+      });
+      let t = 0;
+      return { layer, update: (dt) => {
+        t += dt;
+        ribbons.forEach((b) => {
+          let d = 'M' + b.x0.toFixed(1) + ' ' + b.y0.toFixed(1);
+          for (let i = 1; i <= 14; i++) d += 'L' + (b.x0 + b.side * (Math.sin(i * 0.5 + t * b.sp + b.ph) * b.amp * (i / 14) + 8 * (i / 14))).toFixed(1) + ' ' + (b.y0 + i * b.len / 14).toFixed(1);
+          b.e.setAttribute('d', d);
+        });
+        bees.forEach((b) => {
+          const x = b.cx + b.ax * Math.sin(t * b.w1 + b.ph), y = b.cy + b.ay * Math.sin(t * b.w2 + b.ph * 2);
+          const h = Math.atan2(y - b.py, x - b.px) * 57.3 + 90;
+          if (b.px || b.py) b.g.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + h.toFixed(0) + ') scale(1.5)');
+          b.px = x; b.py = y;
+          b.wings.setAttribute('transform', 'scale(1 ' + (0.3 + 0.7 * Math.abs(Math.sin(t * 38 + b.ph))).toFixed(2) + ')');
+        });
+        this._fallStep(fall, dt, t);
+      } };
+    }
+
+    /** Oktoberfest: Wiesn-Raute am unteren Rand, Maßkrüge und Brezeln fliegen in hohem Bogen durchs Bild, blau-weißes Konfetti */
+    _buildOktoberfest() {
+      const layer = el('g', { class: 'oktoberfest', 'pointer-events': 'none' }, this.svg);
+      const h = 14.14;
+      let blue = '', white = '';
+      for (let a = -3; a * h < 1700; a++) for (let b = 0; b < 3; b++) {
+        if (((a + b) % 2 + 2) % 2) continue;
+        const cx = -40 + a * h, cy = 690 + b * h;
+        const d = 'M' + (cx - h).toFixed(1) + ' ' + cy.toFixed(1) + 'L' + cx.toFixed(1) + ' ' + (cy - h).toFixed(1) + 'L' + (cx + h).toFixed(1) + ' ' + cy.toFixed(1) + 'L' + cx.toFixed(1) + ' ' + (cy + h).toFixed(1) + 'Z';
+        if (((((a + b) / 2) % 2) + 2) % 2 === 0) blue += d; else white += d;
+      }
+      el('path', { d: blue, fill: '#1c78c0' }, layer); el('path', { d: white, fill: '#ffffff' }, layer);
+      const mug = (g) => {
+        el('rect', { x: -9, y: -10, width: 18, height: 23, rx: 2, fill: '#f2c14e', stroke: '#fff6', 'stroke-width': 1 }, g);
+        el('path', { d: 'M9 -6H15Q19 -6 19 -2V8Q19 12 15 12H9', fill: 'none', stroke: '#cfd3d8', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+        [[-6, -11], [0, -14], [6, -11], [-3, -10], [3, -9]].forEach((c) => el('circle', { cx: c[0], cy: c[1], r: 4.4, fill: '#fff' }, g));
+        el('rect', { x: -6.5, y: -5, width: 2.4, height: 14, rx: 1, fill: '#fff', opacity: 0.4 }, g);
+      };
+      const pretzel = (g) => {
+        el('path', { d: 'M-13 10C-23 -8 -5 -17 0 -2C5 -17 23 -8 13 10C8 15 -8 15 -13 10Z', fill: 'none', stroke: '#b5651d', 'stroke-width': 4.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M-12 9C-5 1 5 1 12 9', fill: 'none', stroke: '#b5651d', 'stroke-width': 4, 'stroke-linecap': 'round' }, g);
+        [[-9, -4], [0, -8], [9, -4], [-2, 8], [4, 9]].forEach((c) => el('circle', { cx: c[0], cy: c[1], r: 1.1, fill: '#fff' }, g));
+      };
+      const things = [];
+      for (let i = 0; i < 6; i++) {
+        const g = el('g', { display: 'none' }, layer);
+        (i % 2 ? mug : pretzel)(g);
+        things.push({ g, on: false, wait: i * 1.4 + Math.random(), x: 0, y: 0, vx: 0, vy: 0, rot: 0, vr: 0 });
+      }
+      const cc = ['#1c78c0', '#ffffff', '#ffd23a'];
+      const conf = this._fall(layer, 36, (g, r) => {
+        const w = 3 + r() * 4;
+        el('rect', { x: -w / 2, y: -w * 0.8, width: w, height: w * 1.6, fill: cc[Math.floor(r() * cc.length)], opacity: 0.9 }, g);
+        return { vy: 40 + r() * 40, sw: 12 + r() * 24, flip: 2 + r() * 4, vr: (r() - 0.5) * 240 };
+      });
+      let t = 0;
+      return { layer, update: (dt) => {
+        t += dt;
+        things.forEach((o) => {
+          if (!o.on) {
+            o.wait -= dt;
+            if (o.wait > 0) return;
+            const left = Math.random() < 0.5;
+            Object.assign(o, { on: true, x: left ? -60 : 1700, y: 220 + Math.random() * 380, vx: (left ? 1 : -1) * (150 + Math.random() * 110), vy: -(240 + Math.random() * 170), rot: 0, vr: (Math.random() < 0.5 ? -1 : 1) * (120 + Math.random() * 180) });
+            o.g.setAttribute('display', 'inline');
+          }
+          o.vy += 330 * dt; o.x += o.vx * dt; o.y += o.vy * dt; o.rot += o.vr * dt;
+          if (o.y > 790 || o.x < -120 || o.x > 1760) { o.on = false; o.wait = 1 + Math.random() * 3.5; o.g.setAttribute('display', 'none'); return; }
+          o.g.setAttribute('transform', 'translate(' + o.x.toFixed(1) + ' ' + o.y.toFixed(1) + ') rotate(' + o.rot.toFixed(0) + ') scale(1.7)');
+        });
+        this._fallStep(conf, dt, t);
+      } };
+    }
+
+    /** Halloween: Fledermäuse, Spinnweben in den Ecken, eine Spinne am Faden, Nebel, flackernde Kürbisse, ab und zu ein Blitz */
+    _buildHalloween() {
+      const layer = el('g', { class: 'halloween', 'pointer-events': 'none' }, this.svg);
+      // Spinnweben in den oberen Ecken
+      const web = (x0, y0, sx) => {
+        let d = '';
+        const rays = [0, 18, 36, 54, 72, 90].map((a) => a / 57.3);
+        rays.forEach((a) => { d += 'M' + x0 + ' ' + y0 + 'L' + (x0 + sx * Math.cos(a) * 230).toFixed(1) + ' ' + (y0 + Math.sin(a) * 230).toFixed(1); });
+        [55, 100, 145, 190, 228].forEach((r) => {
+          for (let i = 0; i < rays.length - 1; i++) {
+            const a = rays[i], b = rays[i + 1], m = (a + b) / 2;
+            d += 'M' + (x0 + sx * Math.cos(a) * r).toFixed(1) + ' ' + (y0 + Math.sin(a) * r).toFixed(1)
+              + 'Q' + (x0 + sx * Math.cos(m) * r * 0.9).toFixed(1) + ' ' + (y0 + Math.sin(m) * r * 0.9).toFixed(1)
+              + ' ' + (x0 + sx * Math.cos(b) * r).toFixed(1) + ' ' + (y0 + Math.sin(b) * r).toFixed(1);
+          }
+        });
+        el('path', { d, fill: 'none', stroke: '#e8e8f0', 'stroke-width': 1.1, opacity: 0.55 }, layer);
+      };
+      web(-40, -90, 1); web(1640, -90, -1);
+      // Nebel
+      const fog = [], fg = el('g', null, layer);
+      for (let i = 0; i < 6; i++) fog.push({ e: el('ellipse', { rx: 260, ry: 40, fill: this._glow('#cdd6e6'), opacity: 0.35 }, fg), x: i * 300 - 100, y: 650 + (i % 3) * 22, v: 12 + Math.random() * 14 });
+      // Kürbisse
+      const pumps = [];
+      [[70, 1.1], [165, 0.8], [1530, 1.1], [1435, 0.8]].forEach((p, i) => {
+        const g = el('g', { transform: 'translate(' + p[0] + ' 684) scale(' + p[1] + ')' }, layer);
+        const glow = el('circle', { r: 70, fill: this._glow('#ff9a2a'), opacity: 0.5 }, g);
+        el('ellipse', { rx: 26, ry: 21, fill: '#ff7a1a', stroke: '#7a2e00', 'stroke-width': 2 }, g);
+        el('ellipse', { rx: 15, ry: 21, fill: '#ff9433', stroke: '#7a2e00', 'stroke-width': 1.2 }, g);
+        el('ellipse', { rx: 6, ry: 21, fill: '#ffab4d', stroke: '#7a2e00', 'stroke-width': 1 }, g);
+        el('path', { d: 'M-3 -19Q-3 -29 4 -31Q4 -24 3 -19Z', fill: '#3d7a2a', stroke: '#1d3d12', 'stroke-width': 1 }, g);
+        const face = 'M-14 -6L-6 -6L-10 -13ZM6 -6L14 -6L10 -13ZM-2 0L2 0L0 -4ZM-15 5L-10 8L-6 5L-2 9L2 5L6 8L10 5L15 6L12 13Q0 18 -12 13Z';
+        el('path', { d: face, fill: '#2a1000' }, g);
+        const lit = el('path', { d: face, fill: '#ffe27a' }, g);
+        pumps.push({ glow, lit, ph: i * 1.7 });
+      });
+      // Fledermäuse
+      const bats = [];
+      for (let i = 0; i < 5; i++) {
+        const g = el('g', null, layer), wings = el('g', null, g);
+        const wing = 'M0 0C-6 -9 -18 -12 -28 -4C-23 -4 -19 0 -15 6C-12 1 -6 2 0 5Z';
+        el('path', { d: wing, fill: '#2b1b3a', stroke: '#8a6ab0', 'stroke-width': 1 }, wings);
+        el('path', { d: wing, fill: '#2b1b3a', stroke: '#8a6ab0', 'stroke-width': 1, transform: 'scale(-1 1)' }, wings);
+        el('ellipse', { rx: 4.5, ry: 6.5, fill: '#2b1b3a', stroke: '#8a6ab0', 'stroke-width': 1 }, g);
+        el('path', { d: 'M-4 -5L-5 -11L-1 -7ZM4 -5L5 -11L1 -7Z', fill: '#2b1b3a', stroke: '#8a6ab0', 'stroke-width': 0.8 }, g);
+        el('circle', { cx: -1.8, cy: -3, r: 0.9, fill: '#ff3b3b' }, g); el('circle', { cx: 1.8, cy: -3, r: 0.9, fill: '#ff3b3b' }, g);
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        bats.push({ g, wings, x: Math.random() * 1700 - 50, by: 60 + Math.random() * 480, v: dir * (90 + Math.random() * 60), ph: Math.random() * 6.28, sc: 1 + Math.random() * 0.6 });
+      }
+      // Spinne am Faden
+      const sp = el('g', null, layer), thread = el('line', { x1: 430, y1: -90, x2: 430, y2: 0, stroke: '#e8e8f0', 'stroke-width': 1, opacity: 0.7 }, sp);
+      const spider = el('g', null, sp);
+      el('circle', { cy: 8, r: 7, fill: '#1c1426', stroke: '#8a6ab0', 'stroke-width': 1 }, spider);
+      el('circle', { r: 4.5, fill: '#1c1426', stroke: '#8a6ab0', 'stroke-width': 1 }, spider);
+      el('path', { d: 'M-5 6L-14 -2L-17 6M-6 9L-17 8L-15 17M5 6L14 -2L17 6M6 9L17 8L15 17M-4 11L-10 20M4 11L10 20', stroke: '#1c1426', 'stroke-width': 1.6, fill: 'none' }, spider);
+      el('circle', { cx: -1.8, cy: -1, r: 1, fill: '#ff3b3b' }, spider); el('circle', { cx: 1.8, cy: -1, r: 1, fill: '#ff3b3b' }, spider);
+      // Blitz
+      const flash = el('rect', { x: -40, y: -90, width: 1680, height: 800, fill: '#dfe6ff', opacity: 0 }, layer);
+      let t = 0, flT = -1, nextFlash = 14;
+      return { layer, update: (dt) => {
+        t += dt;
+        fog.forEach((f) => { f.x += f.v * dt; if (f.x > 1750) f.x = -320; f.e.setAttribute('cx', f.x.toFixed(1)); f.e.setAttribute('cy', f.y); });
+        pumps.forEach((p) => {
+          const k = 0.7 + 0.3 * Math.sin(t * 11 + p.ph) * Math.sin(t * 5.3 + p.ph * 2);
+          p.lit.setAttribute('opacity', k.toFixed(2)); p.glow.setAttribute('opacity', (0.35 + 0.3 * k).toFixed(2));
+        });
+        bats.forEach((b) => {
+          b.x += b.v * dt;
+          if (b.x > 1750 || b.x < -120) { b.x = b.v > 0 ? -90 : 1720; b.by = 60 + Math.random() * 480; }
+          const y = b.by + 40 * Math.sin(t * 2 + b.ph) + 14 * Math.sin(t * 5.1 + b.ph * 3);
+          b.g.setAttribute('transform', 'translate(' + b.x.toFixed(1) + ' ' + y.toFixed(1) + ') scale(' + (b.v > 0 ? b.sc : -b.sc).toFixed(2) + ' ' + b.sc.toFixed(2) + ') rotate(' + (8 * Math.sin(t * 2 + b.ph)).toFixed(0) + ')');
+          b.wings.setAttribute('transform', 'scale(1 ' + (0.2 + 0.8 * Math.abs(Math.sin(t * 9 + b.ph))).toFixed(2) + ')');
+        });
+        const sy = 60 + 60 * (0.5 + 0.5 * Math.sin(t * 0.55));
+        thread.setAttribute('y2', (sy + 6).toFixed(1)); spider.setAttribute('transform', 'translate(430 ' + sy.toFixed(1) + ') scale(1.2)');
+        nextFlash -= dt;
+        if (nextFlash <= 0) { flT = 0; nextFlash = 22 + Math.random() * 18; }
+        if (flT >= 0) {
+          flT += dt;
+          flash.setAttribute('opacity', (flT < 0.08 ? 0.3 : flT < 0.16 ? 0 : flT < 0.3 ? 0.18 : 0).toFixed(2));
+          if (flT > 0.3) flT = -1;
+        }
+      } };
+    }
+
     _buildXmas() {
       const layer = this.xmasLayer = el('g', { class: 'xmas', 'pointer-events': 'none', display: 'none' }, this.svg);
       const colors = ['#ff3b30', '#ffd23a', '#37d65a', '#3d8bff', '#ffe6b0'];
@@ -989,5 +1346,6 @@
     }
   }
 
+  E46Cluster.seasonForDate = seasonForDate;
   global.E46Cluster = E46Cluster;
 })(window);

@@ -101,6 +101,12 @@ export class SeiteComponent {
 React 19 und Vue setzen Properties von Custom Elements direkt: `<e46-jira-cluster defects={31} />` bzw. `<e46-jira-cluster :defects="31" />`
 (in Vue `compilerOptions.isCustomElement: (t) => t.startsWith('e46-')`). Für Methoden eine Referenz auf das Element holen (`ref`).
 
+### Anlässe
+
+`season="auto"` wählt beim Start den Anlass zum heutigen Datum: Karneval (Weiberfastnacht bis Aschermittwoch), Ostern (Karfreitag bis Ostermontag), 1. April,
+30. April und 1. Mai (Maibaum), 20. September bis 4. Oktober (Oktoberfest), 31. Oktober (Halloween), 1. bis 26. Dezember (Weihnachten), 31. Dezember und 1. Januar (Silvester).
+An allen anderen Tagen bleibt das Kombi normal. Ein Anlass lässt sich auch von Hand setzen: `kombi.season = 'halloween'` oder `SET season halloween`.
+
 ## Von außen ansteuern
 
 | Weg | Beispiel |
@@ -142,6 +148,12 @@ Attribut leer, `true`, `1` = an, `false`, `0` = aus.
 | `xmas` | bool | Weihnachtsmodus: blinkende Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall |
 | `easter` | bool | Ostermodus: Frühlingswiese unten mit Blumen und versteckten Eiern, hüpfender Osterhase, Schmetterlinge, fallende Blütenblätter, Osterhase-Symbol statt Batterieleuchte |
 | `nye` | bool | Silvestermodus: funkelnde Sterne an der Schnur, Konfetti, kräftiges Feuerwerk mit Finale, Sektglas statt Batterieleuchte |
+| `karneval` | bool | Karneval: Luftschlangen am Rand, aufsteigende Luftballons, Konfetti, die Leuchten blinken im Takt, Narrenkappe statt Batterieleuchte |
+| `aprilscherz` | bool | Aprilscherz: die Zeiger fahren zeitweise rückwärts, das Kombi steht kurz auf dem Kopf, Leuchten schlagen Fehlalarm, eine Fliege krabbelt über das Glas, ab und zu ein Sprung im Glas, Clown statt Batterieleuchte |
+| `maibaum` | bool | Maibaum: je ein Maibaum links und rechts mit flatternden Bändern, Bienen, fallende Blüten, Maibaum-Symbol statt Batterieleuchte |
+| `oktoberfest` | bool | Oktoberfest: Wiesn-Raute unten, fliegende Maßkrüge und Brezeln, blau-weißes Konfetti, Maßkrug statt Batterieleuchte |
+| `halloween` | bool | Halloween: Fledermäuse, Spinnweben, Spinne am Faden, Nebel, flackernde Kürbisse, ab und zu ein Blitz, Kürbis statt Batterieleuchte |
+| `season` | Text | aktiver Anlass: `xmas`, `easter`, `nye`, `karneval`, `aprilscherz`, `maibaum`, `oktoberfest`, `halloween` oder leer. Setzen mit einem Namen, `auto` (wählt nach dem heutigen Datum den passenden Anlass, sonst keinen) oder `off`. Es ist immer nur ein Anlass aktiv |
 | `demo` | bool | Demo: überschreibt defects, nightrun, sprint, success, closed |
 | `odometer`, `trip`, `clock` | Zahl, Zahl, `HH:MM` oder `auto` | Mittendisplay |
 | `selftest="false"` | | kein Selbsttest beim Start |
@@ -161,7 +173,7 @@ Zeile wirkt ganz oder gar nicht, die Antworten sind wie beim ESP32.
 | `SELFTEST`, `RESET`, `PING`, `HELP` | Selbsttest, Standardwerte, Lebenszeichen, Schlüsselliste | `OK`, `OK`, `PONG …`, `HELP …` |
 
 Schlüssel: `defects nightrun sprint success closed ign mil cruise oilwarn battery oilpress lab arrk tt door_dev door_test door_stage door_prod defect nr left right hazard night dim
-demo chaos xmas easter nye odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
+demo chaos season xmas easter nye karneval aprilscherz maibaum oktoberfest halloween odo trip clock`. Beispiel: `SET defects 23 nightrun 7 sprint 0.6`.
 
 Die Schlüssel `rpm`, `speed`, `coolant`, `oil`, `overheat` und `eml` des Original-Widgets gibt es hier nicht.
 

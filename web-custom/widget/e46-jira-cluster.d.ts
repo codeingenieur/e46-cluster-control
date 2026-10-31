@@ -9,6 +9,8 @@ export interface E46JiraClusterState {
   /** Defects closed/Day, 0 bis 20 */ closed: number;
   dim: number;
   ignition: boolean; night: boolean; demo: boolean; chaos: boolean; xmas: boolean; easter: boolean; nye: boolean;
+  karneval: boolean; aprilscherz: boolean; maibaum: boolean; oktoberfest: boolean; halloween: boolean;
+  /** Name des aktiven Anlasses, '' = keiner */ season: string;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   arrk: boolean; tt: boolean;
   door_dev: boolean; door_test: boolean; door_stage: boolean; door_prod: boolean;
@@ -31,6 +33,12 @@ export declare class E46JiraClusterElement extends HTMLElement {
   /** Weihnachtsmodus: Lichterkette an der Außenkante, Tannenbaum statt Batterieleuchte, Schneefall */ xmas: boolean;
   /** Ostermodus: Frühlingswiese unten mit Blumen und versteckten Eiern, hüpfender Osterhase, Schmetterlinge, fallende Blütenblätter, Osterhase-Symbol statt Batterieleuchte. Schaltet xmas und nye aus */ easter: boolean;
   /** Silvestermodus: funkelnde Sterne, Konfetti, Feuerwerk, Sektglas statt Batterieleuchte. Schaltet xmas und easter aus */ nye: boolean;
+  /** Karneval: Luftschlangen, Luftballons, Konfetti, Leuchten blinken im Takt */ karneval: boolean;
+  /** Aprilscherz: Zeiger zeitweise rückwärts, Kombi kurz auf dem Kopf, Fehlalarme, Fliege und Sprung im Glas */ aprilscherz: boolean;
+  /** Maibaum: je ein Maibaum links und rechts mit Bändern, Bienen, Blüten */ maibaum: boolean;
+  /** Oktoberfest: Wiesn-Raute, fliegende Maßkrüge und Brezeln, blau-weißes Konfetti */ oktoberfest: boolean;
+  /** Halloween: Fledermäuse, Spinnweben, Spinne, Nebel, flackernde Kürbisse, Blitz */ halloween: boolean;
+  /** Aktiver Anlass: 'xmas', 'easter', 'nye', 'karneval', 'aprilscherz', 'maibaum', 'oktoberfest', 'halloween' oder ''. Setzen mit einem Namen, 'auto' (nach dem heutigen Datum, '' wenn keiner) oder ''. Immer nur einer aktiv */ season: string;
   /** Demo: überschreibt defects, nightrun, sprint, success, closed */ demo: boolean;
   mil: boolean; lab: boolean; cruise: boolean; oilwarn: boolean; battery: boolean; oilpress: boolean;
   /** arrk-Logo (blau) und TT-Logo (orange), nur Anzeige */ arrk: boolean; tt: boolean;

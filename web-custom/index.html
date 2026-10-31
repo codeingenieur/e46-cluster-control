@@ -32,14 +32,27 @@
         <button class="chip" type="button" id="b-ign" aria-pressed="true">Zündung</button>
         <button class="chip" type="button" id="b-night" aria-pressed="false">Nachtlicht</button>
         <button class="chip" type="button" id="b-chaos" aria-pressed="false">Chaosmodus</button>
-        <button class="chip" type="button" id="b-xmas" aria-pressed="false">Weihnachtsmodus</button>
-        <button class="chip" type="button" id="b-easter" aria-pressed="false">Ostermodus</button>
-        <button class="chip" type="button" id="b-nye" aria-pressed="false">Silvestermodus</button>
       </div>
       <div class="row">
         <label for="s-dim">Helligkeit</label>
         <input type="range" id="s-dim" min="0" max="1" step="0.01" value="0.85">
       </div>
+    </div>
+
+    <div class="card">
+      <h2>Anlass</h2>
+      <div class="chips" id="seasons">
+        <button class="chip" type="button" id="b-xmas" aria-pressed="false">Weihnachten</button>
+        <button class="chip" type="button" id="b-easter" aria-pressed="false">Ostern</button>
+        <button class="chip" type="button" id="b-nye" aria-pressed="false">Silvester</button>
+        <button class="chip" type="button" id="b-karneval" aria-pressed="false">Karneval</button>
+        <button class="chip" type="button" id="b-aprilscherz" aria-pressed="false">Aprilscherz</button>
+        <button class="chip" type="button" id="b-maibaum" aria-pressed="false">Maibaum</button>
+        <button class="chip" type="button" id="b-oktoberfest" aria-pressed="false">Oktoberfest</button>
+        <button class="chip" type="button" id="b-halloween" aria-pressed="false">Halloween</button>
+        <button class="chip" type="button" id="b-auto" aria-pressed="false">Nach Datum</button>
+      </div>
+      <p class="hint" id="season-hint">Immer nur ein Anlass, ein zweiter Klick schaltet ihn aus. „Nach Datum“ wählt den Anlass von heute.</p>
     </div>
 
     <div class="card">

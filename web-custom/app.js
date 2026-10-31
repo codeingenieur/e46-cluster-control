@@ -60,12 +60,22 @@
   toggle($('#b-night'), (on) => cluster.setLight({ night: on }));
   toggle($('#b-chaos'), (on) => { state.chaos = on; });
   // Weihnachten, Ostern, Silvester: immer nur einer, ein zweiter Klick auf denselben schaltet ihn aus
-  const SEASON_BTNS = { 'b-xmas': 'xmas', 'b-easter': 'easter', 'b-nye': 'nye' };
+  const SEASON_BTNS = { 'b-xmas': 'xmas', 'b-easter': 'easter', 'b-nye': 'nye', 'b-karneval': 'karneval', 'b-aprilscherz': 'aprilscherz',
+    'b-maibaum': 'maibaum', 'b-oktoberfest': 'oktoberfest', 'b-halloween': 'halloween' };
+  function showSeason(name, auto) {
+    Object.keys(SEASON_BTNS).forEach((o) => $('#' + o).setAttribute('aria-pressed', String(SEASON_BTNS[o] === name)));
+    $('#b-auto').setAttribute('aria-pressed', String(!!auto));
+    cluster.setSeason(name);
+  }
   Object.keys(SEASON_BTNS).forEach((id) => $('#' + id).addEventListener('click', () => {
-    const on = $('#' + id).getAttribute('aria-pressed') !== 'true';
-    Object.keys(SEASON_BTNS).forEach((o) => $('#' + o).setAttribute('aria-pressed', String(on && o === id)));
-    cluster.setSeason(on ? SEASON_BTNS[id] : '');
+    showSeason($('#' + id).getAttribute('aria-pressed') !== 'true' ? SEASON_BTNS[id] : '', false);
   }));
+  $('#b-auto').addEventListener('click', () => {
+    const on = $('#b-auto').getAttribute('aria-pressed') !== 'true';
+    const name = on ? E46Cluster.seasonForDate(new Date()) : '';
+    showSeason(name, on && !!name);
+    $('#season-hint').textContent = on && !name ? 'Heute ist kein Anlass.' : 'Immer nur ein Anlass, ein zweiter Klick schaltet ihn aus. „Nach Datum“ wählt den Anlass von heute.';
+  });
   $('#s-dim').addEventListener('input', (e) => cluster.setLight({ dim: Number(e.target.value) }));
   document.querySelectorAll('#lamps [data-lamp]').forEach((b) => toggle(b, (on) => { state[b.dataset.lamp] = on; }));
   document.querySelectorAll('#turn [data-turn]').forEach((b) => toggle(b, (on) => { state.turn[b.dataset.turn] = on; }));
