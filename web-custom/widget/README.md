@@ -104,7 +104,7 @@ React 19 und Vue setzen Properties von Custom Elements direkt: `<e46-jira-cluste
 ### Anlässe
 
 `season="auto"` wählt beim Start den Anlass zum heutigen Datum: Karneval (Weiberfastnacht bis Aschermittwoch), Ostern (Karfreitag bis Ostermontag), 1. April,
-30. April und 1. Mai (Maibaum), 20. September bis 4. Oktober (Oktoberfest), 31. Oktober (Halloween), 1. bis 26. Dezember (Weihnachten), 31. Dezember und 1. Januar (Silvester).
+28. April bis 1. Mai (Maibaum), 13. September bis 4. Oktober (Oktoberfest), 31. Oktober (Halloween), 1. bis 26. Dezember (Weihnachten), 27. Dezember bis 2. Januar (Silvester).
 An allen anderen Tagen bleibt das Kombi normal. Ein Anlass lässt sich auch von Hand setzen: `kombi.season = 'halloween'` oder `SET season halloween`.
 
 ## Von außen ansteuern

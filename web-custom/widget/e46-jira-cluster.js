@@ -173,11 +173,12 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
     if (k >= e - 52 && k <= e - 46) return 'karneval';      // Weiberfastnacht bis Aschermittwoch
     if (k >= e - 2 && k <= e + 1) return 'easter';          // Karfreitag bis Ostermontag
     if (m === 4 && day === 1) return 'aprilscherz';
-    if ((m === 4 && day === 30) || (m === 5 && day === 1)) return 'maibaum';
-    if ((m === 9 && day >= 20) || (m === 10 && day <= 4)) return 'oktoberfest';
+    if ((m === 4 && day >= 28) || (m === 5 && day === 1)) return 'maibaum';
+    if ((m === 9 && day >= 13) || (m === 10 && day <= 4)) return 'oktoberfest';
     if (m === 10 && day === 31) return 'halloween';
     if (m === 12 && day <= 26) return 'xmas';
-    if ((m === 12 && day === 31) || (m === 1 && day === 1)) return 'nye';
+    if (m === 12 && day >= 27) return 'nye';
+    if (m === 1 && day <= 2) return 'nye';
     return '';
   }
 
