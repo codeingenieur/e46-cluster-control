@@ -807,7 +807,7 @@
           for (let k = 0; k < 14; k++) { const a = Math.random() * 6.28, r = 40 + Math.random() * 110; later.push({ t: 0.5 + Math.random() * 0.7, x: x + Math.cos(a) * r, y: y + Math.sin(a) * r }); }
         }
       };
-      let rockets = [], next = 0.3, finale = 11, queue = [], t = 0;
+      let rockets = [], next = 0.3, finale = 20, queue = [], t = 0;
       const launch = () => rockets.push({ x: -20 + Math.random() * 1640, y: 720, vx: (Math.random() - 0.5) * 60, vy: -(460 + Math.random() * 200), ty: -50 + Math.random() * 320, col: pick() });
       return { layer, update: (dt) => {
         t += dt;
@@ -817,8 +817,8 @@
 
         // Starts: dichte Folge, manchmal Doppelstart, alle ~9 s ein Finale mit einer ganzen Salve
         next -= dt; finale -= dt;
-        if (next <= 0) { launch(); if (Math.random() < 0.18) launch(); next = 0.5 + Math.random() * 0.9; }
-        if (finale <= 0) { for (let i = 0; i < 7; i++) queue.push(i * 0.2); finale = 14 + Math.random() * 4; }
+        if (next <= 0) { launch(); if (Math.random() < 0.08) launch(); next = 1.3 + Math.random() * 1.7; }
+        if (finale <= 0) { for (let i = 0; i < 5; i++) queue.push(i * 0.3); finale = 26 + Math.random() * 8; }
         queue = queue.map((q) => q - dt).filter((q) => { if (q <= 0) { launch(); return false; } return true; });
         rockets = rockets.filter((r) => {
           r.x += r.vx * dt; r.y += r.vy * dt;
