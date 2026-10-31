@@ -748,7 +748,7 @@
       } };
     }
 
-    /** Silvester: funkelnde Sterne an der Schnur, Konfetti und ein kräftiges Feuerwerk (Kugeln, Ringe, Trauerweiden, Knistern, Finale) */
+    /** Silvester: funkelnde Sterne an der Schnur, Konfetti und ein kräftiges Feuerwerk (Kugeln, Trauerweiden, Knistern, Finale) */
     _buildNye() {
       const layer = el('g', { class: 'nye', 'pointer-events': 'none' }, this.svg);
       const rnd = this._rnd(20261231);
@@ -795,14 +795,10 @@
       const burst = (x, y) => {
         flash(x, y, '#ffe2b0', 85, 0.3);
         const kind = Math.random(), a0 = Math.random() * 6.28, A = (i, n) => a0 + (i / n) * 6.2832 + Math.random() * 0.06;
-        if (kind < 0.34) {   // Kugel
+        if (kind < 0.45) {   // Kugel
           const pal = [pick(), pick()], n = 80 + Math.floor(Math.random() * 40), sp = 150 + Math.random() * 130;
           for (let i = 0; i < n; i++) { const a = A(i, n), v = sp * (0.3 + Math.random() * 0.7); spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 1.1 + Math.random() * 0.8, pal[i % 2], 2.8); }
-        } else if (kind < 0.55) {   // zwei Ringe
-          const c1 = pick(), c2 = pick(), sp = 200 + Math.random() * 90;
-          for (let i = 0; i < 60; i++) { const a = A(i, 60); spawn(x, y, Math.cos(a) * sp, Math.sin(a) * sp, 1.3, c1, 3); }
-          for (let i = 0; i < 36; i++) { const a = A(i, 36); spawn(x, y, Math.cos(a) * sp * 0.55, Math.sin(a) * sp * 0.55, 1.1, c2, 2.6); }
-        } else if (kind < 0.78) {   // Trauerweide: langsame, goldene Funken mit Schweif
+        } else if (kind < 0.75) {   // Trauerweide: langsame, goldene Funken mit Schweif
           const n = 70;
           for (let i = 0; i < n; i++) { const a = A(i, n), v = 90 + Math.random() * 120; spawn(x, y, Math.cos(a) * v, Math.sin(a) * v, 2.4 + Math.random() * 0.8, '#ffcf6a', 2.4, { g: 190, drag: 1.9, trail: true }); }
         } else {   // Knistern: Kugel, aus der nach kurzer Zeit kleine weiße Explosionen kommen
@@ -811,7 +807,7 @@
           for (let k = 0; k < 14; k++) { const a = Math.random() * 6.28, r = 40 + Math.random() * 110; later.push({ t: 0.5 + Math.random() * 0.7, x: x + Math.cos(a) * r, y: y + Math.sin(a) * r }); }
         }
       };
-      let rockets = [], next = 0.3, finale = 7, queue = [], t = 0;
+      let rockets = [], next = 0.3, finale = 11, queue = [], t = 0;
       const launch = () => rockets.push({ x: -20 + Math.random() * 1640, y: 720, vx: (Math.random() - 0.5) * 60, vy: -(460 + Math.random() * 200), ty: -50 + Math.random() * 320, col: pick() });
       return { layer, update: (dt) => {
         t += dt;
@@ -821,8 +817,8 @@
 
         // Starts: dichte Folge, manchmal Doppelstart, alle ~9 s ein Finale mit einer ganzen Salve
         next -= dt; finale -= dt;
-        if (next <= 0) { launch(); if (Math.random() < 0.35) launch(); next = 0.18 + Math.random() * 0.5; }
-        if (finale <= 0) { for (let i = 0; i < 10; i++) queue.push(i * 0.14); finale = 9 + Math.random() * 3; }
+        if (next <= 0) { launch(); if (Math.random() < 0.18) launch(); next = 0.5 + Math.random() * 0.9; }
+        if (finale <= 0) { for (let i = 0; i < 7; i++) queue.push(i * 0.2); finale = 14 + Math.random() * 4; }
         queue = queue.map((q) => q - dt).filter((q) => { if (q <= 0) { launch(); return false; } return true; });
         rockets = rockets.filter((r) => {
           r.x += r.vx * dt; r.y += r.vy * dt;
