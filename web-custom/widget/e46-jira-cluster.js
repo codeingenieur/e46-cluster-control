@@ -776,7 +776,7 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
       // Aufblitzen beim Platzen: weiche Lichtflecken, die schnell verblassen
       const flashes = [];
       const flashG = el('g', null, layer);
-      for (let i = 0; i < 8; i++) flashes.push({ c: el('circle', { r: 150, fill: this._glow('#ffffff'), display: 'none' }, flashG), on: false, life: 0 });
+      for (let i = 0; i < 10; i++) flashes.push({ c: el('circle', { r: 80, display: 'none' }, flashG), on: false, life: 0, max: 0.25, peak: 0.3 });
 
       // Funken: fester Vorrat, wiederverwendet
       const POOL = 1200, fx = el('g', null, layer), sparks = [];
@@ -792,15 +792,16 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
           return;
         }
       };
-      const flash = (x, y) => {
+      const flash = (x, y, color, rad, peak) => {
         const f = flashes.find((q) => !q.on);
         if (!f) return;
-        f.on = true; f.life = 0.35; f.c.setAttribute('cx', x.toFixed(0)); f.c.setAttribute('cy', y.toFixed(0)); f.c.setAttribute('display', 'inline');
+        f.on = true; f.life = f.max = 0.25; f.peak = peak;
+        f.c.setAttribute('cx', x.toFixed(0)); f.c.setAttribute('cy', y.toFixed(0)); f.c.setAttribute('r', rad); f.c.setAttribute('fill', this._glow(color)); f.c.setAttribute('display', 'inline');
       };
       const pick = () => cols[Math.floor(Math.random() * cols.length)];
       const later = [];   // zeitversetzte Sekundärexplosionen
       const burst = (x, y) => {
-        flash(x, y);
+        flash(x, y, '#ffe2b0', 85, 0.3);
         const kind = Math.random(), a0 = Math.random() * 6.28, A = (i, n) => a0 + (i / n) * 6.2832 + Math.random() * 0.06;
         if (kind < 0.34) {   // Kugel
           const pal = [pick(), pick()], n = 80 + Math.floor(Math.random() * 40), sp = 150 + Math.random() * 130;
@@ -842,14 +843,15 @@ window.E46_GRAIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
           later[i].t -= dt;
           if (later[i].t > 0) continue;
           const q = later.splice(i, 1)[0];
-          flash(q.x, q.y);
-          for (let k = 0; k < 12; k++) { const a = Math.random() * 6.28, v = 40 + Math.random() * 70; spawn(q.x, q.y, Math.cos(a) * v, Math.sin(a) * v, 0.5 + Math.random() * 0.3, '#ffffff', 2); }
+          // kleine Knisterexplosion: ein feiner Funkenstern statt eines Lichtkreises
+          flash(q.x, q.y, '#ffd98a', 26, 0.45);
+          for (let k = 0; k < 24; k++) { const a = Math.random() * 6.28, v = 50 + Math.random() * 90; spawn(q.x, q.y, Math.cos(a) * v, Math.sin(a) * v, 0.6 + Math.random() * 0.5, k % 3 ? '#fff4d6' : '#ffc94a', 2.2); }
         }
         flashes.forEach((f) => {
           if (!f.on) return;
           f.life -= dt;
           if (f.life <= 0) { f.on = false; f.c.setAttribute('display', 'none'); return; }
-          f.c.setAttribute('opacity', (f.life / 0.35).toFixed(2));
+          f.c.setAttribute('opacity', (f.peak * f.life / f.max).toFixed(2));
         });
         sparks.forEach((s) => {
           if (!s.on) return;
