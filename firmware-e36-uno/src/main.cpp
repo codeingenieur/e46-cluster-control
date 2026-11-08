@@ -55,7 +55,9 @@ struct State {
 };
 
 struct Config {
-  float rpmPpr = 2.0f;    // Impulse je Umdrehung (Vierzylinder, Annahme)
+  float rpmPpr = 1.935f;  // Impulse je Umdrehung (Vierzylinder 2, am Kombi um ca. 3 % korrigiert, am eigenen Kombi abgeglichen)
+  float rpmC[7] = {137, 95, 95, 85, 68, 80, 35};  // Werte am eigenen Kombi abgeglichen. Korrektur in U/min, die bei 1000..6000 und 6500 U/min zum Sollwert addiert wird,
+                          // dazwischen linear, bei 0 keine Korrektur, ueber 6500 gleichbleibend. Positiv = Nadel steht sonst zu tief.
   float speedHz = 1.0f;   // Hz je km/h (Platzhalter, muss kalibriert werden)
   float coolC0 = 40.0f;   // Temperatur, bei der die Duty d0 gilt
   float coolC1 = 120.0f;  // Temperatur, bei der die Duty d1 gilt
@@ -152,7 +154,19 @@ static uint8_t mapDuty(float v, float v0, float v1, float d0, float d1) {
   return (uint8_t)(d + 0.5f);
 }
 
-static void applyRpm() { setFreqA(st.rpm * cfg.rpmPpr / 60.0f); }
+// Korrektur der Drehzahlnadel: Stuetzstellen bei 0 (0), 1000..6000 (rpmC[0..5]) und 6500 U/min (rpmC[6]), dazwischen linear.
+static float rpmCorrection(float rpm) {
+  if (!(rpm > 0)) return 0;
+  if (rpm >= 6500) return cfg.rpmC[6];
+  uint8_t i = (uint8_t)(rpm / 1000.0f);  // Segment 0..6
+  const float x0 = i * 1000.0f;
+  const float x1 = (i < 6) ? x0 + 1000.0f : 6500.0f;
+  const float y0 = (i == 0) ? 0 : cfg.rpmC[i - 1];
+  const float y1 = cfg.rpmC[i];
+  return y0 + (y1 - y0) * (rpm - x0) / (x1 - x0);
+}
+
+static void applyRpm() { setFreqA((st.rpm + rpmCorrection(st.rpm)) * cfg.rpmPpr / 60.0f); }
 static void applySpeed() { setFreqB(st.speed * cfg.speedHz); }
 static void applyPwm() {
   analogWrite(PIN_COOLANT, st.coolDuty);
@@ -204,6 +218,7 @@ static bool setKey(const char* k, float x) {
 
 static bool cfgKey(const char* k, float x) {
   if (!strcasecmp(k, "rpm_ppr")) cfg.rpmPpr = x;
+  else if (!strncasecmp(k, "rpm_c", 5) && k[5] >= '1' && k[5] <= '7' && k[6] == '\0') cfg.rpmC[k[5] - '1'] = x;
   else if (!strcasecmp(k, "speed_hz")) cfg.speedHz = x;
   else if (!strcasecmp(k, "cool_c0")) cfg.coolC0 = x;
   else if (!strcasecmp(k, "cool_c1")) cfg.coolC1 = x;
@@ -273,6 +288,12 @@ static void cmdCfg(char** t, int n) {
   if (n == 0) {
     Serial.print(F("CFG rpm_ppr="));
     Serial.print(cfg.rpmPpr, 3);
+    for (uint8_t i = 0; i < 7; i++) {
+      Serial.print(F(" rpm_c"));
+      Serial.print(i + 1);
+      Serial.print('=');
+      Serial.print(cfg.rpmC[i], 0);
+    }
     Serial.print(F(" speed_hz="));
     Serial.print(cfg.speedHz, 4);
     Serial.print(F(" cool_c0="));

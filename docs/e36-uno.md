@@ -152,7 +152,8 @@ Alle Werte ändern sich per `cfg` (nur im RAM, nach Neustart wieder Standard).
 | Anzeige | Befehl | Hinweis |
 |---|---|---|
 | Drehzahl, Ruhepegel | `cfg rpm_idle=1` | Standard. Bei `rpm=0` hält der Uno den Kombi-Pin **auf Masse**. **Bestätigt:** mit `rpm_idle=0` (Pin offen) schlug die Nadel voll aus, mit `1` geht sie auf 0 |
-| Drehzahl | `cfg rpm_ppr=2` | Impulse je Umdrehung. **Bestätigt** am eigenen Kombi: bei `set rpm=3000` zeigt die Nadel auf 3 (3000 U/min). Skala bei 1000 bis 6500 per Video-Standbildern geprüft: linear, bei 1000 bis 5000 auf dem Strich, bei 6000/6500 ca. 200 U/min zu hoch (Kameraparallaxe möglich). Für einen Vierzylinder-Kombi. (3 bei Sechszylinder laut Quelle.) Stimmt die Nadel nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
+| Drehzahl | `cfg rpm_ppr=1.935` | Impulse je Umdrehung. Theoretisch 2 (Vierzylinder; 3 bei Sechszylinder laut Quelle), **am eigenen Kombi auf 1.935 abgeglichen** (mit 2 stand die Nadel oben ca. 3 % zu hoch). Stimmt die Nadel bei einem anderen Kombi nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
+| Drehzahl, Feinabgleich | `cfg rpm_c1=137 rpm_c2=95 rpm_c3=95 rpm_c4=85 rpm_c5=68 rpm_c6=80 rpm_c7=35` | Korrektur in U/min, die bei 1000, 2000, 3000, 4000, 5000, 6000 und 6500 U/min zum Sollwert addiert wird (dazwischen linear, bei 0 keine, über 6500 gleichbleibend). Positiv = Nadel steht sonst zu tief. Die Werte sind der Standard und am eigenen Kombi mit dem Auge und einer Webcam abgeglichen, die Nadel steht von 1000 bis 7000 U/min auf dem Strich. Das Kombi ist unten leicht unempfindlicher als eine reine Proportionalität. Eigene Werte: erst `rpm_ppr` für das grobe Verhältnis, dann `rpm_c1` bis `rpm_c7` einzeln. Alle Werte 0 = keine Korrektur |
 | Tacho | `cfg speed_hz=1` | Hz je km/h. **Platzhalter, Wert unbekannt** (im Netz keine Angabe zum E36 gefunden). Verfahren: `set speed=100` (= 100 Hz bei `speed_hz=1`), Nadel ablesen. Neuer Wert = 100 geteilt durch die abgelesene km/h. Beispiel: Nadel zeigt 25 → `cfg speed_hz=4` |
 | Temperatur | `set coolant_pwm=0..255` | Roh-Duty direkt setzen, Nadelstellung beobachten. Mit `cfg cool_c0=40 cool_c1=120 cool_d0=<duty> cool_d1=<duty>` festlegen, danach funktioniert `set coolant=<°C>` |
 | Tank | `set fuel_pwm=0..255` | wie Temperatur. Mit `cfg fuel_d0` (leer) und `cfg fuel_d1` (voll) festlegen, danach `set fuel=<0..100>` |
@@ -174,7 +175,7 @@ fallen lässt.
 **SET-Schlüssel:** `rpm` (U/min), `speed` (km/h), `coolant` (°C), `fuel` (0–100 %), `coolant_pwm`, `fuel_pwm` (0–255,
 Rohwert), Lampen `mil oilpress handbrake abs airbag brakefluid left right highbeam fogfront fogrear belt asc cat` (0/1).
 
-**CFG-Schlüssel:** `rpm_ppr`, `speed_hz`, `cool_c0`, `cool_c1`, `cool_d0`, `cool_d1`, `fuel_d0`, `fuel_d1`, `wdt`
+**CFG-Schlüssel:** `rpm_ppr`, `rpm_c1` bis `rpm_c7`, `rpm_idle`, `speed_idle`, `speed_hz`, `cool_c0`, `cool_c1`, `cool_d0`, `cool_d1`, `fuel_d0`, `fuel_d1`, `wdt`
 (Watchdog in ms, 0 = aus).
 
 Die Rechtecksignale sind zwischen etwa 2 Hz und 4 kHz möglich, darunter schaltet die Firmware den Ausgang ab.
