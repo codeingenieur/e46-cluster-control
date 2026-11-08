@@ -12,8 +12,9 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [x] E36: Uno geflasht und ohne Kombi getestet: USB-Protokoll, atomares `SET`, D9/D10 per LED-Blinktest bei 2 und 4 Hz bestätigt (Frequenz nur auf ca. 5 % genau, nicht gemessen)
 - [ ] E36: Frequenz von D9/D10 mit Multimeter (Frequenzbereich) oder Logikanalysator genau prüfen
 - [ ] E36: Multimeter beschaffen (Pflicht vor dem Anschluss des Kombis)
-- [x] E36: Kombi mit Versorgung und Drehzahl am Tisch in Betrieb genommen: Kombi startet, `set rpm=3000` lässt die Nadel auf 3 stehen (`rpm_ppr=2` bestätigt bei diesem einen Wert, Linearität bei 1000/5000/6500 noch offen)
-- [x] E36: Drehzahl bei `rpm=0` geklärt: Ausgang muss im Ruhezustand den Kombi-Pin auf Masse halten (`rpm_idle=1`, jetzt Standard). Skalenprüfung bei 1000/5000/6500 noch offen
+- [x] E36: Kombi mit Versorgung und Drehzahl am Tisch in Betrieb genommen: Kombi startet, `set rpm=3000` lässt die Nadel auf 3 stehen (`rpm_ppr=2` bestätigt)
+- [x] E36: Drehzahl bei `rpm=0` geklärt: Ausgang muss im Ruhezustand den Kombi-Pin auf Masse halten (`rpm_idle=1`, jetzt Standard).
+- [x] E36: Drehzahlskala per Video-Standbildern geprüft (1000 bis 6500): linear, Nadel bei 1000 bis 5000 auf dem Strich, bei 6000 und 6500 etwa 200 U/min zu hoch (ca. 3 %, mit Kameraparallaxe nicht trennbar). `rpm_ppr=2` bleibt. Feinprüfung nur mit Frontalfoto bei 6000/6500 nötig
 - [ ] E36: Tacho (schwarz 4), Temperatur (blau 18/17), Tank (schwarz 1) und Lampen anschließen und kalibrieren
 - [ ] E36: Signalwerte klären: Impulse pro Umdrehung, Wegsignal-Frequenz pro km/h, Widerstandskurven von Temperatursensor und Tankgeber
 - [ ] E36: Gegenstecker für weiß 26, blau 26 und schwarz 12 beschaffen (z. B. E36-Kabelbaum-Stecker), Bezeichnung klären

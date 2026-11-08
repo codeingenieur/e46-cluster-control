@@ -152,8 +152,8 @@ Alle Werte ändern sich per `cfg` (nur im RAM, nach Neustart wieder Standard).
 | Anzeige | Befehl | Hinweis |
 |---|---|---|
 | Drehzahl, Ruhepegel | `cfg rpm_idle=1` | Standard. Bei `rpm=0` hält der Uno den Kombi-Pin **auf Masse**. **Bestätigt:** mit `rpm_idle=0` (Pin offen) schlug die Nadel voll aus, mit `1` geht sie auf 0 |
-| Drehzahl | `cfg rpm_ppr=2` | Impulse je Umdrehung. **Bestätigt** am eigenen Kombi: bei `set rpm=3000` zeigt die Nadel auf 3 (3000 U/min). Für einen Vierzylinder-Kombi; andere Werte weiter prüfen. (3 bei Sechszylinder laut Quelle.) Stimmt die Nadel nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
-| Tacho | `cfg speed_hz=1` | Hz je km/h. **Platzhalter.** Mit `set speed=100` die Nadel auf 100 stellen und `speed_hz` so ändern, bis sie passt |
+| Drehzahl | `cfg rpm_ppr=2` | Impulse je Umdrehung. **Bestätigt** am eigenen Kombi: bei `set rpm=3000` zeigt die Nadel auf 3 (3000 U/min). Skala bei 1000 bis 6500 per Video-Standbildern geprüft: linear, bei 1000 bis 5000 auf dem Strich, bei 6000/6500 ca. 200 U/min zu hoch (Kameraparallaxe möglich). Für einen Vierzylinder-Kombi. (3 bei Sechszylinder laut Quelle.) Stimmt die Nadel nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
+| Tacho | `cfg speed_hz=1` | Hz je km/h. **Platzhalter, Wert unbekannt** (im Netz keine Angabe zum E36 gefunden). Verfahren: `set speed=100` (= 100 Hz bei `speed_hz=1`), Nadel ablesen. Neuer Wert = 100 geteilt durch die abgelesene km/h. Beispiel: Nadel zeigt 25 → `cfg speed_hz=4` |
 | Temperatur | `set coolant_pwm=0..255` | Roh-Duty direkt setzen, Nadelstellung beobachten. Mit `cfg cool_c0=40 cool_c1=120 cool_d0=<duty> cool_d1=<duty>` festlegen, danach funktioniert `set coolant=<°C>` |
 | Tank | `set fuel_pwm=0..255` | wie Temperatur. Mit `cfg fuel_d0` (leer) und `cfg fuel_d1` (voll) festlegen, danach `set fuel=<0..100>` |
 | Lampen | `set mil=1` | Annahme: Lampe leuchtet, wenn der Pin gegen Masse gezogen wird. Falls nicht, Polarität am Kombi messen |
