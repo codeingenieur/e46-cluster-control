@@ -11,8 +11,7 @@ lesen konnte. **Alles Elektrische vor dem Anschließen am eigenen Kombi messen.*
 
 > **Achtung:** Dieser Plan gilt nur für E46-Kombis mit schwarzem 26-poligem Stecker X11175 und weißem 18-poligem
 > Stecker X11176. Das VDO-Kombi 62.11-8 360 482 hat andere Stecker (weiß 26-polig, schwarz 12-polig) und ist
-> wahrscheinlich ein E36-Kombi ohne CAN, siehe [hardware.md](hardware.md). Vor dem Verdrahten klären, welches Kombi
-> verwendet wird.
+> ein E36-Kombi ohne CAN. Dafür gilt [e36-pinout.md](e36-pinout.md), nicht dieser Plan.
 
 ## 1. Kombi-Stecker X11175 (schwarz, 26-polig)
 

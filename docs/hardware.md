@@ -93,7 +93,8 @@ dieser Variante (26 weiß, 12 schwarz) ist **nicht dokumentiert**. Die Quellen w
 (frühe E36-Kombis mit zwei 26-poligen Steckern, spätere mit einem). Sie muss aus dem E36-Schaltplan (Electrical
 Troubleshooting Manual) kommen.
 
-**Offen:** Welches der beiden Kombis (Motometer E46 6 906 888 oder VDO 62.11-8 360 482) ist das eigene?
+**Eigenes Kombi:** Das VDO 62.11-8 360 482 (bestätigt vom Nutzer). Das Motometer E46 6 906 888 war ein Inserat.
+Pinbelegung: [e36-pinout.md](e36-pinout.md).
 
 ## Signalwege laut BMW-Schulungsunterlage (E46)
 
