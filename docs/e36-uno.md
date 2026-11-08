@@ -14,7 +14,7 @@ Vorhanden laut dir: Arduino Uno, USB-Kabel, Transistoren, Widerstände. Dazu:
 
 | Teil | Zweck |
 |---|---|
-| NPN-Transistoren, z. B. BC547 | **ein Transistor je Ausgang** (4 Signale plus Lampen, bis zu 18) |
+| NPN-Transistoren, z. B. BC547, **oder** Logic-Level-MOSFET IRLZ34N | **ein Schalter je Ausgang** (4 Signale plus Lampen, bis zu 18) |
 | Widerstände 1 kΩ (Basis) und 10 kΩ (Basis nach Masse) | je Transistor |
 | 12-V-Netzteil, Sicherung 2 A | Versorgung des Kombis, siehe [hardware.md](hardware.md) |
 | Gegenstecker für weiß 26, blau 26, schwarz 12 | noch offen, ohne ihn kein Anschluss |
@@ -64,6 +64,20 @@ Uno-Pin --[1 kΩ]--+-- Basis
 
 Der Transistor zieht den Kombi-Pin **gegen Masse**. Das ist für Rechtecksignale und (vermutlich) für die Lampen richtig. Der
 10-kΩ-Widerstand hält den Transistor beim Einschalten des Uno sicher aus.
+
+**Variante mit MOSFET IRLZ34N** (TO-220, Metallfahne oben): gleiche Schaltung, andere Namen der Beine. Text zum Betrachter,
+Beine nach unten, von links nach rechts: **Gate, Drain, Source**.
+
+| Bein | Anschluss |
+|---|---|
+| Gate (links) | Uno-Pin über 1 kΩ, dazu 10 kΩ nach GND |
+| Drain (Mitte) | über 470 Ω an den Kombi-Pin |
+| Source (rechts) | GND |
+
+- Es muss ein **IRLZ34N (L)** sein. Der **IRFZ34N (F)** braucht etwa 10 V am Gate und schaltet am Uno nicht voll durch.
+- Die **Metallfahne ist mit dem Drain verbunden**, also mit dem Kombi-Pin. Sie darf nichts berühren.
+- Das Gate ist statikempfindlich. Vor dem Anfassen etwas Geerdetes berühren.
+- Pinbelegung im Datenblatt gegenprüfen (International Rectifier / Infineon).
 
 **Temperatur und Tank (PWM):** Hier gilt dieselbe Schaltung, die Quellen sind aber unklar. Das Kombi erwartet an diesen Pins
 einen **Geber (Widerstand)**, die Zeigerinstrumente reagieren träge. Der Transistor mit PWM wirkt wie ein veränderlicher
