@@ -154,7 +154,7 @@ Alle Werte ändern sich per `cfg` (nur im RAM, nach Neustart wieder Standard).
 | Drehzahl, Ruhepegel | `cfg rpm_idle=1` | Standard. Bei `rpm=0` hält der Uno den Kombi-Pin **auf Masse**. **Bestätigt:** mit `rpm_idle=0` (Pin offen) schlug die Nadel voll aus, mit `1` geht sie auf 0 |
 | Drehzahl | `cfg rpm_ppr=1.935` | Impulse je Umdrehung. Theoretisch 2 (Vierzylinder; 3 bei Sechszylinder laut Quelle), **am eigenen Kombi auf 1.935 abgeglichen** (mit 2 stand die Nadel oben ca. 3 % zu hoch). Stimmt die Nadel bei einem anderen Kombi nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
 | Drehzahl, Feinabgleich | `cfg rpm_c1=137 rpm_c2=95 rpm_c3=95 rpm_c4=85 rpm_c5=68 rpm_c6=80 rpm_c7=35` | Korrektur in U/min, die bei 1000, 2000, 3000, 4000, 5000, 6000 und 6500 U/min zum Sollwert addiert wird (dazwischen linear, bei 0 keine, über 6500 gleichbleibend). Positiv = Nadel steht sonst zu tief. Die Werte sind der Standard und am eigenen Kombi mit dem Auge und einer Webcam abgeglichen, die Nadel steht von 1000 bis 7000 U/min auf dem Strich. Das Kombi ist unten leicht unempfindlicher als eine reine Proportionalität. Eigene Werte: erst `rpm_ppr` für das grobe Verhältnis, dann `rpm_c1` bis `rpm_c7` einzeln. Alle Werte 0 = keine Korrektur |
-| Tacho | `cfg speed_hz=1` | Hz je km/h. **Platzhalter, Wert unbekannt** (im Netz keine Angabe zum E36 gefunden). Verfahren: `set speed=100` (= 100 Hz bei `speed_hz=1`), Nadel ablesen. Neuer Wert = 100 geteilt durch die abgelesene km/h. Beispiel: Nadel zeigt 25 → `cfg speed_hz=4` |
+| Tacho | `cfg speed_hz=1.27` | Hz je km/h. **Am eigenen Kombi von Hand abgeglichen** (im Netz keine Angabe zum E36 gefunden): 50 km/h exakt, bis 240 km/h auf dem Strich. Die Werte stammen aus `set speed=100` bei `speed_hz=1` (Nadel bei ca. 80 km/h, das ergibt ca. 1,24), dann mit 1.24 die Skala geprüft (oben etwas zu tief) und auf 1.27 erhöht. Ab etwa 400 Hz (`speed_hz=4` bei `speed=100`) steht die Nadel am Anschlag. Eigenes Kombi: `set speed=100` mit `speed_hz=1`, Nadel ablesen, neuer Wert = 100 geteilt durch die abgelesene km/h, dann Skala prüfen. Nicht geprüft: Verhalten bei langsamen Werten unter 20 km/h und `speed_idle` (Standard 0, Pin offen) |
 | Temperatur | `set coolant_pwm=0..255` | Roh-Duty direkt setzen, Nadelstellung beobachten. Mit `cfg cool_c0=40 cool_c1=120 cool_d0=<duty> cool_d1=<duty>` festlegen, danach funktioniert `set coolant=<°C>` |
 | Tank | `set fuel_pwm=0..255` | wie Temperatur. Mit `cfg fuel_d0` (leer) und `cfg fuel_d1` (voll) festlegen, danach `set fuel=<0..100>` |
 | Lampen | `set mil=1` | Annahme: Lampe leuchtet, wenn der Pin gegen Masse gezogen wird. Falls nicht, Polarität am Kombi messen |
@@ -185,7 +185,7 @@ Alle Ausgänge starten beim Einschalten aus.
 
 - **Pinbelegung** stammt aus einem Forenbeitrag und ist nur auf wichtigen Pins bestätigt ([e36-pinout.md](e36-pinout.md)).
 - **Drehzahl:** Impulse je Umdrehung für deinen Motor ungeprüft. Außerdem hängt der Faktor laut einer Quelle vom Codierstecker ab.
-- **Tacho:** Impulse je km/h ungeprüft, der Standardwert ist ein Platzhalter.
+- **Tacho:** `speed_hz=1.27` am eigenen Kombi abgeglichen (Auge, Webcam), Werte unter 20 km/h und der Ruhepegel `speed_idle` ungeprüft.
 - **Temperatur und Tank:** Eingangsschaltung am Kombi und Kennlinien unbekannt, PWM-Ansteuerung nur aus einem Hobbyprojekt
   bekannt (E36Clock), dort ohne dokumentierte Zusatzschaltung.
 - **Lampen:** Polarität ungeprüft.

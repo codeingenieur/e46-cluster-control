@@ -58,7 +58,7 @@ struct Config {
   float rpmPpr = 1.935f;  // Impulse je Umdrehung (Vierzylinder 2, am Kombi um ca. 3 % korrigiert, am eigenen Kombi abgeglichen)
   float rpmC[7] = {137, 95, 95, 85, 68, 80, 35};  // Werte am eigenen Kombi abgeglichen. Korrektur in U/min, die bei 1000..6000 und 6500 U/min zum Sollwert addiert wird,
                           // dazwischen linear, bei 0 keine Korrektur, ueber 6500 gleichbleibend. Positiv = Nadel steht sonst zu tief.
-  float speedHz = 1.0f;   // Hz je km/h (Platzhalter, muss kalibriert werden)
+  float speedHz = 1.27f;  // Hz je km/h, am eigenen Kombi von Hand abgeglichen (50 km/h exakt, 240 km/h auf dem Strich)
   float coolC0 = 40.0f;   // Temperatur, bei der die Duty d0 gilt
   float coolC1 = 120.0f;  // Temperatur, bei der die Duty d1 gilt
   float coolD0 = 0;

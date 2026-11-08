@@ -15,7 +15,7 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [x] E36: Kombi mit Versorgung und Drehzahl am Tisch in Betrieb genommen: Kombi startet, `set rpm=3000` lässt die Nadel auf 3 stehen (`rpm_ppr` bestätigt, später auf 1.935 abgeglichen)
 - [x] E36: Drehzahl bei `rpm=0` geklärt: Ausgang muss im Ruhezustand den Kombi-Pin auf Masse halten (`rpm_idle=1`, jetzt Standard).
 - [x] E36: Drehzahl am eigenen Kombi abgeglichen (Handyfotos, Video, dann feste Webcam mit gesetzten Sollwerten und Augenkontrolle): `rpm_ppr=1.935` plus Korrekturen `rpm_c1` bis `rpm_c7` (137/95/95/85/68/80/35 U/min bei 1000 bis 6000 und 6500). Nadel steht von 1000 bis 7000 U/min auf dem Strich. Standard in der Firmware, geflasht und geprüft
-- [ ] E36: Tacho: zweiter MOSFET (D10 → schwarz 4), danach `speed_hz` abgleichen (Verfahren in `docs/e36-uno.md`)
+- [x] E36: Tacho angeschlossen (zweiter IRLZ34N, D10 → 1 kΩ → Gate, Drain → 470 Ω → schwarz 4, schwarz 3 = Masse) und abgeglichen: `speed_hz=1.27`, 50 km/h exakt, bis 240 km/h auf dem Strich. Standard in der Firmware, geflasht und geprüft. Offen: Werte unter 20 km/h, `speed_idle`
 - [ ] E36: Uno trennte sich zweimal kurz vom USB (COM3 weg, wieder da nach Neustecken): Kabel/Port prüfen, ggf. Masse-Verbindung zum Kombi-Netzteil beobachten
 - [ ] E36: Tacho (schwarz 4), Temperatur (blau 18/17), Tank (schwarz 1) und Lampen anschließen und kalibrieren
 - [ ] E36: Signalwerte klären: Impulse pro Umdrehung, Wegsignal-Frequenz pro km/h, Widerstandskurven von Temperatursensor und Tankgeber
