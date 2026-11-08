@@ -9,7 +9,9 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [ ] E36: Pinbelegung gegen den E36-Schaltplan oder per Multimeter am eigenen Kombi bestätigen (Schaltplan-PDF war nicht auffindbar)
 - [ ] E36: blauen Stecker fotografieren (Pinzahl, Nummern) und Codierstecker (grünes Teil?) klären
 - [x] E36: Uno-Firmware geschrieben und kompiliert (`firmware-e36-uno`, Anleitung `docs/e36-uno.md`)
-- [ ] E36: Uno flashen und ohne Kombi testen (D9/D10 messen, USB-Protokoll)
+- [x] E36: Uno geflasht und ohne Kombi getestet: USB-Protokoll, atomares `SET`, D9/D10 per LED-Blinktest bei 2 und 4 Hz bestätigt (Frequenz nur auf ca. 5 % genau, nicht gemessen)
+- [ ] E36: Frequenz von D9/D10 mit Multimeter (Frequenzbereich) oder Logikanalysator genau prüfen
+- [ ] E36: Multimeter beschaffen (Pflicht vor dem Anschluss des Kombis)
 - [ ] E36: Kombi anschließen und kalibrieren (Drehzahl, Tacho, Temperatur, Tank, Lampen)
 - [ ] E36: Signalwerte klären: Impulse pro Umdrehung, Wegsignal-Frequenz pro km/h, Widerstandskurven von Temperatursensor und Tankgeber
 - [ ] E36: Gegenstecker für weiß 26, blau 26 und schwarz 12 beschaffen (z. B. E36-Kabelbaum-Stecker), Bezeichnung klären
