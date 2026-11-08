@@ -61,3 +61,12 @@ Pinplan und Ansteuerarten: [pinout.md](pinout.md).
 - [ ] Abbildung auf Cluster: z. B. Ziel-Fortschritt → Drehzahl, offene Defects → Warnleuchten, Testergebnisse → Leuchten/Temperatur
 - [ ] PC-Dashboard bzw. Dienst, der die Werte zyklisch an `e46cluster` schickt
 - [ ] Watchdog nutzen, damit die Anzeige bei Verbindungsverlust auf 0 geht
+
+## Querschnitt: Sprache
+
+**Konvention:** Alles im Repo soll am Ende auf Englisch sein. Gespräche mit dem Projektinhaber laufen weiter auf Deutsch, die Ergebnisse (Dateien, Commits) sollen englisch werden.
+
+- [ ] Alle Dokumente in `docs/` und die READMEs ins Englische übersetzen (`hardware`, `can-signals`, `protocol`, `usb-interface`, `e36-pinout`, `e36-uno`, `backlog`, `README`)
+- [ ] Quellcode-Kommentare, Fehlermeldungen und Hilfetexte ins Englische übersetzen (`firmware/`, `firmware-e36-uno/`, `host/`)
+- [ ] Beschriftungen der Grafiken in `docs/img/` ins Englische übersetzen (Texte in `make_pinouts.py`, danach SVGs neu erzeugen)
+- [ ] Neue Dateien, Kommentare und Commit-Nachrichten ab jetzt direkt auf Englisch schreiben
