@@ -23,6 +23,11 @@ Mit allen Lampen sind das bis zu 18 Transistoren. Für den Anfang reichen die vi
 
 ## 2. Pinplan Uno ↔ Kombi
 
+Wo die drei Stecker am Kombi sitzen und welche Pins du am Tisch benutzt (grüner Rahmen), zeigt diese Rückansicht.
+Alle Pins einzeln: [e36-pinout.md](e36-pinout.md).
+
+![Kombi von hinten mit den drei Steckern](img/kombi-uebersicht.svg)
+
 Jeder Ausgang geht **nur über einen Transistor** an das Kombi.
 
 | Uno-Pin | Funktion | Kombi-Pin |

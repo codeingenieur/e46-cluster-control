@@ -26,7 +26,19 @@ Auf den wichtigsten Pins bestätigen andere Quellen die Liste:
 Nicht belegt: der E36-Schaltplan. Der Link zum PDF (sanituning.de) liefert nur eine Shop-Seite, das 1996er-Handbuch
 (wedophones.com) gibt 404. **Alles hier vor dem Anschließen am eigenen Kombi mit dem Multimeter prüfen.**
 
+## Grafiken
+
+Die Pinbelegung als Bilder (Rückansicht, Pins und Nummern wie am Kombi aufgedruckt, grüner Rahmen = am Tisch angeschlossen).
+Erzeugt von [`img/make_pinouts.py`](img/make_pinouts.py), bei Änderungen an der Tabelle dort anpassen und neu ausführen.
+
+![Kombi von hinten mit den drei Steckern](img/kombi-uebersicht.svg)
+
+Lage der Stecker nach dem Foto der Rückseite, nicht maßstäblich. Die einzelnen Stecker stehen unten bei den Tabellen.
+Die SVG-Dateien liegen in [`img/`](img/) und lassen sich einzeln öffnen oder in Dokumente einbinden.
+
 ## Weißer Stecker, 26-polig
+
+![Pinbelegung weißer Stecker, 26 Pins](img/pinout-weiss.svg)
 
 | Pin | Funktion |
 |---|---|
@@ -58,6 +70,8 @@ Nicht belegt: der E36-Schaltplan. Der Link zum PDF (sanituning.de) liefert nur e
 
 ## Blauer Stecker, 26-polig
 
+![Pinbelegung blauer Stecker, 26 Pins](img/pinout-blau.svg)
+
 | Pin | Funktion |
 |---|---|
 | 1 | Kontrolleuchte Anhängerblinker |
@@ -86,6 +100,8 @@ Nicht belegt: der E36-Schaltplan. Der Link zum PDF (sanituning.de) liefert nur e
 | 26 | Warnleuchte Check-Control |
 
 ## Schwarzer Stecker, 12-polig
+
+![Pinbelegung schwarzer Stecker, 12 Pins](img/pinout-schwarz.svg)
 
 | Pin | Funktion |
 |---|---|

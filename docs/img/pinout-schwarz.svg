@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="774" viewBox="0 0 1000 774" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<title>Schwarzer Stecker, 12 Pins</title>
+<rect width="1000" height="774" fill="#ffffff"/>
+<rect x="40" y="34" width="56" height="32" rx="6" fill="#3a3a3a" stroke="#111111" stroke-width="2"/>
+<text x="114" y="60" font-size="30" font-weight="700" fill="#111827">Schwarzer Stecker, 12 Pins</text>
+<text x="40" y="96" font-size="15" fill="#4b5563">Rückseite des Kombis. Oben links 12, oben rechts 6, unten links 7, unten rechts 1 (so steht es am Stecker).</text>
+<text x="40" y="118" font-size="15" fill="#4b5563">Linke Spalte von oben nach unten 12 bis 7, rechte Spalte 6 bis 1. Nur die Pins 1 bis 5 sind belegt.</text>
+<rect x="30" y="160" width="940" height="58" fill="#f6f8fa"/>
+<rect x="30" y="218" width="940" height="58" fill="#ffffff"/>
+<rect x="30" y="276" width="940" height="58" fill="#f6f8fa"/>
+<rect x="30" y="334" width="940" height="58" fill="#ffffff"/>
+<rect x="30" y="392" width="940" height="58" fill="#f6f8fa"/>
+<rect x="30" y="450" width="940" height="58" fill="#ffffff"/>
+<rect x="408" y="146" width="184" height="376" rx="12" fill="#e5e7eb" stroke="#9ca3af" stroke-width="2"/>
+<rect x="424" y="165" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="456" y="195.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">12</text>
+<text x="394" y="194.5" text-anchor="end" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="424" y="223" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="456" y="253.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">11</text>
+<text x="394" y="252.5" text-anchor="end" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="424" y="281" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="456" y="311.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">10</text>
+<text x="394" y="310.5" text-anchor="end" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="424" y="339" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="456" y="369.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">9</text>
+<text x="394" y="368.5" text-anchor="end" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="424" y="397" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="456" y="427.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">8</text>
+<text x="394" y="426.5" text-anchor="end" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="424" y="455" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="456" y="485.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">7</text>
+<text x="394" y="484.5" text-anchor="end" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="512" y="165" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="544" y="195.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">6</text>
+<text x="606" y="194.5" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="512" y="223" width="64" height="48" rx="6" fill="#fff0d1" stroke="#b45309" stroke-width="1.5"/>
+<text x="544" y="253.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b3a07">5</text>
+<text x="606" y="252.5" font-size="16" font-weight="400" fill="#111827">Kontrollleuchte Nebelschlussleuchte</text>
+<rect x="512" y="281" width="64" height="48" rx="6" fill="#d3f2e8" stroke="#16a34a" stroke-width="3.5"/>
+<text x="544" y="311.0" text-anchor="middle" font-size="18" font-weight="700" fill="#064e3b">4</text>
+<text x="606" y="310.5" font-size="16" font-weight="700" fill="#111827">Wegsignal (Geschwindigkeit)<tspan fill="#16a34a" font-weight="700"> · abgeglichen</tspan></text>
+<circle cx="576" cy="283" r="9" fill="#16a34a" stroke="#ffffff" stroke-width="2"/><path d="M572 283 l3 3.5 l5.5 -6.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="512" y="339" width="64" height="48" rx="6" fill="#4b5563" stroke="#16a34a" stroke-width="3.5"/>
+<text x="544" y="369.0" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">3</text>
+<text x="606" y="368.5" font-size="16" font-weight="700" fill="#111827">Klemme 31b (Masse Geber)</text>
+<circle cx="576" cy="341" r="9" fill="#16a34a" stroke="#ffffff" stroke-width="2"/><path d="M572 341 l3 3.5 l5.5 -6.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="512" y="397" width="64" height="48" rx="6" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="544" y="427.0" text-anchor="middle" font-size="18" font-weight="700" fill="#6b7280">2</text>
+<text x="606" y="426.5" font-size="16" font-weight="400" fill="#9ca3af">nicht belegt</text>
+<rect x="512" y="455" width="64" height="48" rx="6" fill="#d3f2e8" stroke="#0f766e" stroke-width="1.5"/>
+<text x="544" y="485.0" text-anchor="middle" font-size="18" font-weight="700" fill="#064e3b">1</text>
+<text x="606" y="484.5" font-size="16" font-weight="400" fill="#111827">Tankgeber</text>
+<text x="40" y="578" font-size="15" font-weight="700" fill="#111827">Legende</text>
+<rect x="40" y="594" width="24" height="18" rx="4" fill="#fde4e4" stroke="#c0392b" stroke-width="1.5"/>
+<text x="74" y="608" font-size="13.5" fill="#374151">Versorgung (+12 V)</text>
+<rect x="370" y="594" width="24" height="18" rx="4" fill="#4b5563" stroke="#1f2937" stroke-width="1.5"/>
+<text x="404" y="608" font-size="13.5" fill="#374151">Masse</text>
+<rect x="700" y="594" width="24" height="18" rx="4" fill="#d3f2e8" stroke="#0f766e" stroke-width="1.5"/>
+<text x="734" y="608" font-size="13.5" fill="#374151">Signal, das wir ansteuern</text>
+<rect x="40" y="624" width="24" height="18" rx="4" fill="#fff0d1" stroke="#b45309" stroke-width="1.5"/>
+<text x="74" y="638" font-size="13.5" fill="#374151">Warn- oder Kontrollleuchte</text>
+<rect x="370" y="624" width="24" height="18" rx="4" fill="#e2ecfb" stroke="#2563eb" stroke-width="1.5"/>
+<text x="404" y="638" font-size="13.5" fill="#374151">sonstiger Eingang oder Diagnose</text>
+<rect x="700" y="624" width="24" height="18" rx="4" fill="#eee5fa" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="734" y="638" font-size="13.5" fill="#374151">Ausgang des Kombis, nie ansteuern</text>
+<rect x="40" y="654" width="24" height="18" rx="4" fill="#f3f4f6" stroke="#cfd4da" stroke-width="1.5"/>
+<text x="74" y="668" font-size="13.5" fill="#374151">nicht belegt</text>
+<rect x="370" y="654" width="24" height="18" rx="4" fill="#ffffff" stroke="#16a34a" stroke-width="3.5"/>
+<text x="404" y="668" font-size="13.5" fill="#374151">am Tisch angeschlossen (grüner Rahmen)</text>
+<text x="40" y="714" font-size="12.5" fill="#6b7280">Quelle: Forenliste (BMW-Syndikat, 2008), auf den wichtigsten Pins durch weitere Quellen bestätigt, nicht mit dem Schaltplan abgeglichen.</text>
+<text x="40" y="734" font-size="12.5" fill="#6b7280">Anordnung wie am Kombi aufgedruckt (Foto der Rückseite). Alles vor dem Anschließen am eigenen Kombi prüfen.</text>
+</svg>

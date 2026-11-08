@@ -18,6 +18,8 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
 > [firmware-e36-uno/](firmware-e36-uno) mit der Anleitung [docs/e36-uno.md](docs/e36-uno.md). Der ESP32/CAN-Teil
 > ([firmware/](firmware)) gilt für E46-Kombis mit CAN.
 
+![E36-Kombi von hinten mit den drei Steckern (weiß, blau, schwarz)](docs/img/kombi-uebersicht.svg)
+
 ## Inhalt
 
 | Pfad | Zweck |
