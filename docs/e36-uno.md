@@ -147,7 +147,7 @@ Alle Werte ändern sich per `cfg` (nur im RAM, nach Neustart wieder Standard).
 
 | Anzeige | Befehl | Hinweis |
 |---|---|---|
-| Drehzahl | `cfg rpm_ppr=2` | Impulse je Umdrehung. 2 ist für den Vierzylinder **geraten** (3 bei Sechszylinder laut Quelle). Stimmt die Nadel nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
+| Drehzahl | `cfg rpm_ppr=2` | Impulse je Umdrehung. **Bestätigt** am eigenen Kombi: bei `set rpm=3000` zeigt die Nadel auf 3 (3000 U/min). Für einen Vierzylinder-Kombi; andere Werte weiter prüfen. (3 bei Sechszylinder laut Quelle.) Stimmt die Nadel nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
 | Tacho | `cfg speed_hz=1` | Hz je km/h. **Platzhalter.** Mit `set speed=100` die Nadel auf 100 stellen und `speed_hz` so ändern, bis sie passt |
 | Temperatur | `set coolant_pwm=0..255` | Roh-Duty direkt setzen, Nadelstellung beobachten. Mit `cfg cool_c0=40 cool_c1=120 cool_d0=<duty> cool_d1=<duty>` festlegen, danach funktioniert `set coolant=<°C>` |
 | Tank | `set fuel_pwm=0..255` | wie Temperatur. Mit `cfg fuel_d0` (leer) und `cfg fuel_d1` (voll) festlegen, danach `set fuel=<0..100>` |
