@@ -5,6 +5,7 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 
 ## P1: CAN-Funktionen
 
+- [ ] **Kombi klären:** Das VDO-Kombi 62.11-8 360 482 ist wahrscheinlich ein E36-Kombi ohne CAN (siehe hardware.md). Entweder ein E46-Kombi mit CAN verwenden oder die Architektur für das E36-Kombi anpassen (Impuls-/Widerstandssignale, Pinbelegung aus dem E36-Schaltplan)
 - [x] Firmware mit PlatformIO kompilieren
 - [ ] Firmware auf ESP32 flashen
 - [ ] Bring-up am Cluster: `tx_ok` steigt, `can=running`, Cluster reagiert (ggf. Codierung klären)

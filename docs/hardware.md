@@ -62,6 +62,39 @@ Befund aus den Fotos (Vorderseite und Rückseite):
   Laut Seite gilt sie für Bosch- und Motometer-Kombis, mit Ausnahmen (Pin 7 nur bis Modelljahr 2002, Pin 17 Kabelfarbe
   wechselt 03/2003). Für 62.11-6 906 888 ist sie **nicht** einzeln bestätigt.
 
+## Kombi aus den Detailfotos: VDO 62.11-8 360 482 (wahrscheinlich E36)
+
+Von den Aufklebern und dem Gehäuse abgelesen (Fotos, einzelne Zeichen können falsch gelesen sein):
+
+| Feld | Wert |
+|---|---|
+| BMW-Teilenummer | 62.11-8 360 482 |
+| Hersteller / Herstellernummer | VDO, 110.008.645/002 A |
+| HW / SW | 2.4 / 6.0 |
+| Typcode / Änderungsindex | 80001 (schwer lesbar) / 54 |
+| Weitere Nummern | *020395 01 456 54* 1406, Gehäuse 88311221 43250 |
+| Gehäuseteile | 87 001 305 UHR, 87 001 306 DZM |
+
+**Das ist sehr wahrscheinlich kein E46-Kombi.** Hinweise:
+
+- Mehrere Händlerangebote ordnen 62.11-8 360 482 mit 110.008.645/002 einem **E36 Compact 316i (M43), Baujahr 1995/96,
+  Tacho bis 240 km/h** zu. Händlerangaben, nicht von BMW.
+- Auf der Gehäuserückseite steht eine Lampe **"CATA LYST"** (Katalysator-Warnung), dazu Glühbirnenfassungen
+  (12 V/3 W, 25 × 12 V/1,2 W).
+- Auf dem Aufkleber steht **kein CAN-Feld**, beim E46-Kombi (Motometer 6 906 888) steht `CAN :04H`.
+- **Stecker:** weiß, 26-polig (Pins 1–13 und 14–26), und schwarz, **12-polig** (Pins 1–6 und 7–12). Das E46-Kombi aus der
+  Community-Pinbelegung hat dagegen schwarz 26-polig und weiß 18-polig.
+- HW 2.4 / SW 6.0 ist ein sehr alter Stand (E46-Aufkleber: HW 10.0 / SW 20.0).
+
+Folgen: Die CAN-Frames 0x316, 0x329 und 0x545 und die Pinbelegung X11175/X11176 in diesem Repo **gelten für dieses Kombi
+nicht**. Ein Kombi aus der E36-Zeit nutzt nach Community-Quellen analoge Signale (Drehzahl als Impulssignal von der
+Motorsteuerung, Geschwindigkeit als Impuls, Geber direkt am Kombi) und keinen CAN-Bus. Die Pinbelegung für die Stecker
+dieser Variante (26 weiß, 12 schwarz) ist **nicht dokumentiert**. Die Quellen widersprechen sich zwischen Baujahren
+(frühe E36-Kombis mit zwei 26-poligen Steckern, spätere mit einem). Sie muss aus dem E36-Schaltplan (Electrical
+Troubleshooting Manual) kommen.
+
+**Offen:** Welches der beiden Kombis (Motometer E46 6 906 888 oder VDO 62.11-8 360 482) ist das eigene?
+
 ## Signalwege laut BMW-Schulungsunterlage (E46)
 
 | Funktion | Weg zum Kombi |
@@ -79,6 +112,10 @@ Quelle: [ST034 Driver Information](https://ia801005.us.archive.org/11/items/BMWT
 Die Unterlage nennt keine Steckerbelegung.
 
 ## Kombi-Anschlüsse
+
+> **Gilt nur für E46-Kombis mit schwarzem 26-poligem und weißem 18-poligem Stecker (CAN).** Für das VDO-Kombi
+> 62.11-8 360 482 (weiß 26-polig, schwarz 12-polig, siehe oben) **nicht verwenden**. Falsche Pins an 12 V können das Kombi
+> beschädigen.
 
 Quelle: [bmwgm5.com, E46 IKE Connections](https://www.bmwgm5.com/E46_IKE_Connections.htm) (Ausdruck mit demselben Inhalt
 liegt dem Projekt vor). Pin 9 als CAN-Pin bestätigt außerdem ein
