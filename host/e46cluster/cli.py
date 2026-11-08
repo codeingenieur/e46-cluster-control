@@ -43,6 +43,10 @@ def _cmd_get(args, cl: Cluster) -> None:
         print(f"{k:10} {v}")
 
 
+def _cmd_zero(args, cl: Cluster) -> None:
+    cl.zero()
+
+
 def _cmd_cfg(args, cl: Cluster) -> None:
     for k, v in cl.config(**_parse_assignments(args.values, CONFIG_KEYS)).items():
         print(f"{k:12} {v}")
@@ -87,6 +91,7 @@ def main(argv=None) -> int:
     p = sub.add_parser("set", help="Werte setzen: set rpm=3000 speed=80 mil=1")
     p.add_argument("values", nargs="+")
     sub.add_parser("get", help="aktuellen Zustand und CAN-Zaehler anzeigen")
+    sub.add_parser("zero", help="Drehzahl und Geschwindigkeit auf 0")
     p = sub.add_parser("cfg", help="Konfiguration lesen/setzen: cfg rpm_scale=6.4")
     p.add_argument("values", nargs="*")
     p = sub.add_parser("raw", help="einen CAN-Frame senden: raw 316 0500 0000 0000")
@@ -102,7 +107,7 @@ def main(argv=None) -> int:
         return 0
 
     handlers = {
-        "ping": _cmd_ping, "set": _cmd_set, "get": _cmd_get, "cfg": _cmd_cfg,
+        "ping": _cmd_ping, "set": _cmd_set, "get": _cmd_get, "zero": _cmd_zero, "cfg": _cmd_cfg,
         "raw": _cmd_raw, "sniff": _cmd_sniff, "sweep": _cmd_sweep,
     }
     try:

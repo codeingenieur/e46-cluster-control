@@ -62,7 +62,7 @@ def find_port() -> str:
     """Einzigen ESP32-/Arduino-/USB-UART-Port finden (CP210x, CH340, FTDI, Espressif, Arduino)."""
     from serial.tools import list_ports
 
-    known_vids = {0x10C4, 0x1A86, 0x0403, 0x303A, 0x2341}
+    known_vids = {0x10C4, 0x1A86, 0x0403, 0x303A, 0x2341, 0x2A03}  # 2341/2A03: Arduino
     ports = [p for p in list_ports.comports() if p.vid in known_vids]
     if len(ports) == 1:
         return ports[0].device
