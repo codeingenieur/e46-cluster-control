@@ -63,6 +63,9 @@ struct Config {
   float coolD1 = 255;
   float fuelD0 = 0;       // Duty bei Tank 0 %
   float fuelD1 = 255;     // Duty bei Tank 100 %
+  float rpmIdle = 1;      // Pegel von D9 ohne Drehzahl: 1 = HIGH (MOSFET leitet, Kombi-Pin auf Masse). Am Kombi bestaetigt:
+                          // mit 0 (Pin offen) schlaegt die Drehzahlnadel voll aus
+  float speedIdle = 0;    // Pegel von D10 ohne Geschwindigkeit, wie rpmIdle
   float wdtMs = 0;        // Host-Watchdog, 0 = aus
 };
 
@@ -102,7 +105,7 @@ static void setFreqA(float hz) {
     TCCR1A &= ~_BV(COM1A0);
     TIMSK1 &= ~_BV(OCIE1A);
     interrupts();
-    digitalWrite(PIN_RPM, LOW);
+    digitalWrite(PIN_RPM, cfg.rpmIdle != 0 ? HIGH : LOW);
     return;
   }
   uint16_t h = halfTicks(hz);
@@ -122,7 +125,7 @@ static void setFreqB(float hz) {
     TCCR1A &= ~_BV(COM1B0);
     TIMSK1 &= ~_BV(OCIE1B);
     interrupts();
-    digitalWrite(PIN_SPEED, LOW);
+    digitalWrite(PIN_SPEED, cfg.speedIdle != 0 ? HIGH : LOW);
     return;
   }
   uint16_t h = halfTicks(hz);
@@ -208,6 +211,8 @@ static bool cfgKey(const char* k, float x) {
   else if (!strcasecmp(k, "cool_d1")) cfg.coolD1 = x;
   else if (!strcasecmp(k, "fuel_d0")) cfg.fuelD0 = x;
   else if (!strcasecmp(k, "fuel_d1")) cfg.fuelD1 = x;
+  else if (!strcasecmp(k, "rpm_idle")) cfg.rpmIdle = x;
+  else if (!strcasecmp(k, "speed_idle")) cfg.speedIdle = x;
   else if (!strcasecmp(k, "wdt")) cfg.wdtMs = x < 0 ? 0 : x;
   else return false;
   return true;
@@ -282,6 +287,10 @@ static void cmdCfg(char** t, int n) {
     Serial.print(cfg.fuelD0, 0);
     Serial.print(F(" fuel_d1="));
     Serial.print(cfg.fuelD1, 0);
+    Serial.print(F(" rpm_idle="));
+    Serial.print(cfg.rpmIdle, 0);
+    Serial.print(F(" speed_idle="));
+    Serial.print(cfg.speedIdle, 0);
     Serial.print(F(" wdt="));
     Serial.println(cfg.wdtMs, 0);
     return;

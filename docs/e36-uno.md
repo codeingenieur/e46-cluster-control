@@ -65,6 +65,10 @@ Uno-Pin --[1 kΩ]--+-- Basis
 Der Transistor zieht den Kombi-Pin **gegen Masse**. Das ist für Rechtecksignale und (vermutlich) für die Lampen richtig. Der
 10-kΩ-Widerstand hält den Transistor beim Einschalten des Uno sicher aus.
 
+**Optional, damit die Nadel auch beim Einschalten des Uno auf 0 bleibt:** den 10-kΩ-Widerstand am Gate nicht nach GND, sondern nach
+**+5 V** legen (Uno-5V). Dann leitet der Schalter von selbst, solange der Uno-Pin noch nicht arbeitet (Reset, Flashen), und der
+Kombi-Pin liegt auf Masse. Mit dem Standard (10 kΩ nach GND) schlägt die Nadel beim Einschalten des Uno kurz voll aus.
+
 **Variante mit MOSFET IRLZ34N** (TO-220, Metallfahne oben): gleiche Schaltung, andere Namen der Beine. Text zum Betrachter,
 Beine nach unten, von links nach rechts: **Gate, Drain, Source**.
 
@@ -147,6 +151,7 @@ Alle Werte ändern sich per `cfg` (nur im RAM, nach Neustart wieder Standard).
 
 | Anzeige | Befehl | Hinweis |
 |---|---|---|
+| Drehzahl, Ruhepegel | `cfg rpm_idle=1` | Standard. Bei `rpm=0` hält der Uno den Kombi-Pin **auf Masse**. **Bestätigt:** mit `rpm_idle=0` (Pin offen) schlug die Nadel voll aus, mit `1` geht sie auf 0 |
 | Drehzahl | `cfg rpm_ppr=2` | Impulse je Umdrehung. **Bestätigt** am eigenen Kombi: bei `set rpm=3000` zeigt die Nadel auf 3 (3000 U/min). Für einen Vierzylinder-Kombi; andere Werte weiter prüfen. (3 bei Sechszylinder laut Quelle.) Stimmt die Nadel nicht, Wert anpassen: Nadel zeigt zu wenig → größer |
 | Tacho | `cfg speed_hz=1` | Hz je km/h. **Platzhalter.** Mit `set speed=100` die Nadel auf 100 stellen und `speed_hz` so ändern, bis sie passt |
 | Temperatur | `set coolant_pwm=0..255` | Roh-Duty direkt setzen, Nadelstellung beobachten. Mit `cfg cool_c0=40 cool_c1=120 cool_d0=<duty> cool_d1=<duty>` festlegen, danach funktioniert `set coolant=<°C>` |

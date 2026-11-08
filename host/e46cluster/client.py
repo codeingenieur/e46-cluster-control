@@ -18,7 +18,7 @@ FLAGS = (
 )
 CONFIG_KEYS = (
     "rpm_scale", "temp_offset", "speed_hz", "speed_can", "wdt",  # ESP32/CAN
-    "rpm_ppr", "cool_c0", "cool_c1", "cool_d0", "cool_d1", "fuel_d0", "fuel_d1",  # Uno/E36
+    "rpm_ppr", "rpm_idle", "speed_idle", "cool_c0", "cool_c1", "cool_d0", "cool_d1", "fuel_d0", "fuel_d1",  # Uno/E36
 )
 
 # Antworten, auf die ein Kommando wartet. Alles andere (RX, EVT, READY) sind asynchrone Meldungen.
