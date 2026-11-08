@@ -94,6 +94,39 @@ nach Masse entsteht.
    Transistor-Aufbau passt. Liegt dort 0 V, ist der Eingang anders aufgebaut: dann nicht anschließen, sondern klären.
 5. **Ein Signal nach dem anderen** anschließen: erst Drehzahl, dann Tacho, danach Lampen, zuletzt Temperatur und Tank.
 
+## 4a. Notlösung ohne Multimeter
+
+Der Ablauf in Abschnitt 4 setzt Messungen voraus. Ohne Multimeter ist der Anschluss **riskanter**. Die zwei Stellen, an denen
+etwas kaputtgehen kann: **falsche Polarität der Versorgung** und **ein falscher Pin an 12 V**. Mit diesen Vorkehrungen
+bleibt das Risiko überschaubar, ganz ausgeschlossen ist es nicht.
+
+**Vorbereitung**
+
+1. **Polarität des Netzteils** mit einer LED prüfen, nicht raten. LED mit 1-kΩ-Widerstand in Reihe an die beiden Adern
+   des Netzteils (ohne Kombi): Die LED leuchtet nur, wenn ihre **Anode (langes Bein)** am Pluspol hängt. Die Ader, an der der
+   Widerstand der leuchtenden Schaltung hängt, ist Plus. Beschrifte beide Adern.
+2. **Sicherung 2 A** in die Plusleitung. Ohne Sicherung kann ein Fehler bis 5 A ziehen.
+3. **Serienwiderstand 470 Ω in jede Signalleitung** zwischen Transistor-Kollektor und Kombi-Pin (Drehzahl, Tacho, Temperatur,
+   Tank, Lampen). Dann kann ein falsch gewählter Pin keinen Kurzschluss nach Masse erzeugen: Es fließen höchstens etwa
+   25 mA. Die Rechtecksignale funktionieren trotzdem, solange das Kombi am Eingang einen Pull-up hat.
+4. **Pins vor dem Stecken zweimal gegen [e36-pinout.md](e36-pinout.md) und die Nummern auf dem Gehäuse prüfen.** Die
+   Nummern stehen auf deinen Fotos am Rand der Stecker (weiß: 26/1/13 und 14/1, schwarz: 12/6 und 7/1).
+
+**Reihenfolge am Kombi**
+
+1. Alles **stromlos** verkabeln. **Foto der Verkabelung machen und prüfen lassen**, bevor Strom drauf kommt.
+2. **Masse zuerst:** weiß 24, blau 3 und schwarz 3 an Netzteil-Minus (und Uno-GND).
+3. **Klemme 30** an weiß 22, dann Netzteil einstecken. Das Kombi bleibt noch aus, es braucht Klemme 15.
+4. **Klemme 15** an weiß 23 und blau 4 (blau 5 weglassen). Dann leuchten kurz die Lampen. Nach etwa einer Sekunde dürfen
+   keine Warnleuchten mehr dauerhaft an sein, außer den vom Kombi gewollten.
+5. **Sofort abstecken**, wenn es riecht, raucht, ungewöhnlich warm wird, die Sicherung durchbrennt oder nichts geschieht.
+6. **Danach erst die Signale**, einzeln: Drehzahl (weiß 20), dann Tacho (schwarz 4 mit schwarz 3). Pro Signal einen Befehl,
+   z. B. `set rpm=3000`, Nadel beobachten.
+7. Temperatur und Tank (blau 18/17, schwarz 1/3) erst zuletzt: Das sind Geber-Eingänge, dort ist die Schaltung am
+   unsichersten. Mit `set coolant_pwm=0` beginnen und in kleinen Schritten erhöhen.
+
+**Nie anschließen:** die Ausgänge des Kombis (blau 2, 9, 10 und 24) und Klemme R, solange nicht geklärt ist, ob sie nötig ist.
+
 ## 5. Kalibrierung
 
 Alle Werte ändern sich per `cfg` (nur im RAM, nach Neustart wieder Standard).
