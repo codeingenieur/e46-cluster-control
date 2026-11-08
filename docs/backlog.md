@@ -8,7 +8,9 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [x] Kombi geklärt: VDO 62.11-8 360 482 (E36, kein CAN). Pinbelegung in `docs/e36-pinout.md`. **Die CAN-Punkte unten gelten für ein E46-Kombi und sind für das vorhandene Kombi hinfällig.**
 - [ ] E36: Pinbelegung gegen den E36-Schaltplan oder per Multimeter am eigenen Kombi bestätigen (Schaltplan-PDF war nicht auffindbar)
 - [ ] E36: blauen Stecker fotografieren (Pinzahl, Nummern) und Codierstecker (grünes Teil?) klären
-- [ ] E36: Firmware auf Rechteck-/Widerstandssignale umstellen: Drehzahl (weiß 20), Wegsignal (schwarz 4), Kühlmitteltemperatur (blau 17/18), Tank (schwarz 1/3), Lampen
+- [x] E36: Uno-Firmware geschrieben und kompiliert (`firmware-e36-uno`, Anleitung `docs/e36-uno.md`)
+- [ ] E36: Uno flashen und ohne Kombi testen (D9/D10 messen, USB-Protokoll)
+- [ ] E36: Kombi anschließen und kalibrieren (Drehzahl, Tacho, Temperatur, Tank, Lampen)
 - [ ] E36: Signalwerte klären: Impulse pro Umdrehung, Wegsignal-Frequenz pro km/h, Widerstandskurven von Temperatursensor und Tankgeber
 - [ ] E36: Gegenstecker für weiß 26, blau 26 und schwarz 12 beschaffen (z. B. E36-Kabelbaum-Stecker), Bezeichnung klären
 - [x] Firmware mit PlatformIO kompilieren

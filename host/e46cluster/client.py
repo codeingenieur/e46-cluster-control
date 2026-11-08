@@ -8,9 +8,18 @@ from typing import Callable, Dict, Optional, Protocol
 
 DEFAULT_BAUD = 115200
 
-GAUGES = ("rpm", "speed", "coolant", "oil", "fco")
-FLAGS = ("ign", "mil", "cruise", "eml", "overheat", "oilwarn", "battery", "oilpress")
-CONFIG_KEYS = ("rpm_scale", "temp_offset", "speed_hz", "speed_can", "wdt")
+# Welche Schluessel gelten, haengt von der Firmware ab: ESP32/CAN (E46) oder Uno (E36-Kombi, docs/e36-uno.md).
+# Die Firmware lehnt Schluessel, die sie nicht kennt, mit "ERR unknown_key" ab.
+GAUGES = ("rpm", "speed", "coolant", "oil", "fco", "fuel", "coolant_pwm", "fuel_pwm")
+FLAGS = (
+    "ign", "mil", "cruise", "eml", "overheat", "oilwarn", "battery", "oilpress",  # ESP32/CAN
+    "handbrake", "abs", "asc", "airbag", "brakefluid", "left", "right", "highbeam",  # Uno/E36
+    "fogfront", "fogrear", "belt", "cat",
+)
+CONFIG_KEYS = (
+    "rpm_scale", "temp_offset", "speed_hz", "speed_can", "wdt",  # ESP32/CAN
+    "rpm_ppr", "cool_c0", "cool_c1", "cool_d0", "cool_d1", "fuel_d0", "fuel_d1",  # Uno/E36
+)
 
 # Antworten, auf die ein Kommando wartet. Alles andere (RX, EVT, READY) sind asynchrone Meldungen.
 _REPLY_PREFIXES = ("OK", "ERR", "PONG", "STATE", "CFG", "HELP")
@@ -50,10 +59,10 @@ class SerialTransport:
 
 
 def find_port() -> str:
-    """Einzigen ESP32-/USB-UART-Port finden (CP210x, CH340, FTDI, Espressif)."""
+    """Einzigen ESP32-/Arduino-/USB-UART-Port finden (CP210x, CH340, FTDI, Espressif, Arduino)."""
     from serial.tools import list_ports
 
-    known_vids = {0x10C4, 0x1A86, 0x0403, 0x303A}
+    known_vids = {0x10C4, 0x1A86, 0x0403, 0x303A, 0x2341}
     ports = [p for p in list_ports.comports() if p.vid in known_vids]
     if len(ports) == 1:
         return ports[0].device

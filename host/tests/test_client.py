@@ -62,6 +62,12 @@ class ClusterTest(unittest.TestCase):
         self.cl.set(rpm=3000, mil=True, speed=80.5)
         self.assertEqual(self.fw.lines[-1], "SET rpm 3000 mil 1 speed 80.5")
 
+    def test_set_accepts_e36_keys(self):
+        self.cl.set(fuel=50, handbrake=True, coolant_pwm=120)
+        self.assertEqual(self.fw.lines[-1], "SET fuel 50 handbrake 1 coolant_pwm 120")
+        self.cl.config(rpm_ppr=2, speed_hz=1.5)
+        self.assertIn("CFG rpm_ppr 2 speed_hz 1.5", self.fw.lines)
+
     def test_set_rejects_unknown_signal_client_side(self):
         with self.assertRaises(ValueError):
             self.cl.set(bogus=1)

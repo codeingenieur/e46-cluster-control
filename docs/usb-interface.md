@@ -146,6 +146,10 @@ Kommandos nie parallel aus mehreren Threads senden, sondern mit einem Lock seria
 | `SNIFF 0\|1` | empfangene CAN-Frames als `RX ...` melden | Kalibrierung |
 | `HELP` | Kurzübersicht der Befehle | Debugging |
 
+> Die folgende Tabelle gilt für die **ESP32/CAN-Firmware (E46)**. Für das E36-Kombi mit Arduino Uno gelten teils andere
+> Schlüssel (z. B. `fuel`, `handbrake`, `left`), siehe [e36-uno.md](e36-uno.md). Zeilenformat, Antworten und Handshake
+> sind identisch.
+
 ### Übersicht: welches Instrument wird womit gesteuert
 
 Alle Anzeigen werden mit `SET <schlüssel> <wert>` gesetzt. **Status:** Alles hier ist am echten Cluster **noch nicht

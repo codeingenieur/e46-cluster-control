@@ -14,16 +14,22 @@ Die Firmware **kompiliert** (PlatformIO, `esp32dev`), ist aber **nicht am echten
 Die CAN-Signaldefinitionen stammen aus Community-Quellen und sind teils widersprüchlich,
 siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Kommandos (`cfg`, `raw`, `sniff`).
 
+> **Aktuell vorhandenes Kombi:** VDO 62.11-8 360 482, ein E36-Kombi **ohne CAN**. Dafür gilt die Uno-Firmware
+> [firmware-e36-uno/](firmware-e36-uno) mit der Anleitung [docs/e36-uno.md](docs/e36-uno.md). Der ESP32/CAN-Teil
+> ([firmware/](firmware)) gilt für E46-Kombis mit CAN.
+
 ## Inhalt
 
 | Pfad | Zweck |
 |---|---|
 | [firmware/](firmware) | PlatformIO-Projekt für den ESP32 (Arduino-Framework, TWAI-Treiber) |
+| [firmware-e36-uno/](firmware-e36-uno) | PlatformIO-Projekt für den Arduino Uno, steuert das E36-Kombi (Rechtecksignale, PWM, Lampen) |
 | [host/](host) | Python-Paket `e46cluster` (Bibliothek + CLI) |
 | [docs/hardware.md](docs/hardware.md) | Teileliste, Verdrahtung, Stromversorgung |
 | [docs/can-signals.md](docs/can-signals.md) | Welche Frames das Cluster erwartet, mit Quellen und Zuverlässigkeit |
 | [docs/usb-interface.md](docs/usb-interface.md) | Eigenständige Beschreibung der USB-Schnittstelle für die PC-Anwendung (Jira usw.) |
 | [docs/protocol.md](docs/protocol.md) | USB-Zeilenprotokoll PC ↔ ESP32, vollständige Befehlstabelle |
+| [docs/e36-uno.md](docs/e36-uno.md) | Uno am E36-Kombi: Pinplan, Schaltung, Inbetriebnahme, Kalibrierung |
 | [docs/e36-pinout.md](docs/e36-pinout.md) | Pinbelegung des vorhandenen E36-Kombis (VDO 62.11-8 360 482, kein CAN) |
 | [docs/pinout.md](docs/pinout.md) | Pinplan: Kombi-Stecker, ESP32-GPIOs, Ansteuerarten, Messliste |
 | [docs/backlog.md](docs/backlog.md) | Offene Aufgaben (P1: CAN, P2: Rest des Clusters, P3: Jira-Anwendung) |
