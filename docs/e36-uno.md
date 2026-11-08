@@ -102,9 +102,9 @@ bleibt das Risiko überschaubar, ganz ausgeschlossen ist es nicht.
 
 **Vorbereitung**
 
-1. **Polarität des Netzteils** mit einer LED prüfen, nicht raten. LED mit 1-kΩ-Widerstand in Reihe an die beiden Adern
-   des Netzteils (ohne Kombi): Die LED leuchtet nur, wenn ihre **Anode (langes Bein)** am Pluspol hängt. Die Ader, an der der
-   Widerstand der leuchtenden Schaltung hängt, ist Plus. Beschrifte beide Adern.
+1. **Polarität des Netzteils** mit einer LED prüfen, nicht raten. Baue die Reihe Widerstand → LED-Anode (langes Bein) → LED-Kathode (kurzes Bein)
+   und halte das freie Widerstandsende an die eine, das freie Kathodenende an die andere Ader (ohne Kombi). Die LED leuchtet nur,
+   wenn die Ader am **Widerstandsende Plus** ist. Leuchtet sie nicht, tausche die beiden Adern. Beschrifte beide Adern.
 2. **Sicherung 2 A** in die Plusleitung. Ohne Sicherung kann ein Fehler bis 5 A ziehen.
 3. **Serienwiderstand 470 Ω in jede Signalleitung** zwischen Transistor-Kollektor und Kombi-Pin (Drehzahl, Tacho, Temperatur,
    Tank, Lampen). Dann kann ein falsch gewählter Pin keinen Kurzschluss nach Masse erzeugen: Es fließen höchstens etwa
