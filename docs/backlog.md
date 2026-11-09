@@ -19,6 +19,8 @@ Langfristiges Ziel: das gesamte Cluster vom PC aus steuern können.
 - [ ] E36: Uno trennte sich zweimal kurz vom USB (COM3 weg, wieder da nach Neustecken): Kabel/Port prüfen, ggf. Masse-Verbindung zum Kombi-Netzteil beobachten
 - [ ] E36: Tacho (schwarz 4), Temperatur (blau 18/17), Tank (schwarz 1) und Lampen anschließen und kalibrieren
 - [ ] E36: Signalwerte klären: Impulse pro Umdrehung, Wegsignal-Frequenz pro km/h, Widerstandskurven von Temperatursensor und Tankgeber
+- [x] E36: Schaltplan, Verdrahtungsliste und Stückliste der Interface-Platine erstellt (`hardware/`), Bestellung noch offen
+- [ ] E36: Platine bauen: Entscheidung Lochraster/Proto-Shield oder KiCad-Platine, Teile bestellen (`hardware/bom.csv`)
 - [ ] E36: Gegenstecker für weiß 26, blau 26 und schwarz 12 beschaffen (z. B. E36-Kabelbaum-Stecker), Bezeichnung klären
 - [x] Firmware mit PlatformIO kompilieren
 - [ ] Firmware auf ESP32 flashen

@@ -27,6 +27,7 @@ siehe [docs/can-signals.md](docs/can-signals.md). Dafür gibt es Kalibrier-Komma
 | [firmware/](firmware) | PlatformIO-Projekt für den ESP32 (Arduino-Framework, TWAI-Treiber) |
 | [firmware-e36-uno/](firmware-e36-uno) | PlatformIO-Projekt für den Arduino Uno, steuert das E36-Kombi (Rechtecksignale, PWM, Lampen) |
 | [host/](host) | Python-Paket `e46cluster` (Bibliothek + CLI) |
+| [hardware/](hardware) | Schaltplan, Verdrahtungsliste und Stückliste der Interface-Platine Uno ↔ E36-Kombi (inkl. Bestellhinweise) |
 | [docs/hardware.md](docs/hardware.md) | Teileliste, Verdrahtung, Stromversorgung |
 | [docs/can-signals.md](docs/can-signals.md) | Welche Frames das Cluster erwartet, mit Quellen und Zuverlässigkeit |
 | [docs/usb-interface.md](docs/usb-interface.md) | Eigenständige Beschreibung der USB-Schnittstelle für die PC-Anwendung (Jira usw.) |

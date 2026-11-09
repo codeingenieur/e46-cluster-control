@@ -1,0 +1,22 @@
+ref,qty,value,description,search_term_shop,note
+"U1,U2",2,ULN2803A,"8-channel Darlington driver, DIP-18",ULN2803A DIP-18,"Lamp channels. STMicro or TI, any maker is fine"
+"U1,U2",2,DIP-18 socket,"IC socket, DIP-18, 7.62 mm",IC Sockel DIP-18,"Recommended, then a dead chip is easy to swap"
+Q1-Q4,4,IRLZ34N,"N-MOSFET logic level, TO-220",IRLZ34N,Must be the L type (logic level). IRFZ34N will NOT switch fully at 5 V. You may already own two
+"R1,R3,R5,R7",4,1 kOhm,"Resistor 0.25 W, through hole","Widerstand 1k 0,25W",Gate resistors
+"R2,R4,R6,R8",4,10 kOhm,"Resistor 0.25 W, through hole","Widerstand 10k 0,25W",Gate pull-downs
+R9-R26,18,470 Ohm,"Resistor 0.25 W, through hole","Widerstand 470R 0,25W","Series protection, one per cluster output. See README for the lamp channels"
+"R27,R28",2,2.2 kOhm,"Resistor 0.25 W, through hole","Widerstand 2k2 0,25W",LED series resistors for the 12 V indicator LEDs
+D1,1,1N5822,"Schottky diode 40 V 3 A, DO-201",1N5822,Reverse-polarity protection in the 12 V line (SB340 / SB560 also work)
+"LED1,LED2",2,LED 3 mm,"LED, green and red",LED 3mm gruen / rot,12 V present / ignition (KL15) on
+F1,1,T2A fuse,"Fuse 5x20 mm, 2 A slow-blow",Feinsicherung 5x20 T2A,Plus the matching board fuse holder
+F1,1,Fuse holder,"Fuse holder 5x20 mm, board mount",Sicherungshalter 5x20 Platine,
+C1,1,470 uF 25 V,"Electrolytic capacitor, radial",Elko 470uF 25V,Buffers the 12 V rail. Mind the polarity (stripe = minus)
+C2,1,100 nF,"Ceramic capacitor, 50 V",Kerko 100nF,
+SW1,1,Toggle switch SPST,"Switch, at least 3 A at 12 V DC",Kippschalter 1-polig EIN-AUS 3A,Switches KL15 (ignition)
+J1,1,Screw terminal 2-pin,"5.08 mm pitch, board mount","Schraubklemme 2-polig RM5,08","12 V supply input (+, GND)"
+"J2,J3",2,Pin header 2x13,"2.54 mm, 26 pins","Stiftleiste 2x13 RM2,54",White and blue cluster side. Numbering 1:1 to the cluster pins
+J4,1,Pin header 2x6,"2.54 mm, 12 pins","Stiftleiste 2x6 RM2,54",Black cluster side
+X1,1,Arduino Uno proto shield,"Uno prototyping shield with stacking headers, or perfboard + 2.54 mm headers",Arduino Uno Proto Shield,"Carries everything above, plugs on the Uno"
+,1,Wire,Solid-core wire 0.25 mm2 or jumper wires,Schaltdraht,Plus 12 V supply wire in 0.75 mm2 (red/black)
+"C3,C4 (optional)",2,1 uF 16 V film,"Film or ceramic capacitor, DNP",Folienkondensator 1uF,"Optional low-pass on the coolant/fuel outputs. NOT fitted by default, only if the needle jitters"
+,1,Multimeter,Digital multimeter,Multimeter digital,"Not a board part, but required before connecting the cluster (backlog)"

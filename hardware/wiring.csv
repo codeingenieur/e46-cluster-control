@@ -1,0 +1,28 @@
+driver,function,uno_pin,parts,series_resistor,cluster_pin,board_connector_pin,note
+Q1,rpm,D9,"IRLZ34N, R1 1k, R2 10k",R9 470,white 20,J2-20,RPM square wave (calibrated)
+Q2,speed,D10,"IRLZ34N, R3 1k, R4 10k",R10 470,black 4,J4-4,"Speed square wave (calibrated), return = black 3"
+Q3,coolant,D6,"IRLZ34N, R5 1k, R6 10k",R11 470,blue 18,J3-18,"Coolant sender, PWM (unverified), return = blue 17"
+Q4,fuel,D5,"IRLZ34N, R7 1k, R8 10k",R12 470,black 1,J4-1,"Fuel sender, PWM (unverified), return = black 3"
+U1 in1/out1,mil,D2,ULN2803A,R13 470,white 16,J2-16,Check engine
+U1 in2/out2,oilpress,D3,ULN2803A,R14 470,blue 19,J3-19,Oil pressure
+U1 in3/out3,handbrake,D4,ULN2803A,R15 470,white 17,J2-17,Handbrake
+U1 in4/out4,abs,D7,ULN2803A,R16 470,blue 11,J3-11,ABS
+U1 in5/out5,airbag,D8,ULN2803A,R17 470,white 14,J2-14,Airbag
+U1 in6/out6,brakefluid,D11,ULN2803A,R18 470,white 18,J2-18,Brake fluid
+U1 in7/out7,left,D12,ULN2803A,R19 470,white 4,J2-4,Turn signal left
+U1 in8/out8,right,D13,ULN2803A,R20 470,white 3,J2-3,Turn signal right
+U2 in1/out1,highbeam,A0,ULN2803A,R21 470,white 1,J2-1,High beam
+U2 in2/out2,fogfront,A1,ULN2803A,R22 470,blue 8,J3-8,Front fog
+U2 in3/out3,fogrear,A2,ULN2803A,R23 470,black 5,J4-5,Rear fog
+U2 in4/out4,belt,A3,ULN2803A,R24 470,blue 14,J3-14,Seat belt
+U2 in5/out5,asc,A4,ULN2803A,R25 470,blue 12,J3-12,ASC
+U2 in6/out6,cat,A5,ULN2803A,R26 470,white 26,J2-26,Catalyst over-temperature
+
+power,net,,,,cluster_pin,board_connector_pin,
+,KL30 (+12 V permanent),,,,white 22,J2-22,
+,KL15 (+12 V ignition),,,,white 23,J2-23,
+,KL15 (+12 V ignition),,,,blue 4,J3-4,
+,GND,,,,white 24,J2-24,
+,GND,,,,blue 3,J3-3,
+,GND,,,,black 3,J4-3,
+,GND (coolant sender return),,,,blue 17,J3-17,
