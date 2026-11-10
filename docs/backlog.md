@@ -67,6 +67,6 @@ Pinplan und Ansteuerarten: [pinout.md](pinout.md).
 **Konvention:** Alles im Repo soll am Ende auf Englisch sein. Gespräche mit dem Projektinhaber laufen weiter auf Deutsch, die Ergebnisse (Dateien, Commits) sollen englisch werden.
 
 - [ ] Alle Dokumente in `docs/` und die READMEs ins Englische übersetzen (`hardware`, `can-signals`, `protocol`, `usb-interface`, `e36-pinout`, `e36-uno`, `backlog`, `README`)
-- [ ] Quellcode-Kommentare, Fehlermeldungen und Hilfetexte ins Englische übersetzen (`firmware/`, `firmware-e36-uno/`, `host/`)
+- [x] Quellcode-Kommentare, Variablen, Funktionsnamen, Fehlermeldungen und Hilfetexte ins Englische übersetzt und lesbarer gemacht (`firmware/`, `firmware-e36-uno/`, `host/`, Kommentare in `docs/img/make_pinouts.py`). Protokoll unverändert, Uno geflasht und per Protokolltest geprüft, ESP32-Firmware baut, Host-Tests grün. Offen: die deutschen Beschriftungen der Grafiken
 - [ ] Beschriftungen der Grafiken in `docs/img/` ins Englische übersetzen (Texte in `make_pinouts.py`, danach SVGs neu erzeugen)
 - [ ] Neue Dateien, Kommentare und Commit-Nachrichten ab jetzt direkt auf Englisch schreiben

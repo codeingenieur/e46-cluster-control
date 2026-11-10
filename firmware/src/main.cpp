@@ -1,6 +1,6 @@
-// E46-Kombiinstrument-Fernsteuerung: PC (USB-Serial) -> ESP32 -> CAN (TWAI, 500 kbit/s).
-// Der ESP32 haelt den Zustand und sendet die zyklischen DME-Frames selbst (10 ms),
-// der PC muss nur Werte aendern. Protokoll: docs/protocol.md
+// Remote control for an E46 instrument cluster: PC (USB serial) -> ESP32 -> CAN (TWAI, 500 kbit/s).
+// The ESP32 keeps the state and sends the cyclic DME frames by itself (every 10 ms),
+// so the PC only has to change values. Protocol: docs/protocol.md
 #include <Arduino.h>
 #include <driver/twai.h>
 #include <strings.h>
@@ -20,184 +20,193 @@
 #define SERIAL_BAUD 115200
 #endif
 
-static const char* FW_VERSION = "0.1.0";
+static const char* FIRMWARE_VERSION = "0.1.0";
 
-static e46::State st;
-static e46::Config cfg;
-static bool txEnabled = true;
-static bool sniff = false;
+static e46::State state;
+static e46::Config config;
+static bool txEnabled = true;       // TX 0/1: stop or resume the automatic DME frames
+static bool sniffEnabled = false;   // SNIFF 0/1: print every received CAN frame
 
-static uint32_t txOk = 0, txFail = 0, rxCount = 0, sniffDropped = 0;
+static uint32_t txOkCount = 0, txFailCount = 0, rxCount = 0, sniffDroppedCount = 0;
 static twai_state_t busState = TWAI_STATE_STOPPED;
-static uint32_t lastHostMs = 0;
-static bool wdtTripped = false;
+static uint32_t lastHostActivityMs = 0;
+static bool watchdogTripped = false;
 
-struct CycSlot {
+// A user-defined frame that is sent repeatedly (CYC command).
+struct CyclicSlot {
   bool active = false;
   uint32_t periodUs = 0;
-  uint32_t nextUs = 0;
+  uint32_t nextSendUs = 0;
   e46::Frame frame;
 };
-static CycSlot slots[4];
+static const int CYCLIC_SLOT_COUNT = 4;
+static CyclicSlot cyclicSlots[CYCLIC_SLOT_COUNT];
 
-// ---------------------------------------------------------------- Geschwindigkeit (PWM)
+// ---------------------------------------------------------------- Speed (PWM)
+// The cluster reads the speed from a wire: a square wave whose frequency is proportional to the speed.
 
 #if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
-static void speedBegin() { ledcAttach(SPEED_PIN, 1000, 10); }
-static void speedOut(float hz) { ledcWriteTone(SPEED_PIN, hz); }
+static void startSpeedOutput() { ledcAttach(SPEED_PIN, 1000, 10); }
+static void writeSpeedFrequency(float hz) { ledcWriteTone(SPEED_PIN, hz); }
 #else
-static const int SPEED_CH = 0;
-static void speedBegin() {
-  ledcSetup(SPEED_CH, 1000, 10);
-  ledcAttachPin(SPEED_PIN, SPEED_CH);
+static const int SPEED_LEDC_CHANNEL = 0;
+static void startSpeedOutput() {
+  ledcSetup(SPEED_LEDC_CHANNEL, 1000, 10);
+  ledcAttachPin(SPEED_PIN, SPEED_LEDC_CHANNEL);
 }
-static void speedOut(float hz) { ledcWriteTone(SPEED_CH, hz); }
+static void writeSpeedFrequency(float hz) { ledcWriteTone(SPEED_LEDC_CHANNEL, hz); }
 #endif
 
 static void applySpeed() {
-  float hz = st.speed_kmh * cfg.speed_hz_per_kmh;
-  speedOut(hz >= 1.0f ? hz : 0.0f);
+  float hz = state.speed_kmh * config.speed_hz_per_kmh;
+  writeSpeedFrequency(hz >= 1.0f ? hz : 0.0f);
 }
 
 // ---------------------------------------------------------------- CAN
 
-static bool canStart() {
-  twai_general_config_t g = TWAI_GENERAL_CONFIG_DEFAULT((gpio_num_t)CAN_TX_PIN, (gpio_num_t)CAN_RX_PIN,
+static bool startCan() {
+  twai_general_config_t general = TWAI_GENERAL_CONFIG_DEFAULT((gpio_num_t)CAN_TX_PIN, (gpio_num_t)CAN_RX_PIN,
 #ifdef E46_TWAI_NO_ACK
-                                                        TWAI_MODE_NO_ACK
+                                                              TWAI_MODE_NO_ACK
 #else
-                                                        TWAI_MODE_NORMAL
+                                                              TWAI_MODE_NORMAL
 #endif
   );
-  g.tx_queue_len = 16;
-  g.rx_queue_len = 32;
-  twai_timing_config_t t = TWAI_TIMING_CONFIG_500KBITS();
-  twai_filter_config_t f = TWAI_FILTER_CONFIG_ACCEPT_ALL();
-  if (twai_driver_install(&g, &t, &f) != ESP_OK) return false;
+  general.tx_queue_len = 16;
+  general.rx_queue_len = 32;
+  twai_timing_config_t timing = TWAI_TIMING_CONFIG_500KBITS();
+  twai_filter_config_t filter = TWAI_FILTER_CONFIG_ACCEPT_ALL();
+  if (twai_driver_install(&general, &timing, &filter) != ESP_OK) return false;
   return twai_start() == ESP_OK;
 }
 
-static void canSend(const e46::Frame& fr) {
-  twai_message_t m = {};
-  m.identifier = fr.id;
-  m.data_length_code = fr.len;
-  memcpy(m.data, fr.data, fr.len);
-  if (twai_transmit(&m, 0) == ESP_OK) txOk++;
-  else txFail++;
+static void sendCanFrame(const e46::Frame& frame) {
+  twai_message_t message = {};
+  message.identifier = frame.id;
+  message.data_length_code = frame.len;
+  memcpy(message.data, frame.data, frame.len);
+  if (twai_transmit(&message, 0) == ESP_OK) txOkCount++;
+  else txFailCount++;
 }
 
-static void canMaintain() {
-  static uint32_t last = 0;
-  if (millis() - last < 100) return;
-  last = millis();
-  twai_status_info_t s;
-  if (twai_get_status_info(&s) != ESP_OK) return;
-  busState = s.state;
-  if (s.state == TWAI_STATE_BUS_OFF) {
+// Every 100 ms: read the bus state and recover from bus-off or a stopped driver.
+static void maintainCanBus() {
+  static uint32_t lastCheckMs = 0;
+  if (millis() - lastCheckMs < 100) return;
+  lastCheckMs = millis();
+  twai_status_info_t status;
+  if (twai_get_status_info(&status) != ESP_OK) return;
+  busState = status.state;
+  if (status.state == TWAI_STATE_BUS_OFF) {
     twai_initiate_recovery();
     Serial.println("EVT bus_off");
-  } else if (s.state == TWAI_STATE_STOPPED) {
+  } else if (status.state == TWAI_STATE_STOPPED) {
     twai_start();
   }
 }
 
-static void canPoll() {
-  twai_message_t m;
-  while (twai_receive(&m, 0) == ESP_OK) {
+// Count received frames and, with SNIFF on, print them as "RX <id> <hex bytes>".
+static void receiveCanFrames() {
+  twai_message_t message;
+  while (twai_receive(&message, 0) == ESP_OK) {
     rxCount++;
-    if (!sniff || m.rtr) continue;
-    // Nie blockieren: lieber Sniff-Frames verwerfen als den TX-Takt zu stoeren.
+    if (!sniffEnabled || message.rtr) continue;
+    // Never block: better to drop sniffed frames than to disturb the transmit timing.
     if (Serial.availableForWrite() < 40) {
-      sniffDropped++;
+      sniffDroppedCount++;
       continue;
     }
-    char buf[48];
-    int n = snprintf(buf, sizeof buf, "RX %03X ", (unsigned)m.identifier);
-    for (int i = 0; i < m.data_length_code && n < (int)sizeof buf - 3; i++)
-      n += snprintf(buf + n, sizeof buf - n, "%02X", m.data[i]);
-    Serial.println(buf);
+    char line[48];
+    int length = snprintf(line, sizeof line, "RX %03X ", (unsigned)message.identifier);
+    for (int i = 0; i < message.data_length_code && length < (int)sizeof line - 3; i++)
+      length += snprintf(line + length, sizeof line - length, "%02X", message.data[i]);
+    Serial.println(line);
   }
 }
 
-static void sendCyclic() {
-  static uint32_t next10 = micros();
+// Send the DME frames every 10 ms and the user-defined cyclic frames at their own period.
+static void sendCyclicFrames() {
+  static uint32_t nextDmeUs = micros();
   static uint8_t tick = 0;
-  uint32_t now = micros();
+  uint32_t nowUs = micros();
 
-  if ((int32_t)(now - next10) >= 0) {
-    next10 += 10000;
-    if ((int32_t)(now - next10) >= 0) next10 = now + 10000;  // Rueckstand nicht als Burst nachholen
-    e46::advanceFuel(st, 0.01f);
+  if ((int32_t)(nowUs - nextDmeUs) >= 0) {
+    nextDmeUs += 10000;
+    if ((int32_t)(nowUs - nextDmeUs) >= 0) nextDmeUs = nowUs + 10000;  // do not catch up a backlog as a burst
+    e46::advanceFuel(state, 0.01f);
     if (txEnabled) {
-      canSend(e46::buildDme1(st, cfg));
-      canSend(e46::buildDme2(st, cfg));
-      canSend(e46::buildDme4(st, cfg));
-      if (cfg.speed_can && (tick & 1) == 0) canSend(e46::buildAsc1(st, tick >> 1));
+      sendCanFrame(e46::buildDme1(state, config));
+      sendCanFrame(e46::buildDme2(state, config));
+      sendCanFrame(e46::buildDme4(state, config));
+      if (config.speed_can && (tick & 1) == 0) sendCanFrame(e46::buildAsc1(state, tick >> 1));
     }
     tick++;
   }
 
-  for (CycSlot& s : slots) {
-    if (!s.active || (int32_t)(now - s.nextUs) < 0) continue;
-    s.nextUs += s.periodUs;
-    if ((int32_t)(now - s.nextUs) >= 0) s.nextUs = now + s.periodUs;
-    canSend(s.frame);
+  for (CyclicSlot& slot : cyclicSlots) {
+    if (!slot.active || (int32_t)(nowUs - slot.nextSendUs) < 0) continue;
+    slot.nextSendUs += slot.periodUs;
+    if ((int32_t)(nowUs - slot.nextSendUs) >= 0) slot.nextSendUs = nowUs + slot.periodUs;
+    sendCanFrame(slot.frame);
   }
 }
 
-// ---------------------------------------------------------------- Kommandos
+// ---------------------------------------------------------------- Commands
 
-static bool parseFloat(const char* s, float& out) {
+static bool parseNumber(const char* text, float& result) {
   char* end;
-  float v = strtof(s, &end);
-  if (end == s || *end != '\0') return false;
-  out = v;
+  float value = strtof(text, &end);
+  if (end == text || *end != '\0') return false;
+  result = value;
   return true;
 }
 
-static bool setKey(const char* k, float x) {
-  if (!strcasecmp(k, "rpm")) st.rpm = x;
-  else if (!strcasecmp(k, "speed")) { st.speed_kmh = x; applySpeed(); }
-  else if (!strcasecmp(k, "coolant")) st.coolant_c = x;
-  else if (!strcasecmp(k, "oil")) st.oil_c = x;
-  else if (!strcasecmp(k, "fco")) st.fco_rate = x;
-  else if (!strcasecmp(k, "ign")) st.ign = x != 0;
-  else if (!strcasecmp(k, "mil")) st.mil = x != 0;
-  else if (!strcasecmp(k, "cruise")) st.cruise = x != 0;
-  else if (!strcasecmp(k, "eml")) st.eml = x != 0;
-  else if (!strcasecmp(k, "overheat")) st.overheat = x != 0;
-  else if (!strcasecmp(k, "oilwarn")) st.oil_warn = x != 0;
-  else if (!strcasecmp(k, "battery")) st.battery = x != 0;
-  else if (!strcasecmp(k, "oilpress")) st.oil_press = x != 0;
+// Apply one "key value" pair of a SET command. Returns false for an unknown key.
+static bool applySetKey(const char* key, float value) {
+  if (!strcasecmp(key, "rpm")) state.rpm = value;
+  else if (!strcasecmp(key, "speed")) { state.speed_kmh = value; applySpeed(); }
+  else if (!strcasecmp(key, "coolant")) state.coolant_c = value;
+  else if (!strcasecmp(key, "oil")) state.oil_c = value;
+  else if (!strcasecmp(key, "fco")) state.fco_rate = value;
+  else if (!strcasecmp(key, "ign")) state.ign = value != 0;
+  else if (!strcasecmp(key, "mil")) state.mil = value != 0;
+  else if (!strcasecmp(key, "cruise")) state.cruise = value != 0;
+  else if (!strcasecmp(key, "eml")) state.eml = value != 0;
+  else if (!strcasecmp(key, "overheat")) state.overheat = value != 0;
+  else if (!strcasecmp(key, "oilwarn")) state.oil_warn = value != 0;
+  else if (!strcasecmp(key, "battery")) state.battery = value != 0;
+  else if (!strcasecmp(key, "oilpress")) state.oil_press = value != 0;
   else return false;
   return true;
 }
 
-static bool cfgKey(const char* k, float x) {
-  if (!strcasecmp(k, "rpm_scale")) cfg.rpm_scale = x;
-  else if (!strcasecmp(k, "temp_offset")) cfg.temp_offset = x;
-  else if (!strcasecmp(k, "speed_hz")) { cfg.speed_hz_per_kmh = x; applySpeed(); }
-  else if (!strcasecmp(k, "speed_can")) cfg.speed_can = x != 0;
-  else if (!strcasecmp(k, "wdt")) cfg.wdt_ms = x < 0 ? 0 : (uint32_t)x;
+// Apply one "key value" pair of a CFG command. Returns false for an unknown key.
+static bool applyConfigKey(const char* key, float value) {
+  if (!strcasecmp(key, "rpm_scale")) config.rpm_scale = value;
+  else if (!strcasecmp(key, "temp_offset")) config.temp_offset = value;
+  else if (!strcasecmp(key, "speed_hz")) { config.speed_hz_per_kmh = value; applySpeed(); }
+  else if (!strcasecmp(key, "speed_can")) config.speed_can = value != 0;
+  else if (!strcasecmp(key, "wdt")) config.wdt_ms = value < 0 ? 0 : (uint32_t)value;
   else return false;
   return true;
 }
 
-static void cmdKeyValues(char** t, int n, bool (*apply)(const char*, float)) {
-  if (n < 2 || n % 2 != 0) { Serial.println("ERR usage"); return; }
-  // Erst alles pruefen, dann anwenden: eine Zeile wirkt ganz oder gar nicht.
-  for (int i = 0; i < n; i += 2) {
-    float v;
-    if (!parseFloat(t[i + 1], v)) { Serial.println("ERR bad_value"); return; }
+// A SET or CFG line takes effect completely or not at all: first check that every value is a number,
+// then apply the pairs, and undo everything if a key is unknown.
+static void handleKeyValueCommand(char** tokens, int tokenCount, bool (*applyKey)(const char*, float)) {
+  if (tokenCount < 2 || tokenCount % 2 != 0) { Serial.println("ERR usage"); return; }
+  for (int i = 0; i < tokenCount; i += 2) {
+    float value;
+    if (!parseNumber(tokens[i + 1], value)) { Serial.println("ERR bad_value"); return; }
   }
-  const e46::State stBak = st;
-  const e46::Config cfgBak = cfg;
-  for (int i = 0; i < n; i += 2) {
-    float v;
-    parseFloat(t[i + 1], v);
-    if (!apply(t[i], v)) {
-      st = stBak;  // unbekannter Schluessel mitten in der Zeile: nichts uebernehmen
-      cfg = cfgBak;
+  const e46::State stateBackup = state;
+  const e46::Config configBackup = config;
+  for (int i = 0; i < tokenCount; i += 2) {
+    float value;
+    parseNumber(tokens[i + 1], value);
+    if (!applyKey(tokens[i], value)) {
+      state = stateBackup;  // unknown key in the middle of the line: keep nothing
+      config = configBackup;
       applySpeed();
       Serial.println("ERR unknown_key");
       return;
@@ -206,53 +215,56 @@ static void cmdKeyValues(char** t, int n, bool (*apply)(const char*, float)) {
   Serial.println("OK");
 }
 
-static bool parseId(const char* s, uint32_t& id) {
+// Parse an 11-bit CAN id written in hex (000..7FF).
+static bool parseCanId(const char* text, uint32_t& id) {
   char* end;
-  unsigned long v = strtoul(s, &end, 16);
-  if (end == s || *end != '\0' || v > 0x7FF) return false;
-  id = v;
+  unsigned long value = strtoul(text, &end, 16);
+  if (end == text || *end != '\0' || value > 0x7FF) return false;
+  id = value;
   return true;
 }
 
-static void cmdRaw(char** t, int n) {
+// RAW <id> <hex bytes>: send one frame once.
+static void handleRaw(char** tokens, int tokenCount) {
   uint32_t id;
-  e46::Frame f;
-  if (n < 1 || !parseId(t[0], id)) { Serial.println("ERR bad_id"); return; }
-  int len = e46::parseHexBytes(t + 1, n - 1, f.data, 8);
-  if (len < 0) { Serial.println("ERR bad_hex"); return; }
-  f.id = id;
-  f.len = (uint8_t)len;
-  canSend(f);
+  e46::Frame frame;
+  if (tokenCount < 1 || !parseCanId(tokens[0], id)) { Serial.println("ERR bad_id"); return; }
+  int length = e46::parseHexBytes(tokens + 1, tokenCount - 1, frame.data, 8);
+  if (length < 0) { Serial.println("ERR bad_hex"); return; }
+  frame.id = id;
+  frame.len = (uint8_t)length;
+  sendCanFrame(frame);
   Serial.println("OK");
 }
 
-static void cmdCyc(char** t, int n) {
-  if (n < 2) { Serial.println("ERR usage"); return; }
-  int slot = atoi(t[0]);
-  if (slot < 0 || slot >= 4) { Serial.println("ERR bad_slot"); return; }
-  if (!strcasecmp(t[1], "off")) {
-    slots[slot].active = false;
+// CYC <slot> <id> <period_ms> <hex bytes>: send a frame repeatedly. CYC <slot> OFF stops it.
+static void handleCyclic(char** tokens, int tokenCount) {
+  if (tokenCount < 2) { Serial.println("ERR usage"); return; }
+  int slotIndex = atoi(tokens[0]);
+  if (slotIndex < 0 || slotIndex >= CYCLIC_SLOT_COUNT) { Serial.println("ERR bad_slot"); return; }
+  if (!strcasecmp(tokens[1], "off")) {
+    cyclicSlots[slotIndex].active = false;
     Serial.println("OK");
     return;
   }
   uint32_t id;
-  if (n < 3 || !parseId(t[1], id)) { Serial.println("ERR bad_id"); return; }
-  long period = atol(t[2]);
-  if (period < 1 || period > 60000) { Serial.println("ERR bad_period"); return; }
-  e46::Frame f;
-  int len = e46::parseHexBytes(t + 3, n - 3, f.data, 8);
-  if (len < 0) { Serial.println("ERR bad_hex"); return; }
-  f.id = id;
-  f.len = (uint8_t)len;
-  CycSlot& s = slots[slot];
-  s.frame = f;
-  s.periodUs = (uint32_t)period * 1000;
-  s.nextUs = micros();
-  s.active = true;
+  if (tokenCount < 3 || !parseCanId(tokens[1], id)) { Serial.println("ERR bad_id"); return; }
+  long periodMs = atol(tokens[2]);
+  if (periodMs < 1 || periodMs > 60000) { Serial.println("ERR bad_period"); return; }
+  e46::Frame frame;
+  int length = e46::parseHexBytes(tokens + 3, tokenCount - 3, frame.data, 8);
+  if (length < 0) { Serial.println("ERR bad_hex"); return; }
+  frame.id = id;
+  frame.len = (uint8_t)length;
+  CyclicSlot& slot = cyclicSlots[slotIndex];
+  slot.frame = frame;
+  slot.periodUs = (uint32_t)periodMs * 1000;
+  slot.nextSendUs = micros();
+  slot.active = true;
   Serial.println("OK");
 }
 
-static const char* busName() {
+static const char* busStateName() {
   switch (busState) {
     case TWAI_STATE_RUNNING: return "running";
     case TWAI_STATE_BUS_OFF: return "bus_off";
@@ -261,99 +273,112 @@ static const char* busName() {
   }
 }
 
-static void cmdGet() {
-  char buf[256];
-  snprintf(buf, sizeof buf,
+// GET: print the current state, the transmit counters and the bus state on one line.
+static void handleGet() {
+  char line[256];
+  snprintf(line, sizeof line,
            "STATE rpm=%.0f speed=%.1f coolant=%.1f oil=%.1f fco=%.1f ign=%d mil=%d cruise=%d eml=%d "
            "overheat=%d oilwarn=%d battery=%d oilpress=%d tx=%d tx_ok=%lu tx_fail=%lu rx=%lu can=%s",
-           st.rpm, st.speed_kmh, st.coolant_c, st.oil_c, st.fco_rate, st.ign, st.mil, st.cruise, st.eml,
-           st.overheat, st.oil_warn, st.battery, st.oil_press, txEnabled, (unsigned long)txOk,
-           (unsigned long)txFail, (unsigned long)rxCount, busName());
-  Serial.println(buf);
+           state.rpm, state.speed_kmh, state.coolant_c, state.oil_c, state.fco_rate, state.ign, state.mil,
+           state.cruise, state.eml, state.overheat, state.oil_warn, state.battery, state.oil_press, txEnabled,
+           (unsigned long)txOkCount, (unsigned long)txFailCount, (unsigned long)rxCount, busStateName());
+  Serial.println(line);
 }
 
-static void cmdCfg(char** t, int n) {
-  if (n == 0) {
-    char buf[160];
-    snprintf(buf, sizeof buf, "CFG rpm_scale=%.4f temp_offset=%.3f speed_hz=%.4f speed_can=%d wdt=%lu",
-             cfg.rpm_scale, cfg.temp_offset, cfg.speed_hz_per_kmh, cfg.speed_can, (unsigned long)cfg.wdt_ms);
-    Serial.println(buf);
+// CFG without arguments prints all calibration values, CFG with key/value pairs changes them.
+static void handleConfig(char** tokens, int tokenCount) {
+  if (tokenCount == 0) {
+    char line[160];
+    snprintf(line, sizeof line, "CFG rpm_scale=%.4f temp_offset=%.3f speed_hz=%.4f speed_can=%d wdt=%lu",
+             config.rpm_scale, config.temp_offset, config.speed_hz_per_kmh, config.speed_can,
+             (unsigned long)config.wdt_ms);
+    Serial.println(line);
     return;
   }
-  cmdKeyValues(t, n, cfgKey);
+  handleKeyValueCommand(tokens, tokenCount, applyConfigKey);
 }
 
-static void cmdHelp() {
+static void handleHelp() {
   Serial.println("HELP PING | SET k v [k v ...] | GET | CFG [k v ...] | TX 0/1 | RAW id hex | "
                  "CYC slot id period_ms hex | CYC slot OFF | SNIFF 0/1 | ZERO");
 }
 
+// Set rpm, speed and fuel consumption to 0 (used by ZERO and by the watchdog).
+static void zeroOutputs() {
+  state.rpm = 0;
+  state.speed_kmh = 0;
+  state.fco_rate = 0;
+  applySpeed();
+}
+
 static void handleLine(char* line) {
-  char* t[24];
-  int n = 0;
-  for (char* p = strtok(line, " \t"); p && n < 24; p = strtok(nullptr, " \t")) t[n++] = p;
-  if (n == 0) return;
+  const int MAX_TOKENS = 24;
+  char* tokens[MAX_TOKENS];
+  int tokenCount = 0;
+  for (char* p = strtok(line, " \t"); p && tokenCount < MAX_TOKENS; p = strtok(nullptr, " \t")) tokens[tokenCount++] = p;
+  if (tokenCount == 0) return;
 
-  lastHostMs = millis();
-  wdtTripped = false;
+  lastHostActivityMs = millis();
+  watchdogTripped = false;
 
-  const char* c = t[0];
-  if (!strcasecmp(c, "PING")) {
+  const char* command = tokens[0];
+  if (!strcasecmp(command, "PING")) {
     Serial.print("PONG e46-cluster ");
-    Serial.println(FW_VERSION);
-  } else if (!strcasecmp(c, "SET")) cmdKeyValues(t + 1, n - 1, setKey);
-  else if (!strcasecmp(c, "GET")) cmdGet();
-  else if (!strcasecmp(c, "CFG")) cmdCfg(t + 1, n - 1);
-  else if (!strcasecmp(c, "TX") && n == 2) { txEnabled = atoi(t[1]) != 0; Serial.println("OK"); }
-  else if (!strcasecmp(c, "RAW")) cmdRaw(t + 1, n - 1);
-  else if (!strcasecmp(c, "CYC")) cmdCyc(t + 1, n - 1);
-  else if (!strcasecmp(c, "SNIFF") && n == 2) { sniff = atoi(t[1]) != 0; Serial.println("OK"); }
-  else if (!strcasecmp(c, "ZERO")) {
-    st.rpm = 0; st.speed_kmh = 0; st.fco_rate = 0;
-    applySpeed();
+    Serial.println(FIRMWARE_VERSION);
+  } else if (!strcasecmp(command, "SET")) handleKeyValueCommand(tokens + 1, tokenCount - 1, applySetKey);
+  else if (!strcasecmp(command, "GET")) handleGet();
+  else if (!strcasecmp(command, "CFG")) handleConfig(tokens + 1, tokenCount - 1);
+  else if (!strcasecmp(command, "TX") && tokenCount == 2) { txEnabled = atoi(tokens[1]) != 0; Serial.println("OK"); }
+  else if (!strcasecmp(command, "RAW")) handleRaw(tokens + 1, tokenCount - 1);
+  else if (!strcasecmp(command, "CYC")) handleCyclic(tokens + 1, tokenCount - 1);
+  else if (!strcasecmp(command, "SNIFF") && tokenCount == 2) { sniffEnabled = atoi(tokens[1]) != 0; Serial.println("OK"); }
+  else if (!strcasecmp(command, "ZERO")) {
+    zeroOutputs();
     Serial.println("OK");
-  } else if (!strcasecmp(c, "HELP")) cmdHelp();
+  } else if (!strcasecmp(command, "HELP")) handleHelp();
   else Serial.println("ERR unknown_cmd");
 }
 
-static void pollSerial() {
+// Collect bytes from the USB serial port into lines ('\n', '\r' or '\r\n' all end a line) and hand each line to handleLine.
+static void readSerialLines() {
   static char line[128];
-  static size_t len = 0;
-  static bool overflow = false;
+  static size_t length = 0;
+  static bool overflowed = false;
   while (Serial.available()) {
     char ch = (char)Serial.read();
     if (ch == '\n' || ch == '\r') {
-      if (overflow) Serial.println("ERR line_too_long");
-      else if (len > 0) { line[len] = '\0'; handleLine(line); }
-      len = 0;
-      overflow = false;
-    } else if (len < sizeof line - 1) {
-      line[len++] = ch;
+      if (overflowed) Serial.println("ERR line_too_long");
+      else if (length > 0) { line[length] = '\0'; handleLine(line); }
+      length = 0;
+      overflowed = false;
+    } else if (length < sizeof line - 1) {
+      line[length++] = ch;
     } else {
-      overflow = true;
+      overflowed = true;
     }
   }
 }
 
+// ---------------------------------------------------------------- Arduino entry points
+
 void setup() {
   Serial.begin(SERIAL_BAUD);
-  speedBegin();
+  startSpeedOutput();
   applySpeed();
-  bool ok = canStart();
-  Serial.print(ok ? "READY e46-cluster " : "ERR can_init_failed e46-cluster ");
-  Serial.println(FW_VERSION);
+  bool canStarted = startCan();
+  Serial.print(canStarted ? "READY e46-cluster " : "ERR can_init_failed e46-cluster ");
+  Serial.println(FIRMWARE_VERSION);
 }
 
 void loop() {
-  pollSerial();
-  canPoll();
-  sendCyclic();
-  canMaintain();
+  readSerialLines();
+  receiveCanFrames();
+  sendCyclicFrames();
+  maintainCanBus();
 
-  if (cfg.wdt_ms && !wdtTripped && millis() - lastHostMs > cfg.wdt_ms) {
-    st.rpm = 0; st.speed_kmh = 0; st.fco_rate = 0;
-    applySpeed();
-    wdtTripped = true;
+  if (config.wdt_ms && !watchdogTripped && millis() - lastHostActivityMs > config.wdt_ms) {
+    zeroOutputs();
+    watchdogTripped = true;
     Serial.println("EVT wdt");
   }
 }

@@ -6,7 +6,7 @@ from e46cluster.client import Cluster, ClusterError
 
 
 class FakeFirmware:
-    """Minimaler Ersatz fuer die ESP32-Firmware: nimmt Zeilen an, liefert Antworten."""
+    """Minimal stand-in for the firmware: accepts command lines and returns replies."""
 
     def __init__(self):
         self.lines = []
@@ -74,7 +74,7 @@ class ClusterTest(unittest.TestCase):
         self.assertNotIn("SET", " ".join(self.fw.lines))
 
     def test_firmware_error_raises(self):
-        # Client kennt "bogus" nicht, also direkt am Protokoll vorbei senden.
+        # The client rejects "bogus" itself, so bypass it and send the line directly.
         with self.assertRaises(ClusterError):
             self.cl._send("SET bogus 1")
 
@@ -102,7 +102,7 @@ class ClusterTest(unittest.TestCase):
         self.fw.push("EVT bus_off")
         threading.Event().wait(0.2)
         self.assertEqual(self.events, ["RX 153 0000A0320000FF00", "EVT bus_off"])
-        self.cl.ping()  # Antwortkanal bleibt sauber
+        self.cl.ping()  # the reply channel stays clean
 
 
 if __name__ == "__main__":

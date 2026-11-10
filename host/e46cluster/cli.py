@@ -1,4 +1,4 @@
-"""Kommandozeile: python -m e46cluster <befehl>"""
+"""Command line: python -m e46cluster <command>"""
 from __future__ import annotations
 
 import argparse
@@ -10,98 +10,99 @@ from .client import CONFIG_KEYS, DEFAULT_BAUD, FLAGS, GAUGES, Cluster, ClusterEr
 
 
 def _parse_assignments(items, allowed):
+    """Turn ['rpm=3000', 'mil=1'] into {'rpm': 3000.0, 'mil': 1.0}; exit with a message on bad input."""
     values = {}
     for item in items:
-        key, sep, raw = item.partition("=")
-        if not sep or key not in allowed:
-            raise SystemExit(f"Ungueltig: '{item}' (erlaubt: {', '.join(allowed)}; Format key=wert)")
+        key, separator, raw_value = item.partition("=")
+        if not separator or key not in allowed:
+            raise SystemExit(f"Invalid: '{item}' (allowed: {', '.join(allowed)}; format key=value)")
         try:
-            values[key] = float(raw)
+            values[key] = float(raw_value)
         except ValueError:
-            raise SystemExit(f"Kein Zahlenwert: '{item}'") from None
+            raise SystemExit(f"Not a number: '{item}'") from None
     return values
 
 
 def _cmd_ports(args) -> None:
     from serial.tools import list_ports
 
-    for p in list_ports.comports():
-        vid = f"{p.vid:04X}:{p.pid:04X}" if p.vid is not None else "----:----"
-        print(f"{p.device}\t{vid}\t{p.description}")
+    for port in list_ports.comports():
+        usb_id = f"{port.vid:04X}:{port.pid:04X}" if port.vid is not None else "----:----"
+        print(f"{port.device}\t{usb_id}\t{port.description}")
 
 
-def _cmd_ping(args, cl: Cluster) -> None:
-    print(cl.ping())
+def _cmd_ping(args, cluster: Cluster) -> None:
+    print(cluster.ping())
 
 
-def _cmd_set(args, cl: Cluster) -> None:
-    cl.set(**_parse_assignments(args.values, GAUGES + FLAGS))
+def _cmd_set(args, cluster: Cluster) -> None:
+    cluster.set(**_parse_assignments(args.values, GAUGES + FLAGS))
 
 
-def _cmd_get(args, cl: Cluster) -> None:
-    for k, v in cl.state().items():
-        print(f"{k:10} {v}")
+def _cmd_get(args, cluster: Cluster) -> None:
+    for key, value in cluster.state().items():
+        print(f"{key:10} {value}")
 
 
-def _cmd_zero(args, cl: Cluster) -> None:
-    cl.zero()
+def _cmd_zero(args, cluster: Cluster) -> None:
+    cluster.zero()
 
 
-def _cmd_cfg(args, cl: Cluster) -> None:
-    for k, v in cl.config(**_parse_assignments(args.values, CONFIG_KEYS)).items():
-        print(f"{k:12} {v}")
+def _cmd_cfg(args, cluster: Cluster) -> None:
+    for key, value in cluster.config(**_parse_assignments(args.values, CONFIG_KEYS)).items():
+        print(f"{key:12} {value}")
 
 
-def _cmd_raw(args, cl: Cluster) -> None:
-    cl.raw(int(args.id, 16), bytes.fromhex("".join(args.data)))
+def _cmd_raw(args, cluster: Cluster) -> None:
+    cluster.raw(int(args.id, 16), bytes.fromhex("".join(args.data)))
 
 
-def _cmd_sniff(args, cl: Cluster) -> None:
-    cl.on_event = lambda line: print(line, flush=True)
-    cl.sniff(True)
+def _cmd_sniff(args, cluster: Cluster) -> None:
+    cluster.on_event = lambda line: print(line, flush=True)
+    cluster.sniff(True)
     try:
         while True:
             time.sleep(0.5)
     except KeyboardInterrupt:
-        cl.sniff(False)
+        cluster.sniff(False)
 
 
-def _cmd_sweep(args, cl: Cluster) -> None:
-    """Demo: alle Zeiger weich hoch und runter fahren."""
-    period = args.seconds
-    t0 = time.monotonic()
+def _cmd_sweep(args, cluster: Cluster) -> None:
+    """Demo: move all needles smoothly up and down."""
+    period_seconds = args.seconds
+    start = time.monotonic()
     try:
         while True:
-            phase = (time.monotonic() - t0) / period * 2 * math.pi
-            k = 0.5 - 0.5 * math.cos(phase)  # 0 -> 1 -> 0
-            cl.set(rpm=k * 7000, speed=k * 240, coolant=60 + k * 50, oil=60 + k * 60)
+            phase = (time.monotonic() - start) / period_seconds * 2 * math.pi
+            position = 0.5 - 0.5 * math.cos(phase)  # 0 -> 1 -> 0
+            cluster.set(rpm=position * 7000, speed=position * 240, coolant=60 + position * 50, oil=60 + position * 60)
             time.sleep(0.02)
     except KeyboardInterrupt:
-        cl.zero()
+        cluster.zero()
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="e46cluster", description=__doc__)
-    ap.add_argument("--port", help="z.B. COM5; ohne Angabe wird ein ESP32-Port gesucht")
-    ap.add_argument("--baud", type=int, default=DEFAULT_BAUD)
-    sub = ap.add_subparsers(dest="cmd", required=True)
+    parser = argparse.ArgumentParser(prog="e46cluster", description=__doc__)
+    parser.add_argument("--port", help="for example COM5; without it a single ESP32 or Arduino port is searched for")
+    parser.add_argument("--baud", type=int, default=DEFAULT_BAUD)
+    commands = parser.add_subparsers(dest="cmd", required=True)
 
-    sub.add_parser("ports", help="serielle Ports auflisten")
-    sub.add_parser("ping", help="Firmware anpingen")
-    p = sub.add_parser("set", help="Werte setzen: set rpm=3000 speed=80 mil=1")
-    p.add_argument("values", nargs="+")
-    sub.add_parser("get", help="aktuellen Zustand und CAN-Zaehler anzeigen")
-    sub.add_parser("zero", help="Drehzahl und Geschwindigkeit auf 0")
-    p = sub.add_parser("cfg", help="Konfiguration lesen/setzen: cfg rpm_scale=6.4")
-    p.add_argument("values", nargs="*")
-    p = sub.add_parser("raw", help="einen CAN-Frame senden: raw 316 0500 0000 0000")
-    p.add_argument("id", help="Hex-ID")
-    p.add_argument("data", nargs="*", help="Hex-Bytes")
-    sub.add_parser("sniff", help="empfangene CAN-Frames ausgeben (Strg+C beendet)")
-    p = sub.add_parser("sweep", help="Demo: Zeiger auf und ab fahren (Strg+C beendet)")
-    p.add_argument("--seconds", type=float, default=6.0, help="Dauer eines Hin-und-zurueck")
+    commands.add_parser("ports", help="list serial ports")
+    commands.add_parser("ping", help="ping the firmware")
+    sub = commands.add_parser("set", help="set values: set rpm=3000 speed=80 mil=1")
+    sub.add_argument("values", nargs="+")
+    commands.add_parser("get", help="show the current state and the CAN counters")
+    commands.add_parser("zero", help="set rpm and speed to 0")
+    sub = commands.add_parser("cfg", help="read or change calibration values: cfg rpm_scale=6.4")
+    sub.add_argument("values", nargs="*")
+    sub = commands.add_parser("raw", help="send one CAN frame: raw 316 0500 0000 0000")
+    sub.add_argument("id", help="CAN id in hex")
+    sub.add_argument("data", nargs="*", help="data bytes in hex")
+    commands.add_parser("sniff", help="print received CAN frames (Ctrl+C stops)")
+    sub = commands.add_parser("sweep", help="demo: move the needles up and down (Ctrl+C stops)")
+    sub.add_argument("--seconds", type=float, default=6.0, help="duration of one up-and-down cycle")
 
-    args = ap.parse_args(argv)
+    args = parser.parse_args(argv)
     if args.cmd == "ports":
         _cmd_ports(args)
         return 0
@@ -111,10 +112,10 @@ def main(argv=None) -> int:
         "raw": _cmd_raw, "sniff": _cmd_sniff, "sweep": _cmd_sweep,
     }
     try:
-        with Cluster(port=args.port, baud=args.baud) as cl:
-            handlers[args.cmd](args, cl)
+        with Cluster(port=args.port, baud=args.baud) as cluster:
+            handlers[args.cmd](args, cluster)
     except ClusterError as exc:
-        print(f"Fehler: {exc}", file=sys.stderr)
+        print(f"Error: {exc}", file=sys.stderr)
         return 1
     return 0
 
